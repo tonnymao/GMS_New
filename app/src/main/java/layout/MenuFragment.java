@@ -3,11 +3,14 @@ package layout;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
+import com.inspira.gms.LibInspira;
+import com.inspira.gms.MainActivity;
 import com.inspira.gms.R;
 
 /**
@@ -59,6 +62,7 @@ public class MenuFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -75,6 +79,10 @@ public class MenuFragment extends Fragment {
         }
     }
 
+
+    /*****************************************************************************/
+    //OnAttach dijalankan pada saat fragment ini terpasang pada Activity penampungnya
+    /*****************************************************************************/
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -84,6 +92,23 @@ public class MenuFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle bundle){
+        super.onActivityCreated(bundle);
+        ImageButton ibtnSalesNavigation = (ImageButton) getView().findViewById(R.id.ibtnSalesNavigation);
+        ImageButton ibtnSalesSchedule = (ImageButton) getView().findViewById(R.id.ibtnSalesSchedule);
+        ImageButton ibtnOmzet = (ImageButton) getView().findViewById(R.id.ibtnOmzet);
+
+        ibtnSalesNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).replaceFragment();
+            }
+        });
+        ibtnSalesSchedule.setOnClickListener(null);
+        ibtnOmzet.setOnClickListener(null);
     }
 
     @Override

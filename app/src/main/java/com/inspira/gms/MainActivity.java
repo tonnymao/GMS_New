@@ -1,12 +1,11 @@
 package com.inspira.gms;
 
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,7 +21,9 @@ import layout.SalesNavigationFragment;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MenuFragment.OnFragmentInteractionListener , SalesNavigationFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener,
+            MenuFragment.OnFragmentInteractionListener,
+            SalesNavigationFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Context context = getApplicationContext();
     }
 
     @Override
@@ -111,5 +113,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public void replaceFragment(){
+        LibInspira.ShowShortToast(getApplicationContext(), "The Button is pressed");
+        SalesNavigationFragment frag = new SalesNavigationFragment();
+        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, frag);
     }
 }
