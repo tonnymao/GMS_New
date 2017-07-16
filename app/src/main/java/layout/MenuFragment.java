@@ -94,6 +94,8 @@ public class MenuFragment extends Fragment {
         }
     }
 
+    //added by Tonny @15-Jul-2017
+    //untuk mapping UI pada fragment, jangan dilakukan pada OnCreate, tapi dilakukan pada onActivityCreated
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
@@ -101,10 +103,13 @@ public class MenuFragment extends Fragment {
         ImageButton ibtnSalesSchedule = (ImageButton) getView().findViewById(R.id.ibtnSalesSchedule);
         ImageButton ibtnOmzet = (ImageButton) getView().findViewById(R.id.ibtnOmzet);
 
+        //Untuk menambahkan fungsi button pada Menu
         ibtnSalesNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).replaceFragment();
+                //untuk melakukan replace fragment
+                SalesNavigationFragment salesNavigationFragment = new SalesNavigationFragment();
+                ((MainActivity)getActivity()).replaceFragment(salesNavigationFragment);
             }
         });
         ibtnSalesSchedule.setOnClickListener(null);

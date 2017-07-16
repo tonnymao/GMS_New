@@ -1,0 +1,14 @@
+Catatan ini digunakan mencatat knowledge baru yang didapat pada saat pengerjaan project ini
+o> (Tonny)
+    -. Cara implementasi pada Fragment:
+        1. Gunakan komponen fragments pada container
+        2. Pilih Class yang ingin dijadikan fragment (buat baru jika belum ada)
+        3. Extends Fragment pada class tersebut
+        4. Untuk melakukan mapping pada komponen2 yang terdapat pada Fragment,
+           sebaiknya JANGAN DILAKUKAN pada OnCreate (mungkin berlaku untuk OnCreateView juga),
+           karena event ini akan crash dengan OnCreate pada Activity.
+           Oleh karena itu sebaiknya dilakukan di OnActivityCreated
+
+    -. Cara menggunakan komponen MapView:
+        1. Pasang komponen MapView pada file layout (fragment_sales_navigation.xml)
+        2. Inputkan API Key untuk Google Maps yang terdapat pada kolom API pada properties MapView

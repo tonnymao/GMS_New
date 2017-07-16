@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -8,7 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.inspira.gms.R;
+
+import java.util.Map;
+
+import static android.R.attr.contextClickable;
+import static android.R.attr.fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +34,7 @@ import com.inspira.gms.R;
  * Use the {@link SalesNavigationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SalesNavigationFragment extends Fragment {
+public class SalesNavigationFragment extends Fragment implements OnMapReadyCallback, android.location.LocationListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +44,8 @@ public class SalesNavigationFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private GoogleMap map;
+    private MapView mapView;
     private OnFragmentInteractionListener mListener;
 
     public SalesNavigationFragment() {
@@ -64,15 +82,17 @@ public class SalesNavigationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_sales_navigation, container, false);
+        return v;
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sales_navigation, container, false);
+        //return inflater.inflate(R.layout.fragment_sales_navigation, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    public void onActivityCreated(Bundle bundle) {
+        super.onActivityCreated(bundle);
+        mapView = (MapView) getView().findViewById(R.id.mapView);
+        mapView.onCreate(bundle);
+        mapView.getMapAsync(this);
     }
 
     @Override
@@ -105,5 +125,41 @@ public class SalesNavigationFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /*****************************************************************************/
+    //Method di bawah ini merupakan hasil dari implements MapReadyCallBack
+    /*****************************************************************************/
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // Add a marker in Sydney, Australia,
+        // and move the map's camera to the same location.
+        LatLng sydney = new LatLng(-33.852, 151.211);
+        googleMap.addMarker(new MarkerOptions().position(sydney)
+                .title("Marker in Sydney"));
+        //googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(sydney, 20);
+        //googleMap.animateCamera(cameraUpdate);
+        googleMap.moveCamera(cameraUpdate);
     }
 }

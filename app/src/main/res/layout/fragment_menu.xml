@@ -19,7 +19,7 @@
             <ImageButton
                 android:id="@+id/ibtnSalesNavigation"
                 android:layout_width="110dp"
-                android:layout_height="107dp"
+                android:layout_height="110dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -29,7 +29,7 @@
             <ImageButton
                 android:id="@+id/ibtnSalesSchedule"
                 android:layout_width="110dp"
-                android:layout_height="107dp"
+                android:layout_height="110dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="0dp"
                 app:layout_constraintRight_toRightOf="parent"
@@ -39,7 +39,7 @@
             <ImageButton
                 android:id="@+id/ibtnOmzet"
                 android:layout_width="110dp"
-                android:layout_height="107dp"
+                android:layout_height="110dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="0dp"
@@ -53,29 +53,29 @@
                 android:id="@+id/textView10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:text="Sales Tracking"
                 android:textAlignment="center"
-                app:layout_constraintLeft_toLeftOf="@+id/ibtnSalesNavigation"
-                app:layout_constraintRight_toLeftOf="@+id/ibtnOmzet"
-                app:layout_constraintTop_toBottomOf="@+id/ibtnSalesNavigation" />
+                app:layout_constraintTop_toBottomOf="@+id/ibtnSalesNavigation"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="@+id/ibtnSalesNavigation"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintLeft_toLeftOf="@+id/ibtnSalesNavigation" />
 
             <TextView
                 android:id="@+id/textView11"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:text="Omzet"
                 android:textAlignment="center"
-                app:layout_constraintLeft_toRightOf="@+id/ibtnOmzet"
                 app:layout_constraintRight_toRightOf="@+id/ibtnSalesSchedule"
-                app:layout_constraintTop_toBottomOf="@+id/ibtnSalesSchedule" />
+                app:layout_constraintTop_toBottomOf="@+id/ibtnSalesSchedule"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintLeft_toLeftOf="@+id/ibtnSalesSchedule" />
 
             <TextView
                 android:id="@+id/textView12"

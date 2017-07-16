@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/btnSearch"
+            android:apiKey="AIzaSyDWluJqM9ixtNEBaphJ8ijs4nZosJUCKdo"
             android:visibility="visible" />
     </RelativeLayout>
 

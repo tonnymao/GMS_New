@@ -7,23 +7,19 @@
 ******************************************************************************/
 package com.inspira.gms;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
 //import android.support.v4.app.Fragment; // is the Fragment class for compatibility for older version < API 11
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Toast;
 
 /**
  * Created by Tonny on 7/8/2017.
  */
 
-public class LibInspira extends Application{
+public class LibInspira {
 
     public static void GoToActivity(String _activityName){
 
@@ -50,6 +46,7 @@ public class LibInspira extends Application{
         fragmentTransaction.commit();
     }
 
+    //added by Tonny @15-Jul-2017
     public static void ShowShortToast(Context _context, String _message){
         Context context = _context;
         int duration = Toast.LENGTH_SHORT;
@@ -57,6 +54,7 @@ public class LibInspira extends Application{
         toast.show();
     }
 
+    //added by Tonny @15-Jul-2017
     public static void ShowLongToast(Context _context, String _message){
         Context context = _context;
         int duration = Toast.LENGTH_LONG;
