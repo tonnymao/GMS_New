@@ -19,28 +19,31 @@
             android:text="@string/hello_blank_fragment"
             android:visibility="gone" />
 
-        <EditText
-            android:id="@+id/edtSalesman"
-            android:layout_width="291dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Find Salesman..."
-            android:inputType="textPersonName" />
-
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/edtSalesman"
+            android:layout_alignParentRight="true"
             android:text="Search" />
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+        <EditText
+            android:id="@+id/edtSalesman"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/btnSearch"
+            android:ems="10"
+            android:hint="Find Salesman..."
+            android:inputType="textPersonName" />
+
+        <RelativeLayout
+            android:id="@+id/Mapfragment"
+            android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/btnSearch"
-            android:apiKey="AIzaSyDWluJqM9ixtNEBaphJ8ijs4nZosJUCKdo"
-            android:visibility="visible" />
+            android:layout_below="@id/edtSalesman"
+            />
+
+
     </RelativeLayout>
 
 </FrameLayout>

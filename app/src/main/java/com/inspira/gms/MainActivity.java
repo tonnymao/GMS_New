@@ -1,7 +1,5 @@
 package com.inspira.gms;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -114,12 +112,5 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    //added by Tonny @15-Jul-2017
-    //untuk mengganti fragment pada R.id.fragment_container dengan fragment lainnya
-    public void replaceFragment(Fragment _fragment){
-        //LibInspira.ShowShortToast(getApplicationContext(), "The Button is pressed");
-        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, _fragment);
     }
 }

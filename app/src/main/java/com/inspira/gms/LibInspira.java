@@ -8,10 +8,12 @@
 package com.inspira.gms;
 
 import android.app.Application;
-import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
-//import android.support.v4.app.Fragment; // is the Fragment class for compatibility for older version < API 11
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+//import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
+import android.support.v4.app.Fragment; // is the Fragment class for compatibility for older version < API 11
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+//import android.app.FragmentManager;
+//import android.app.FragmentTransaction;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -27,15 +29,16 @@ public class LibInspira {
     public static void GoToActivity(Integer _activityIndex){
 
     }
-    public static void ReplaceFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragmentName){
+    public static void ReplaceFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
         FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
-        fragmentTransaction.replace(_fragmentContainerID, _fragmentName);
+        fragmentTransaction.replace(_fragmentContainerID, _fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-    public static void AddFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragmentName){
+
+    public static void AddFragment(FragmentManager _fragmentManager, Integer _fragmentContainerID, Fragment _fragment){
         FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
-        fragmentTransaction.add(_fragmentContainerID, _fragmentName);
+        fragmentTransaction.add(_fragmentContainerID, _fragment);
         //fragmentTransaction.addToBackStack(null);  //remarked by Tonny @08-Jul-2017, masih belum tau apakah diperlukan
         fragmentTransaction.commit();
     }

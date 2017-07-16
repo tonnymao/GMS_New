@@ -4,19 +4,19 @@ import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+//import android.app.Fragment;
+//import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import com.google.android.gms.maps.SupportMapFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.inspira.gms.R;
@@ -27,7 +27,7 @@ import static android.R.attr.contextClickable;
 import static android.R.attr.fragment;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link //Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link SalesNavigationFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
@@ -90,9 +90,16 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
 
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
-        mapView = (MapView) getView().findViewById(R.id.mapView);
-        mapView.onCreate(bundle);
-        mapView.getMapAsync(this);
+//        mapView = (MapView) getView().findViewById(R.id.Mapfragment);
+//        mapView.onCreate(bundle);
+//        mapView.getMapAsync(this);
+        FragmentManager fm = getChildFragmentManager();
+        SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.Mapfragment);
+        if (fragment == null) {
+            fragment = SupportMapFragment.newInstance();
+            fm.beginTransaction().replace(R.id.Mapfragment, fragment).commit();
+            fragment.getMapAsync(this);
+        }
     }
 
     @Override
@@ -157,9 +164,9 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
         LatLng sydney = new LatLng(-33.852, 151.211);
         googleMap.addMarker(new MarkerOptions().position(sydney)
                 .title("Marker in Sydney"));
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(sydney, 20);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(sydney, 20);
         //googleMap.animateCamera(cameraUpdate);
-        googleMap.moveCamera(cameraUpdate);
+        //googleMap.moveCamera(cameraUpdate);
     }
 }

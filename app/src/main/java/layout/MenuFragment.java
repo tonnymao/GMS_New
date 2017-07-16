@@ -3,7 +3,9 @@ package layout;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+//import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,8 +110,7 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //untuk melakukan replace fragment
-                SalesNavigationFragment salesNavigationFragment = new SalesNavigationFragment();
-                ((MainActivity)getActivity()).replaceFragment(salesNavigationFragment);
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());
             }
         });
         ibtnSalesSchedule.setOnClickListener(null);
