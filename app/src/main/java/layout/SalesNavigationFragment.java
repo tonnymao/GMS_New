@@ -8,6 +8,8 @@ import android.os.Bundle;
 //import android.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.SupportMapFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -164,9 +166,9 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
         LatLng sydney = new LatLng(-33.852, 151.211);
         googleMap.addMarker(new MarkerOptions().position(sydney)
                 .title("Marker in Sydney"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(sydney, 20);
-        //googleMap.animateCamera(cameraUpdate);
-        //googleMap.moveCamera(cameraUpdate);
+        //googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(sydney, 16);
+        googleMap.animateCamera(cameraUpdate);
+        googleMap.moveCamera(cameraUpdate);
     }
 }

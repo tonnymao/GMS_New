@@ -9,6 +9,7 @@ android {
         applicationId "com.inspira.gms"
         minSdkVersion 17
         targetSdkVersion 24
+        multiDexEnabled true //important
     }
 }
 
