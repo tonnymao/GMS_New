@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GMS_New.iml" filepath="$PROJECT_DIR$/GMS_New.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GMS_New-git.iml" filepath="$PROJECT_DIR$/GMS_New-git.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
