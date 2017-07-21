@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.MainActivity;
@@ -101,20 +101,20 @@ public class MenuFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        ImageButton ibtnSalesNavigation = (ImageButton) getView().findViewById(R.id.ibtnSalesNavigation);
-        ImageButton ibtnSalesSchedule = (ImageButton) getView().findViewById(R.id.ibtnSalesSchedule);
-        ImageButton ibtnOmzet = (ImageButton) getView().findViewById(R.id.ibtnOmzet);
+        RelativeLayout btnSalesNavigation = (RelativeLayout) getView().findViewById(R.id.btnSalesNavigation);
+        RelativeLayout btnSalesSchedule = (RelativeLayout) getView().findViewById(R.id.btnSalesSchedule);
+        RelativeLayout btnSalesOrder = (RelativeLayout) getView().findViewById(R.id.btnSalesOrder);
 
         //Untuk menambahkan fungsi button pada Menu
-        ibtnSalesNavigation.setOnClickListener(new View.OnClickListener() {
+        btnSalesNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //untuk melakukan replace fragment
                 LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());
             }
         });
-        ibtnSalesSchedule.setOnClickListener(null);
-        ibtnOmzet.setOnClickListener(null);
+        btnSalesSchedule.setOnClickListener(null);
+        btnSalesOrder.setOnClickListener(null);
     }
 
     @Override
