@@ -1,38 +1,36 @@
 Catatan ini digunakan mencatat script baru yang diapply pada saat pengerjaan project ini
 o> 23-Jul-2017 (Tonny)
     * Script untuk menambahkan table whuser_mobile (copy dari project gmr):
-
-    DROP TABLE IF EXISTS `whuser_mobile`;
-      /*!40101 SET @saved_cs_client     = @@character_set_client */;
-      /*!40101 SET character_set_client = utf8 */;
-      CREATE TABLE `whuser_mobile` (
-        `nomor` int(11) NOT NULL AUTO_INCREMENT,
-        `nomormhuser` int(11) NOT NULL DEFAULT '0',
-        `nomormhpegawai` int(11) NOT NULL DEFAULT '0',
-        `nomorrole` int(11) DEFAULT NULL,
-        `userid` varchar(100) NOT NULL,
-        `password` varchar(100) NOT NULL,
-        `gcmid` varchar(200) NOT NULL,
-        `status_aktif` int(4) NOT NULL DEFAULT '1',
-        `hash` varchar(200) NOT NULL DEFAULT '',
-        PRIMARY KEY (`nomor`,`nomormhuser`)
-      ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+        DROP TABLE IF EXISTS `whuser_mobile`;
+          /*!40101 SET @saved_cs_client     = @@character_set_client */;
+          /*!40101 SET character_set_client = utf8 */;
+          CREATE TABLE `whuser_mobile` (
+            `nomor` int(11) NOT NULL AUTO_INCREMENT,
+            `nomormhuser` int(11) NOT NULL DEFAULT '0',
+            `nomormhpegawai` int(11) NOT NULL DEFAULT '0',
+            `nomorrole` int(11) DEFAULT NULL,
+            `userid` varchar(100) NOT NULL,
+            `password` varchar(100) NOT NULL,
+            `gcmid` varchar(200) NOT NULL,
+            `status_aktif` int(4) NOT NULL DEFAULT '1',
+            `hash` varchar(200) NOT NULL DEFAULT '',
+            PRIMARY KEY (`nomor`,`nomormhuser`)
+          ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
     * Script untuk menambahkan table whrole_mobile (copy dari project gmr):
-
-    DROP TABLE IF EXISTS `whrole_mobile`;
-    /*!40101 SET @saved_cs_client     = @@character_set_client */;
-    /*!40101 SET character_set_client = utf8 */;
-    CREATE TABLE `whrole_mobile` (
-      `nomor` int(11) NOT NULL AUTO_INCREMENT,
-      `nama` varchar(50) NOT NULL,
-      `beritaacara` int(1) NOT NULL DEFAULT '0',
-      `approveberitaacara` int(1) NOT NULL DEFAULT '0',
-      `deliveryorder` int(1) NOT NULL DEFAULT '0',
-      `approvedeliveryorder` int(1) NOT NULL DEFAULT '0',
-      `bpm` int(1) NOT NULL DEFAULT '0',
-      `opname` int(1) NOT NULL DEFAULT '0',
-      `dibuat_pada` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY (`nomor`)
-    ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-    /*!40101 SET character_set_client = @saved_cs_client */;
+        DROP TABLE IF EXISTS `whrole_mobile`;
+        /*!40101 SET @saved_cs_client     = @@character_set_client */;
+        /*!40101 SET character_set_client = utf8 */;
+        CREATE TABLE `whrole_mobile` (
+          `nomor` int(11) NOT NULL AUTO_INCREMENT,
+          `nama` varchar(50) NOT NULL,
+          `beritaacara` int(1) NOT NULL DEFAULT '0',
+          `approveberitaacara` int(1) NOT NULL DEFAULT '0',
+          `deliveryorder` int(1) NOT NULL DEFAULT '0',
+          `approvedeliveryorder` int(1) NOT NULL DEFAULT '0',
+          `bpm` int(1) NOT NULL DEFAULT '0',
+          `opname` int(1) NOT NULL DEFAULT '0',
+          `dibuat_pada` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`nomor`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+        /*!40101 SET character_set_client = @saved_cs_client */;
