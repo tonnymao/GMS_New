@@ -1,14 +1,38 @@
-Catatan ini digunakan mencatat knowledge baru yang didapat pada saat pengerjaan project ini
-o> (Tonny)
-    -. Cara implementasi pada Fragment:
-        1. Gunakan komponen fragments pada container
-        2. Pilih Class yang ingin dijadikan fragment (buat baru jika belum ada)
-        3. Extends Fragment pada class tersebut
-        4. Untuk melakukan mapping pada komponen2 yang terdapat pada Fragment,
-           sebaiknya JANGAN DILAKUKAN pada OnCreate (mungkin berlaku untuk OnCreateView juga),
-           karena event ini akan crash dengan OnCreate pada Activity.
-           Oleh karena itu sebaiknya dilakukan di OnActivityCreated
+Catatan ini digunakan mencatat script baru yang diapply pada saat pengerjaan project ini
+o> 23-Jul-2017 (Tonny)
+    * Script untuk menambahkan table whuser_mobile (copy dari project gmr):
 
-    -. Cara menggunakan komponen MapView:
-        1. Pasang komponen MapView pada file layout (fragment_sales_navigation.xml)
-        2. Inputkan API Key untuk Google Maps yang terdapat pada kolom API pada properties MapView
+    DROP TABLE IF EXISTS `whuser_mobile`;
+      /*!40101 SET @saved_cs_client     = @@character_set_client */;
+      /*!40101 SET character_set_client = utf8 */;
+      CREATE TABLE `whuser_mobile` (
+        `nomor` int(11) NOT NULL AUTO_INCREMENT,
+        `nomormhuser` int(11) NOT NULL DEFAULT '0',
+        `nomormhpegawai` int(11) NOT NULL DEFAULT '0',
+        `nomorrole` int(11) DEFAULT NULL,
+        `userid` varchar(100) NOT NULL,
+        `password` varchar(100) NOT NULL,
+        `gcmid` varchar(200) NOT NULL,
+        `status_aktif` int(4) NOT NULL DEFAULT '1',
+        `hash` varchar(200) NOT NULL DEFAULT '',
+        PRIMARY KEY (`nomor`,`nomormhuser`)
+      ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+
+    * Script untuk menambahkan table whrole_mobile (copy dari project gmr):
+
+    DROP TABLE IF EXISTS `whrole_mobile`;
+    /*!40101 SET @saved_cs_client     = @@character_set_client */;
+    /*!40101 SET character_set_client = utf8 */;
+    CREATE TABLE `whrole_mobile` (
+      `nomor` int(11) NOT NULL AUTO_INCREMENT,
+      `nama` varchar(50) NOT NULL,
+      `beritaacara` int(1) NOT NULL DEFAULT '0',
+      `approveberitaacara` int(1) NOT NULL DEFAULT '0',
+      `deliveryorder` int(1) NOT NULL DEFAULT '0',
+      `approvedeliveryorder` int(1) NOT NULL DEFAULT '0',
+      `bpm` int(1) NOT NULL DEFAULT '0',
+      `opname` int(1) NOT NULL DEFAULT '0',
+      `dibuat_pada` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (`nomor`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+    /*!40101 SET character_set_client = @saved_cs_client */;

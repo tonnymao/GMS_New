@@ -103,7 +103,7 @@ public class MenuFragment extends Fragment {
         super.onActivityCreated(bundle);
         ImageButton ibtnSalesNavigation = (ImageButton) getView().findViewById(R.id.ibtnSalesNavigation);
         ImageButton ibtnSalesSchedule = (ImageButton) getView().findViewById(R.id.ibtnSalesSchedule);
-        ImageButton ibtnOmzet = (ImageButton) getView().findViewById(R.id.ibtnOmzet);
+        //ImageButton ibtnOmzet = (ImageButton) getView().findViewById(R.id.ibtnOmzet);
 
         //Untuk menambahkan fungsi button pada Menu
         ibtnSalesNavigation.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +114,7 @@ public class MenuFragment extends Fragment {
             }
         });
         ibtnSalesSchedule.setOnClickListener(null);
-        ibtnOmzet.setOnClickListener(null);
+        //ibtnOmzet.setOnClickListener(null);
     }
 
     @Override
