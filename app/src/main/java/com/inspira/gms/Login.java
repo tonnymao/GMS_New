@@ -79,6 +79,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
+                            //LibInspira.setShared(global.userpreferences, "username", obj.getString("username"));
+                            LibInspira.setShared(global.userpreferences, "nomor", obj.getString("user_nomor"));
+                            LibInspira.setShared(global.userpreferences, "hash", obj.getString("user_hash"));
 //                            globalfunction.setShared("user", "username", username);
 //                            globalfunction.setShared("user", "id", obj.getString("user_id"));
 //                            globalfunction.setShared("user", "nomor", obj.getString("user_nomor"));
@@ -94,10 +97,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
                             LibInspira.hideLoading();
 
-//                            Intent intent = new Intent(Login.this, Index.class);
-//                            startActivity(intent);
-//                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-//                            finish();
+                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            startActivity(intent);
+                            //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                            finish();
                         }
                         else
                         {
