@@ -4,18 +4,19 @@ o> 23-Jul-2017 (Tonny)
         DROP TABLE IF EXISTS `whuser_mobile`;
           /*!40101 SET @saved_cs_client     = @@character_set_client */;
           /*!40101 SET character_set_client = utf8 */;
-          CREATE TABLE `whuser_mobile` (
-            `nomor` int(11) NOT NULL AUTO_INCREMENT,
-            `nomormhuser` int(11) NOT NULL DEFAULT '0',
-            `nomormhpegawai` int(11) NOT NULL DEFAULT '0',
-            `nomorrole` int(11) DEFAULT NULL,
-            `userid` varchar(100) NOT NULL,
-            `password` varchar(100) NOT NULL,
-            `gcmid` varchar(200) NOT NULL,
-            `status_aktif` int(4) NOT NULL DEFAULT '1',
-            `hash` varchar(200) NOT NULL DEFAULT '',
-            PRIMARY KEY (`nomor`,`nomormhuser`)
-          ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+		  CREATE TABLE `whuser_mobile` (
+			`nomor` INT(11) NOT NULL AUTO_INCREMENT,
+			`nomortuser` INT(11) NOT NULL DEFAULT '0',
+			`nomorthsales` INT(11) NOT NULL DEFAULT '0',
+			`nomorrole` INT(11) NULL DEFAULT NULL,
+			`tipeuser` INT(11) NOT NULL DEFAULT '0' COMMENT '0: internal, 1: external',
+			`userid` VARCHAR(100) NOT NULL,
+			`password` VARCHAR(100) NOT NULL,
+			`gcmid` VARCHAR(200) NOT NULL,
+			`status_aktif` INT(4) NOT NULL DEFAULT '1',
+			`hash` VARCHAR(200) NOT NULL DEFAULT '',
+			PRIMARY KEY (`nomor`, `nomortuser`)
+		) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
     * Script untuk menambahkan table whrole_mobile (copy dari project gmr):
         DROP TABLE IF EXISTS `whrole_mobile`;

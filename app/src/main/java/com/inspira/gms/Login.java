@@ -1,9 +1,9 @@
 package com.inspira.gms;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
 
         global = new GlobalVar(this);
         LibInspira.setShared(global.sharedpreferences, "server", "117.102.229.10");
@@ -36,6 +36,23 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         btnSubmit = (Button) findViewById(R.id.btnSubmit);
 
         btnSubmit.setOnClickListener(this);
+
+        edtUsername.setVisibility(View.INVISIBLE);
+        edtPassword.setVisibility(View.INVISIBLE);
+        btnSubmit.setVisibility(View.INVISIBLE);
+
+        if(LibInspira.getShared(global.userpreferences,"hash","").equals(""))
+        {
+            edtUsername.setVisibility(View.VISIBLE);
+            edtPassword.setVisibility(View.VISIBLE);
+            btnSubmit.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            Log.d("hash", LibInspira.getShared(global.userpreferences,"hash",""));
+            String actionUrl = "Login/checkUser/";
+            new checkUser().execute( actionUrl );
+        }
     }
 
     @Override
@@ -81,26 +98,97 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                         if(!obj.has("query")){
                             //LibInspira.setShared(global.userpreferences, "username", obj.getString("username"));
                             LibInspira.setShared(global.userpreferences, "nomor", obj.getString("user_nomor"));
+                            LibInspira.setShared(global.userpreferences, "nomor_android", obj.getString("user_nomor_android"));
+                            LibInspira.setShared(global.userpreferences, "nomor_sales", obj.getString("user_nomor_sales"));
+                            LibInspira.setShared(global.userpreferences, "nama", obj.getString("user_nama"));
+                            LibInspira.setShared(global.userpreferences, "tipe", obj.getString("user_tipe"));
+                            LibInspira.setShared(global.userpreferences, "role", obj.getString("user_role"));
                             LibInspira.setShared(global.userpreferences, "hash", obj.getString("user_hash"));
-//                            globalfunction.setShared("user", "username", username);
-//                            globalfunction.setShared("user", "id", obj.getString("user_id"));
-//                            globalfunction.setShared("user", "nomor", obj.getString("user_nomor"));
-//                            globalfunction.setShared("user", "nama", obj.getString("user_nama"));
-//                            globalfunction.setShared("user", "role", obj.getString("user_role"));
-//                            globalfunction.setShared("user", "hash", obj.getString("user_hash"));
-//                            globalfunction.setShared("user", "role_beritaacara", obj.getString("role_beritaacara"));
-//                            globalfunction.setShared("user", "role_approveberitaacara", obj.getString("role_approveberitaacara"));
-//                            globalfunction.setShared("user", "role_deliveryorder", obj.getString("role_deliveryorder"));
-//                            globalfunction.setShared("user", "role_approvedeliveryorder", obj.getString("role_approvedeliveryorder"));
-//                            globalfunction.setShared("user", "role_bpm", obj.getString("role_bpm"));
-//                            globalfunction.setShared("user", "role_opname", obj.getString("role_opname"));
 
                             LibInspira.hideLoading();
 
-                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            Intent intent = new Intent(Login.this, IndexInternal.class);
                             startActivity(intent);
-                            //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                             finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_LONG).show();
+                            LibInspira.hideLoading();
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_LONG).show();
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(Login.this, "Login", "Loading");
+        }
+    }
+
+    /******************************************************************************
+        Procedure : checkUser
+        Author    : ADI
+        Date      : 26-Jul-2017
+        Function  : Untuk berinteraksi dengan webservice untuk method checkUser
+    ******************************************************************************/
+    private class checkUser extends AsyncTask<String, Void, String> {
+        JSONObject jsonObject;
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("hash", LibInspira.getShared(global.userpreferences,"hash",""));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(Login.this, urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("tes", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            LibInspira.hideLoading();
+                            String success = obj.getString("success");
+                            if(success.equals("true")){
+                                LibInspira.setShared(global.userpreferences, "nomor", obj.getString("user_nomor"));
+                                LibInspira.setShared(global.userpreferences, "nomor_android", obj.getString("user_nomor_android"));
+                                LibInspira.setShared(global.userpreferences, "nomor_sales", obj.getString("user_nomor_sales"));
+                                LibInspira.setShared(global.userpreferences, "nama", obj.getString("user_nama"));
+                                LibInspira.setShared(global.userpreferences, "tipe", obj.getString("user_tipe"));
+                                LibInspira.setShared(global.userpreferences, "role", obj.getString("user_role"));
+                                LibInspira.setShared(global.userpreferences, "hash", obj.getString("user_hash"));
+
+                                Intent intent = new Intent(Login.this, IndexInternal.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                                finish();
+                            }
+                            else
+                            {
+                                GlobalVar.clearDataUser();
+
+                                edtUsername.setVisibility(View.VISIBLE);
+                                edtPassword.setVisibility(View.VISIBLE);
+                                btnSubmit.setVisibility(View.VISIBLE);
+                                Toast.makeText(getBaseContext(), "User has login at another device", Toast.LENGTH_LONG).show();
+                            }
                         }
                         else
                         {
