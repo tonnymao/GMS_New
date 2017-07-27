@@ -30,10 +30,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             createNotification(remoteMessage.getNotification().getBody());
         }
-
-
     }
 
+
+    /******************************************************************************
+     Procedure : createNotification
+     Author    : Shodiq
+     Date      : 26-Jul-2017
+     Function  : membuat notifikasi untuk message yang masuk
+     ******************************************************************************/
     private void createNotification(String messageBody) {
         Intent intent = new Intent(this, IndexInternal.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
