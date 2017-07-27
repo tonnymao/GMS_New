@@ -57,14 +57,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Context context = getApplicationContext();
-
-        Toast.makeText(this, getIntent().getCategories().toString(), Toast.LENGTH_LONG).show();
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            Toast.makeText(this, "got a message" + getIntent().getStringExtra("message"), Toast.LENGTH_LONG).show();
-            TextView txtMessage = (TextView) findViewById(R.id.textViewMessage);
-            txtMessage.setText(extras.getString("message"));
-        }
     }
 
     @Override
