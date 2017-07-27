@@ -18,19 +18,19 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import layout.DashboardInternalFragment;
 import layout.MenuFragment;
 import layout.SalesNavigationFragment;
 
 
 public class IndexInternal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-            MenuFragment.OnFragmentInteractionListener,
-            SalesNavigationFragment.OnFragmentInteractionListener{
+            DashboardInternalFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_index_internal);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

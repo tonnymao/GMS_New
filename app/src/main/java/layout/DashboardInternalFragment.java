@@ -106,20 +106,20 @@ public class DashboardInternalFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        RelativeLayout btnSalesNavigation = (RelativeLayout) getView().findViewById(R.id.btnSalesNavigation);
-        RelativeLayout btnSalesSchedule = (RelativeLayout) getView().findViewById(R.id.btnSalesSchedule);
-        RelativeLayout btnSalesOrder = (RelativeLayout) getView().findViewById(R.id.btnSalesOrder);
+//        RelativeLayout btnSalesNavigation = (RelativeLayout) getView().findViewById(R.id.btnSalesNavigation);
+//        RelativeLayout btnSalesSchedule = (RelativeLayout) getView().findViewById(R.id.btnSalesSchedule);
+//        RelativeLayout btnSalesOrder = (RelativeLayout) getView().findViewById(R.id.btnSalesOrder);
 
         //Untuk menambahkan fungsi button pada Menu
-        btnSalesNavigation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //untuk melakukan replace fragment
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());
-            }
-        });
-        btnSalesSchedule.setOnClickListener(null);
-        btnSalesOrder.setOnClickListener(null);
+//        btnSalesNavigation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //untuk melakukan replace fragment
+//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());
+//            }
+//        });
+//        btnSalesSchedule.setOnClickListener(null);
+//        btnSalesOrder.setOnClickListener(null);
     }
 
     @Override
