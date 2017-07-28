@@ -40,29 +40,53 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Dashboard" />
         <item
-            android:id="@+id/nav_targetcomparison"
+            android:id="@+id/nav_contact"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Target Comparison" />
+            android:title="Contact" />
+        <item
+            android:id="@+id/nav_group"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Group" />
+        <item
+            android:id="@+id/nav_salesorder"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Sales Order" />
+        <item
+            android:id="@+id/nav_stockreport"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Stock Report" />
+        <item
+            android:id="@+id/nav_pricelist"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Price List" />
+        <item
+            android:id="@+id/nav_scheduletask"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Schedule Task" />
+        <item
+            android:id="@+id/nav_nfc"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="NFC Tools" />
     </group>
 
-    <item android:title="User">
+    <item android:title="Manage">
         <menu>
             <item
-                android:id="@+id/nav_privatemessage"
+                android:id="@+id/nav_omzet"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Private Message" />
             <item
-                android:id="@+id/nav_groupmessage"
+                android:id="@+id/nav_target"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Group Message" />
+                android:title="Target" />
             <item
-                android:id="@+id/nav_changepassword"
+                android:id="@+id/nav_salestracking"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Change Password" />
+                android:title="Sales Tracking" />
             <item
-                android:id="@+id/nav_logout"
+                android:id="@+id/nav_report"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Logout" />
+                android:title="Report" />
         </menu>
     </item>
 
