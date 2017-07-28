@@ -192,6 +192,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                         }
                         else
                         {
+                            edtUsername.setVisibility(View.VISIBLE);
+                            edtPassword.setVisibility(View.VISIBLE);
+                            btnSubmit.setVisibility(View.VISIBLE);
                             Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_LONG).show();
                             LibInspira.hideLoading();
                         }

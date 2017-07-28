@@ -15,17 +15,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import layout.DashboardInternalFragment;
-import layout.MenuFragment;
-import layout.SalesNavigationFragment;
 
 
 public class IndexInternal extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-            DashboardInternalFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +47,6 @@ public class IndexInternal extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Context context = getApplicationContext();
-
-
     }
 
     @Override
@@ -119,10 +110,5 @@ public class IndexInternal extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }
