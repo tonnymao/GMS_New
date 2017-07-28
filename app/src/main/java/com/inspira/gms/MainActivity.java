@@ -28,8 +28,7 @@ import layout.SalesNavigationFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-            MenuFragment.OnFragmentInteractionListener,
-            SalesNavigationFragment.OnFragmentInteractionListener{
+            MenuFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

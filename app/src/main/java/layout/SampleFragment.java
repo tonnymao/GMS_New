@@ -7,21 +7,18 @@
 package layout;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
-import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 //import android.app.Fragment;
 
-public class DashboardInternalFragment extends Fragment implements View.OnClickListener{
-    public DashboardInternalFragment() {
+public class SampleFragment extends Fragment implements View.OnClickListener{
+    public SampleFragment() {
         // Required empty public constructor
     }
 
@@ -36,7 +33,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_dashboard_internal, container, false);
-        getActivity().setTitle("Dashboard");
+        getActivity().setTitle("Sample");
         return v;
     }
 
@@ -54,20 +51,6 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-//        RelativeLayout btnSalesNavigation = (RelativeLayout) getView().findViewById(R.id.btnSalesNavigation);
-//        RelativeLayout btnSalesSchedule = (RelativeLayout) getView().findViewById(R.id.btnSalesSchedule);
-//        RelativeLayout btnSalesOrder = (RelativeLayout) getView().findViewById(R.id.btnSalesOrder);
-
-        //Untuk menambahkan fungsi button pada Menu
-//        btnSalesNavigation.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //untuk melakukan replace fragment
-//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());
-//            }
-//        });
-//        btnSalesSchedule.setOnClickListener(null);
-//        btnSalesOrder.setOnClickListener(null);
     }
 
     @Override
