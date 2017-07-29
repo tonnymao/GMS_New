@@ -29,7 +29,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.activity_login);
 
         global = new GlobalVar(this);
-        LibInspira.setShared(global.sharedpreferences, "server", "117.102.229.10");
+        LibInspira.setShared(global.sharedpreferences, global.shared.server, "117.102.229.10");
 
         edtUsername = (EditText) findViewById(R.id.edtUsername);
         edtPassword = (EditText) findViewById(R.id.edtPassword);
@@ -41,7 +41,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         edtPassword.setVisibility(View.INVISIBLE);
         btnSubmit.setVisibility(View.INVISIBLE);
 
-        if(LibInspira.getShared(global.userpreferences,"hash","").equals(""))
+        if(LibInspira.getShared(global.userpreferences,global.user.hash,"").equals(""))
         {
             edtUsername.setVisibility(View.VISIBLE);
             edtPassword.setVisibility(View.VISIBLE);
@@ -49,7 +49,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         }
         else
         {
-            Log.d("hash", LibInspira.getShared(global.userpreferences,"hash",""));
+            Log.d("hash", LibInspira.getShared(global.userpreferences,global.user.hash,""));
             String actionUrl = "Login/checkUser/";
             new checkUser().execute( actionUrl );
         }
@@ -89,21 +89,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.d("tes", result);
+            Log.d("resultQuery", result);
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            //LibInspira.setShared(global.userpreferences, "username", obj.getString("username"));
-                            LibInspira.setShared(global.userpreferences, "nomor", obj.getString("user_nomor"));
-                            LibInspira.setShared(global.userpreferences, "nomor_android", obj.getString("user_nomor_android"));
-                            LibInspira.setShared(global.userpreferences, "nomor_sales", obj.getString("user_nomor_sales"));
-                            LibInspira.setShared(global.userpreferences, "nama", obj.getString("user_nama"));
-                            LibInspira.setShared(global.userpreferences, "tipe", obj.getString("user_tipe"));
-                            LibInspira.setShared(global.userpreferences, "role", obj.getString("user_role"));
-                            LibInspira.setShared(global.userpreferences, "hash", obj.getString("user_hash"));
+                            LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
+                            LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
+                            LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
+                            LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
+                            LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
+                            LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
+                            LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
 
                             LibInspira.hideLoading();
 
@@ -147,7 +146,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("hash", LibInspira.getShared(global.userpreferences,"hash",""));
+                jsonObject.put("hash", LibInspira.getShared(global.userpreferences,global.user.hash,""));
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -167,13 +166,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             LibInspira.hideLoading();
                             String success = obj.getString("success");
                             if(success.equals("true")){
-                                LibInspira.setShared(global.userpreferences, "nomor", obj.getString("user_nomor"));
-                                LibInspira.setShared(global.userpreferences, "nomor_android", obj.getString("user_nomor_android"));
-                                LibInspira.setShared(global.userpreferences, "nomor_sales", obj.getString("user_nomor_sales"));
-                                LibInspira.setShared(global.userpreferences, "nama", obj.getString("user_nama"));
-                                LibInspira.setShared(global.userpreferences, "tipe", obj.getString("user_tipe"));
-                                LibInspira.setShared(global.userpreferences, "role", obj.getString("user_role"));
-                                LibInspira.setShared(global.userpreferences, "hash", obj.getString("user_hash"));
+                                LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
+                                LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
+                                LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
+                                LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
+                                LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
+                                LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
+                                LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
 
                                 Intent intent = new Intent(Login.this, IndexInternal.class);
                                 startActivity(intent);

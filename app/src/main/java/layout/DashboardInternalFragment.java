@@ -54,7 +54,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-//        RelativeLayout btnSalesNavigation = (RelativeLayout) getView().findViewById(R.id.btnSalesNavigation);
+        ((RelativeLayout) getView().findViewById(R.id.btnContact)).setOnClickListener(this);
 //        RelativeLayout btnSalesSchedule = (RelativeLayout) getView().findViewById(R.id.btnSalesSchedule);
 //        RelativeLayout btnSalesOrder = (RelativeLayout) getView().findViewById(R.id.btnSalesOrder);
 
@@ -77,6 +77,11 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
 
     @Override
     public void onClick(View view) {
+        int id = view.getId();
 
+        if(id==R.id.btnContact)
+        {
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());
+        }
     }
 }

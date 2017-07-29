@@ -19,5 +19,6 @@
     <color name="colorGMSToolbar">#823b41</color>
     <color name="colorGMS">#823b41</color>
 
-
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
 </resources>
