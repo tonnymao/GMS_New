@@ -24,15 +24,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.inspira.gms.GlobalVar;
 import com.inspira.gms.IndexInternal;
-import com.inspira.gms.ItemAdapter;
-import com.inspira.gms.ItemListAdapter;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,7 +36,7 @@ import java.util.List;
 
 //import android.app.Fragment;
 
-public class ContactFragment extends Fragment implements View.OnClickListener{
+public class ChooseBarangFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
@@ -48,7 +44,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ContactFragment() {
+    public ChooseBarangFragment() {
         // Required empty public constructor
     }
 
@@ -63,7 +59,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Contact");
+        getActivity().setTitle("Barang");
         return v;
     }
 
@@ -93,7 +89,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
-        String actionUrl = "Master/getContact/";
+        String actionUrl = "Master/getBarang/";
         new getData().execute( actionUrl );
     }
 
@@ -113,19 +109,13 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             {
                 if(etSearch.getText().equals(""))
                 {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
-                    {
-                        itemadapter.add(list.get(ctr));
-                        itemadapter.notifyDataSetChanged();
-                    }
+                    itemadapter.add(list.get(ctr));
+                    itemadapter.notifyDataSetChanged();
                 }
                 else if(list.get(ctr).getNama().toLowerCase().contains(etSearch.getText().toString().toLowerCase()))
                 {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
-                    {
-                        itemadapter.add(list.get(ctr));
-                        itemadapter.notifyDataSetChanged();
-                    }
+                    itemadapter.add(list.get(ctr));
+                    itemadapter.notifyDataSetChanged();
                 }
             }
         }
@@ -152,19 +142,18 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
+                            String namajual = (obj.getString("namajual"));
+                            String kode = (obj.getString("kode"));
 
                             ItemAdapter data = new ItemAdapter();
                             data.setNomor(nomor);
                             data.setNama(nama);
-                            data.setLocation("-");
-                            data.setHp("");
+                            data.setNamajual(namajual);
+                            data.setKode(kode);
                             list.add(data);
 
-                            if(!data.getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
-                            {
-                                itemadapter.add(data);
-                                itemadapter.notifyDataSetChanged();
-                            }
+                            itemadapter.add(data);
+                            itemadapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -181,7 +170,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            LibInspira.showLoading(getContext(), "Contact", "Loading");
+            LibInspira.showLoading(getContext(), "Barang", "Loading");
         }
     }
 
@@ -189,8 +178,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
         private String nomor;
         private String nama;
-        private String hp;
-        private String location;
+        private String namajual;
+        private String kode;
 
         public ItemAdapter() {}
 
@@ -200,11 +189,11 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
 
-        public String getHp() {return hp;}
-        public void setHp(String _param) {this.hp = _param;}
+        public String getNamajual() {return namajual;}
+        public void setNamajual(String _param) {this.namajual = _param;}
 
-        public String getLocation() {return location;}
-        public void setLocation(String _param) {this.location = _param;}
+        public String getKode() {return kode;}
+        public void setKode(String _param) {this.kode = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -227,8 +216,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
-            TextView tvLocation;
-            ImageView ivCall;
         }
 
         @Override
@@ -243,8 +230,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvLocation = (TextView)row.findViewById(R.id.tvKeterangan);
-            holder.ivCall = (ImageView)row.findViewById(R.id.ivCall);
 
             row.setTag(holder);
             setupItem(holder);
@@ -260,14 +245,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase() + " " + holder.adapterItem.getHp());
-            holder.tvLocation.setVisibility(View.VISIBLE);
-            holder.tvLocation.setText("Location: " + holder.adapterItem.getLocation());
-            if(!holder.adapterItem.getHp().equals(""))
-            {
-                holder.ivCall.setVisibility(View.VISIBLE);
-            }
-
+            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
         }
     }
 }
