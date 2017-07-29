@@ -38,7 +38,7 @@
                         android:src="@drawable/contact"
                         android:clickable="false"
                         android:elevation="10dp"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:scaleType="fitCenter"
                         android:tint="@color/colorGMS" />
 
@@ -70,7 +70,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/groupmessage"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -101,7 +101,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/nfctools"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -142,7 +142,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/salesorder"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -175,7 +175,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/stockreport"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -206,7 +206,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/pricelist"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -248,7 +248,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/scheduletask"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -279,7 +279,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/omzet"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -311,7 +311,7 @@
                         android:elevation="10dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/report"
-                        android:backgroundTint="@color/colorBackgroundLight"
+                        android:backgroundTint="@color/colorBackground"
                         android:tint="@color/colorGMS" />
 
                     <TextView
