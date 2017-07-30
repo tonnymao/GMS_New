@@ -293,8 +293,11 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
             View row = convertView;
             Holder holder = null;
 
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
+            if(row==null)
+            {
+                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+                row = inflater.inflate(layoutResourceId, parent, false);
+            }
 
             holder = new Holder();
             holder.adapterItem = items.get(position);
