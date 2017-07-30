@@ -9,11 +9,23 @@
         android:layout_height="match_parent"
         android:id="@+id/choose_container">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvInformation"
+            android:padding="2dp"
+            android:textAlignment="center"
+            android:background="@color/colorGMSToolbar"
+            android:textColor="@color/colorWhite"
+            android:text="Getting existing data"
+            android:visibility="invisible"/>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/rlSearch"
-            android:visibility="gone">
+            android:layout_below="@+id/tvInformation"
+            android:visibility="visible">
 
             <EditText
                 android:layout_width="wrap_content"
@@ -22,8 +34,6 @@
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:layout_toLeftOf="@+id/ibtnSearch"
                 android:singleLine="true"
@@ -31,8 +41,8 @@
                 android:layout_alignParentLeft="true" />
 
             <ImageButton
-                android:layout_width="65dp"
-                android:layout_height="65dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:id="@+id/ibtnSearch"
                 android:src="@android:drawable/ic_search_category_default"
                 android:scaleType="fitCenter"
@@ -109,7 +119,7 @@
             android:id="@+id/lvChoose"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_below="@+id/rlSearch"
             android:layout_above="@+id/rlFooter"
             android:layout_alignParentRight="true"

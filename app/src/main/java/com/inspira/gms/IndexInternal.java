@@ -17,6 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import layout.ContactFragment;
+import layout.DashboardInternalFragment;
+
 
 public class IndexInternal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,6 +56,7 @@ public class IndexInternal extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Context context = getApplicationContext();
+        LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
     }
 
     @Override

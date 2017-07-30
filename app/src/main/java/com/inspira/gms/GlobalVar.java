@@ -12,8 +12,10 @@ public class GlobalVar {
     public static SharedPreferences userpreferences;
     public static SharedPreferences rolepreferences;
     public static SharedPreferences notifpreferences;
+    public static SharedPreferences datapreferences;
 
     public static User user;
+    public static Data data;
     public static Shared shared;
 
     public static String webserviceURL = "/wsGMS/gms/index.php/api/";
@@ -24,7 +26,9 @@ public class GlobalVar {
             userpreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
             rolepreferences = context.getSharedPreferences("role", Context.MODE_PRIVATE);
             notifpreferences = context.getSharedPreferences("notif", Context.MODE_PRIVATE);
+            datapreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
 
+            data = new Data();
             user = new User();
             shared = new Shared();
         }
@@ -52,4 +56,9 @@ public class GlobalVar {
             public String hash = "hash";
         }
 
+        public class Data
+        {
+            public String user = "user"; // nomor~nama~location~hp
+            public String barang = "barang"; // nomor~nama~namajual~kode
+        }
 }

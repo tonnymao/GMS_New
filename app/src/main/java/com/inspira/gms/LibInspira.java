@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 /**
  * Created by Tonny on 7/8/2017.
@@ -82,6 +83,30 @@ public class LibInspira {
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, _message, duration);
         toast.show();
+    }
+
+    //added by ADI @30-Jul-2017
+    public static Boolean contains(String _textData, String _textSearch)
+    {
+        Boolean showData = true;
+        String[] piecesSearch = _textSearch.toLowerCase().trim().split("\\ ");
+        String[] piecesData = _textData.toLowerCase().trim().split("\\ ");
+        ArrayList<Boolean> checked = new ArrayList<Boolean>();
+        for(int i=0; i<piecesSearch.length; i++)
+        {
+            int ctrFound = 0;
+            for(int j=0; j<piecesData.length; j++)
+            {
+                if(piecesData[j].contains(piecesSearch[i])) ctrFound++;
+            }
+            if(ctrFound==0) checked.add(false);
+            else checked.add(true);
+        }
+        for(int j=0; j<checked.size(); j++)
+        {
+            if(!checked.get(j)) showData = false;
+        }
+        return showData;
     }
 
     //added by ADI @26-Jul-2017
