@@ -11,6 +11,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
+    private TextView tvInformation;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -80,14 +83,32 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         list = new ArrayList<ItemAdapter>();
 
         ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
+        tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
-        ibtnSearch = (ImageButton) getView().findViewById(R.id.ibtnSearch);
-        ibtnSearch.setOnClickListener(this);
 
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
+
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                search();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        refreshList();
 
         String actionUrl = "Master/getBarang/";
         new getData().execute( actionUrl );
@@ -104,19 +125,62 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
         if(id==R.id.ibtnSearch)
         {
-            itemadapter.clear();
-            for(int ctr=0;ctr<list.size();ctr++)
+            search();
+        }
+    }
+
+    private void search()
+    {
+        itemadapter.clear();
+        for(int ctr=0;ctr<list.size();ctr++)
+        {
+            if(etSearch.getText().equals(""))
             {
-                if(etSearch.getText().equals(""))
+                itemadapter.add(list.get(ctr));
+                itemadapter.notifyDataSetChanged();
+            }
+            else
+            {
+                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
                 }
-                else if(list.get(ctr).getNama().toLowerCase().contains(etSearch.getText().toString().toLowerCase()))
-                {
-                    itemadapter.add(list.get(ctr));
-                    itemadapter.notifyDataSetChanged();
-                }
+            }
+        }
+    }
+
+    private void refreshList()
+    {
+        itemadapter.clear();
+        list.clear();
+
+        String data = LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.barang, "");
+        String[] pieces = data.trim().split("\\|");
+        for(int i=0 ; i < pieces.length ; i++){
+            if(!pieces[i].equals(""))
+            {
+                String[] parts = pieces[i].trim().split("\\~");
+
+                String nomor = parts[0];
+                String nama = parts[1];
+                String namajual = parts[2];
+                String kode = parts[3];
+
+                if(nomor.equals("null")) nomor = "";
+                if(nama.equals("null")) nama = "";
+                if(namajual.equals("null")) namajual = "";
+                if(kode.equals("null")) kode = "";
+
+                ItemAdapter dataItem = new ItemAdapter();
+                dataItem.setNomor(nomor);
+                dataItem.setNama(nama);
+                dataItem.setNamajual(namajual);
+                dataItem.setKode(kode);
+                list.add(dataItem);
+
+                itemadapter.add(dataItem);
+                itemadapter.notifyDataSetChanged();
             }
         }
     }
@@ -135,6 +199,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
             Log.d("resultQuery", result);
             try
             {
+                String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
@@ -145,32 +210,37 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                             String namajual = (obj.getString("namajual"));
                             String kode = (obj.getString("kode"));
 
-                            ItemAdapter data = new ItemAdapter();
-                            data.setNomor(nomor);
-                            data.setNama(nama);
-                            data.setNamajual(namajual);
-                            data.setKode(kode);
-                            list.add(data);
+                            if(nomor.equals("")) nomor = "null";
+                            if(nama.equals("")) nama = "null";
+                            if(namajual.equals("")) namajual = "null";
+                            if(kode.equals("")) kode = "null";
 
-                            itemadapter.add(data);
-                            itemadapter.notifyDataSetChanged();
+                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "|";
                         }
                     }
+                    if(!tempData.equals(LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.barang, "")))
+                    {
+                        LibInspira.setShared(
+                                IndexInternal.global.datapreferences,
+                                IndexInternal.global.data.barang,
+                                tempData
+                        );
+                        refreshList();
+                    }
                 }
-                LibInspira.hideLoading();
+                tvInformation.animate().translationYBy(-80);
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                Toast.makeText(getContext(), "Contact Load Failed", Toast.LENGTH_LONG).show();
-                LibInspira.hideLoading();
+                tvInformation.animate().translationYBy(-80);
             }
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            LibInspira.showLoading(getContext(), "Barang", "Loading");
+            tvInformation.setVisibility(View.VISIBLE);
         }
     }
 

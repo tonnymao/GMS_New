@@ -11,6 +11,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +46,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
+    private TextView tvInformation;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -84,14 +87,32 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         list = new ArrayList<ItemAdapter>();
 
         ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
+        tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
-        ibtnSearch = (ImageButton) getView().findViewById(R.id.ibtnSearch);
-        ibtnSearch.setOnClickListener(this);
 
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
+
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                search();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        refreshList();
 
         String actionUrl = "Master/getContact/";
         new getData().execute( actionUrl );
@@ -108,10 +129,26 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
         if(id==R.id.ibtnSearch)
         {
-            itemadapter.clear();
-            for(int ctr=0;ctr<list.size();ctr++)
+            search();
+        }
+    }
+
+    private void search()
+    {
+        itemadapter.clear();
+        for(int ctr=0;ctr<list.size();ctr++)
+        {
+            if(etSearch.getText().equals(""))
             {
-                if(etSearch.getText().equals(""))
+                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
+                {
+                    itemadapter.add(list.get(ctr));
+                    itemadapter.notifyDataSetChanged();
+                }
+            }
+            else
+            {
+                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
                 {
                     if(!list.get(ctr).getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
                     {
@@ -119,13 +156,43 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                         itemadapter.notifyDataSetChanged();
                     }
                 }
-                else if(list.get(ctr).getNama().toLowerCase().contains(etSearch.getText().toString().toLowerCase()))
+            }
+        }
+    }
+
+    private void refreshList()
+    {
+        itemadapter.clear();
+        list.clear();
+
+        String data = LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.user, "");
+        String[] pieces = data.trim().split("\\|");
+        for(int i=0 ; i < pieces.length ; i++){
+            if(!pieces[i].equals(""))
+            {
+                String[] parts = pieces[i].trim().split("\\~");
+
+                String nomor = parts[0];
+                String nama = parts[1];
+                String location = parts[2];
+                String hp = parts[3];
+
+                if(nomor.equals("null")) nomor = "";
+                if(nama.equals("null")) nama = "";
+                if(location.equals("null")) location = "-";
+                if(hp.equals("null")) hp = "";
+
+                ItemAdapter dataItem = new ItemAdapter();
+                dataItem.setNomor(nomor);
+                dataItem.setNama(nama);
+                dataItem.setLocation(location);
+                dataItem.setHp(hp);
+                list.add(dataItem);
+
+                if(!dataItem.getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
                 {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
-                    {
-                        itemadapter.add(list.get(ctr));
-                        itemadapter.notifyDataSetChanged();
-                    }
+                    itemadapter.add(dataItem);
+                    itemadapter.notifyDataSetChanged();
                 }
             }
         }
@@ -145,6 +212,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             Log.d("resultQuery", result);
             try
             {
+                String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
@@ -152,36 +220,43 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
+                            String lat = "0";
+                            String lon = "0";
+                            String hp = "";
+                            String location = "";
 
-                            ItemAdapter data = new ItemAdapter();
-                            data.setNomor(nomor);
-                            data.setNama(nama);
-                            data.setLocation("-");
-                            data.setHp("");
-                            list.add(data);
+                            if(nomor.equals("")) nomor = "null";
+                            if(nama.equals("")) nama = "null";
+                            if(location.equals("")) location = "null";
+                            if(hp.equals("")) hp = "null";
 
-                            if(!data.getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
-                            {
-                                itemadapter.add(data);
-                                itemadapter.notifyDataSetChanged();
-                            }
+                            tempData = tempData + nomor + "~" + nama + "~" + location + "~" + hp + "|";
                         }
                     }
+
+                    if(!tempData.equals(LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.user, "")))
+                    {
+                        LibInspira.setShared(
+                                IndexInternal.global.datapreferences,
+                                IndexInternal.global.data.user,
+                                tempData
+                        );
+                        refreshList();
+                    }
                 }
-                LibInspira.hideLoading();
+                tvInformation.animate().translationYBy(-80);
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                Toast.makeText(getContext(), "Contact Load Failed", Toast.LENGTH_LONG).show();
-                LibInspira.hideLoading();
+                tvInformation.animate().translationYBy(-80);
             }
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            LibInspira.showLoading(getContext(), "Contact", "Loading");
+            tvInformation.setVisibility(View.VISIBLE);
         }
     }
 
@@ -253,6 +328,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View view) {
                     LibInspira.ShowLongToast(context, "coba");
+                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
                 }
             });
 
