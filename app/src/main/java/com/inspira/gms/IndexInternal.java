@@ -1,5 +1,6 @@
 package com.inspira.gms;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import org.json.JSONObject;
+
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
 
@@ -25,6 +28,7 @@ public class IndexInternal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static GlobalVar global;
+    public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
     private FragmentManager fm = getSupportFragmentManager();
 
     @Override

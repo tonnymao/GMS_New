@@ -48,6 +48,7 @@ public class GlobalVar {
         public class User
         {
             public String nomor = "nomor";
+            public String password = "password";  //added by Tonny @30-Jul-2017
             public String nomor_android = "nomor_android";
             public String nomor_sales = "nomor_sales";
             public String nama = "nama";

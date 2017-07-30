@@ -99,6 +99,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
                             LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
                             LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
+                            LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
                             LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
                             LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
                             LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
@@ -167,6 +168,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             String success = obj.getString("success");
                             if(success.equals("true")){
                                 LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
+                                LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
                                 LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
                                 LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
                                 LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
