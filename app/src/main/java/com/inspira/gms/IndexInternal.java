@@ -84,7 +84,11 @@ public class IndexInternal extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
+        if (id == R.id.action_settings) {  //added by Tonny @30-Jul-2017
+            // Handle the camera action
+        } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
+        } else if (id == R.id.action_logout) {
             GlobalVar.clearDataUser();
 
             Intent intent = new Intent(IndexInternal.this, Login.class);
@@ -116,7 +120,6 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
 
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
