@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.inspira.gms.LibInspira;
+import com.inspira.gms.trackingDevice;
 import com.inspira.gms.R;
 
 import java.util.Map;
@@ -47,6 +49,9 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sales_navigation, container, false);
+        Intent service = new Intent(getActivity(), trackingDevice.class);
+        getActivity().startService(service);
+
         return v;
     }
 
