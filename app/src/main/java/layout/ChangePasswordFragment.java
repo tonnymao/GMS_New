@@ -4,15 +4,13 @@
     History          :
 
 ******************************************************************************/
-package com.inspira.gms;
+package layout;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +19,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.inspira.gms.LibInspira;
+import com.inspira.gms.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import layout.DashboardInternalFragment;
 
 import static com.inspira.gms.IndexInternal.global;
 import static com.inspira.gms.IndexInternal.jsonObject;

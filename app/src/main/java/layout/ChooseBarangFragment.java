@@ -36,6 +36,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.inspira.gms.IndexInternal.global;
+import static com.inspira.gms.IndexInternal.jsonObject;
+
 //import android.app.Fragment;
 
 public class ChooseBarangFragment extends Fragment implements View.OnClickListener{
@@ -155,7 +158,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.barang, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.barang, "");
         String[] pieces = data.trim().split("\\|");
         for(int i=0 ; i < pieces.length ; i++){
             if(!pieces[i].equals(""))
@@ -186,8 +189,6 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
     }
 
     private class getData extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
@@ -218,11 +219,11 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                             tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.barang, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
                     {
                         LibInspira.setShared(
-                                IndexInternal.global.datapreferences,
-                                IndexInternal.global.data.barang,
+                                global.datapreferences,
+                                global.data.barang,
                                 tempData
                         );
                         refreshList();

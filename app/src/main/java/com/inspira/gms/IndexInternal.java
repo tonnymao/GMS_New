@@ -20,6 +20,7 @@ import android.view.View;
 
 import org.json.JSONObject;
 
+import layout.ChangePasswordFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
 

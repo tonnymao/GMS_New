@@ -40,6 +40,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.inspira.gms.IndexInternal.global;
+import static com.inspira.gms.IndexInternal.jsonObject;
+
 //import android.app.Fragment;
 
 public class ContactFragment extends Fragment implements View.OnClickListener{
@@ -140,7 +143,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
+                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -150,7 +153,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             {
                 if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
                 {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
+                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                     {
                         itemadapter.add(list.get(ctr));
                         itemadapter.notifyDataSetChanged();
@@ -165,7 +168,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.user, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.user, "");
         String[] pieces = data.trim().split("\\|");
         for(int i=0 ; i < pieces.length ; i++){
             if(!pieces[i].equals(""))
@@ -189,7 +192,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 dataItem.setHp(hp);
                 list.add(dataItem);
 
-                if(!dataItem.getNomor().equals(LibInspira.getShared(IndexInternal.global.userpreferences, IndexInternal.global.user.nomor_android, "")))
+                if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                 {
                     itemadapter.add(dataItem);
                     itemadapter.notifyDataSetChanged();
@@ -199,8 +202,6 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     }
 
     private class getData extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
@@ -234,11 +235,11 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                         }
                     }
 
-                    if(!tempData.equals(LibInspira.getShared(IndexInternal.global.datapreferences, IndexInternal.global.data.user, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.user, "")))
                     {
                         LibInspira.setShared(
-                                IndexInternal.global.datapreferences,
-                                IndexInternal.global.data.user,
+                                global.datapreferences,
+                                global.data.user,
                                 tempData
                         );
                         refreshList();
