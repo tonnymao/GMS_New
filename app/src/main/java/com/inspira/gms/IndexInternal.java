@@ -1,19 +1,13 @@
 package com.inspira.gms;
 
-import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,13 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
-
 import layout.ChangePasswordFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
@@ -74,7 +64,7 @@ public class IndexInternal extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
-        tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User"));
+        tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
 
         Context context = getApplicationContext();
         LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
@@ -84,7 +74,7 @@ public class IndexInternal extends AppCompatActivity
         new checkOmzet().execute( actionUrl );
 
         tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-        tvSales.setText("Sales: " + LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"));
+        tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
     }
 
     /******************************************************************************
@@ -125,7 +115,6 @@ public class IndexInternal extends AppCompatActivity
                                 LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("omzet"));
                             } else {
                                 GlobalVar.clearDataUser();
-                                Toast.makeText(getBaseContext(), "Retrieve Omzet Failed", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             Toast.makeText(IndexInternal.this, "Retrieve Omzet Failed", Toast.LENGTH_LONG).show();
