@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,6 +78,15 @@ public class IndexInternal extends AppCompatActivity
         tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
     }
 
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        //added by Shodiq @01-Aug-2017
+        //creating background service
+        Intent service = new Intent(IndexInternal.this, GMSbackgroundTask.class);
+        startService(service);
+        return super.onCreateView(name, context, attrs);
+    }
+
     /******************************************************************************
         Procedure : checkOmzet
         Author    : Tonny
@@ -128,16 +138,6 @@ public class IndexInternal extends AppCompatActivity
             }
         }
     }
-    /*private boolean checkPermission() {
-
-        int result = ContextCompat.checkSelfPermission(this, );
-
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }*/
 
     @Override
     public void onBackPressed() {
