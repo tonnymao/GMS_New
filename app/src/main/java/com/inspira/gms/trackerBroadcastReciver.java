@@ -12,7 +12,7 @@ import android.util.Log;
 public class trackerBroadcastReciver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent background = new Intent(context, trackingDevice.class);
+        Intent background = new Intent(context, GMSbackgroundTask.class);
         background.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startService(background);
         Log.i(trackerBroadcastReciver.class.getSimpleName(), "SERVICE RESTARTS!");

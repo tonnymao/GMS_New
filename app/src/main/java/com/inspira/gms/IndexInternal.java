@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -76,16 +77,12 @@ public class IndexInternal extends AppCompatActivity
         LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
     }
 
-    /*private boolean checkPermission() {
-
-        int result = ContextCompat.checkSelfPermission(this, );
-
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }*/
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        Intent service = new Intent(IndexInternal.this, GMSbackgroundTask.class);
+        startService(service);
+        return super.onCreateView(name, context, attrs);
+    }
 
     @Override
     public void onBackPressed() {

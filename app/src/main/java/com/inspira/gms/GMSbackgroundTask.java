@@ -11,29 +11,29 @@ import android.os.Process;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-public class trackingDevice extends Service {
+/**
+ * Created by shoma on 02/08/17.
+ */
+
+public class GMSbackgroundTask extends Service {
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
 
-    // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
             super(looper);
         }
         @Override
         public void handleMessage(Message msg) {
-            // Normally we would do some work here, like download a file.
-            // For our sample, we just sleep for 5 seconds.
             try {
-                Log.i("trackingDevice", "work fine!");
+
+
+                Log.i("GMSbackgroundTask", "background process works fine!");
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                // Restore interrupt status.
                 Thread.currentThread().interrupt();
             }
-            // Stop the service using the startId, so that we don't stop
-            // the service in the middle of handling another job
-            //stopSelf(msg.arg1);
+            //stopSelf(msg.arg1); <- don't use, ur gonna kill this
         }
     }
 
@@ -42,8 +42,7 @@ public class trackingDevice extends Service {
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
-
-        // Get the HandlerThread's Looper and use it for our Handler
+        Log.i("GMSbackgroundTask", "starting background service");
         mServiceLooper = thread.getLooper();
         mServiceHandler = new ServiceHandler(mServiceLooper);
     }
@@ -76,6 +75,6 @@ public class trackingDevice extends Service {
 
     @Override
     public void onDestroy() {
-        Log.i("trackingDevice", "SERVICE DESTROYED!");
+        Log.i("GMSbackgroundTask", "SERVICE DESTROYED!");
     }
 }

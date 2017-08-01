@@ -10,8 +10,12 @@ package com.inspira.gms;
 //import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.v4.app.Fragment; // is the Fragment class for compatibility for older version < API 11
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -34,6 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Tonny on 7/8/2017.
@@ -312,5 +317,44 @@ public class LibInspira {
 
         _inputStream.close();
         return result;
+    }
+
+    // added by shodiq @1-Aug-2017
+    // find the name of fake location app
+    // if it does not exist return null
+    public static String findMockLocationApp(Context context) {
+        String appName = null;
+        PackageManager packageManager = context.getPackageManager();
+        List<ApplicationInfo> packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+
+        for (ApplicationInfo applicationInfo : packages) {
+            try {
+                PackageInfo packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, PackageManager.GET_PERMISSIONS);
+                String[] requestedPermissions = packageInfo.requestedPermissions;
+
+                if (requestedPermissions != null) {
+                    for (int i = 0; i < requestedPermissions.length; i++) {
+                        if (requestedPermissions[i].equals("android.permission.ACCESS_MOCK_LOCATION")) {
+                            //&& !applicationInfo.packageName.equals(context.getPackageName()
+                            appName += (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "(unknown)");
+                        }
+                    }
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+
+            }
+        }
+
+        return appName;
+    }
+
+    // added by shodiq @1-Aug-2017
+    // get Mock Location of android developer setting
+    public static boolean isMockSettingsON(Context context) {
+        if (Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
+            return false;
+        else
+            return true;
     }
 }
