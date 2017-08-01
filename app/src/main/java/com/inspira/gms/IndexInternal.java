@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -23,7 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -38,7 +42,7 @@ public class IndexInternal extends AppCompatActivity
 
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
-    TextView tvUsername;
+    TextView tvUsername, tvSales;
     private FragmentManager fm = getSupportFragmentManager();
 
     @Override
@@ -74,8 +78,67 @@ public class IndexInternal extends AppCompatActivity
 
         Context context = getApplicationContext();
         LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
+
+        //added by Tonny @01-Aug-2017
+        String actionUrl = "Omzet/getOmzet/";
+        new checkOmzet().execute( actionUrl );
+
+        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
+        tvSales.setText("Sales: " + LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"));
     }
 
+    /******************************************************************************
+        Procedure : checkOmzet
+        Author    : Tonny
+        Date      : 01-Aug-2017
+        Function  : Untuk mendapatkan omzet
+    ******************************************************************************/
+    private class checkOmzet extends AsyncTask<String, Void, String> {
+        JSONObject jsonObject;
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                Log.d("kodesales: ", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
+                jsonObject.put("kodesales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(IndexInternal.this, urls[0], jsonObject);
+        }
+
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("omzet", result);
+            try {
+                JSONArray jsonarray = new JSONArray(result);
+                if (jsonarray.length() > 0) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if (!obj.has("query")) {
+                            LibInspira.hideLoading();
+                            String success = obj.getString("success");
+                            if (success.equals("true")) {
+                                LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("omzet"));
+                            } else {
+                                GlobalVar.clearDataUser();
+                                Toast.makeText(getBaseContext(), "Retrieve Omzet Failed", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(IndexInternal.this, "Retrieve Omzet Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(IndexInternal.this, "Retrieve Omzet Failed", Toast.LENGTH_LONG).show();
+                LibInspira.hideLoading();
+            }
+        }
+    }
     /*private boolean checkPermission() {
 
         int result = ContextCompat.checkSelfPermission(this, );
