@@ -12,9 +12,11 @@ public class GlobalVar {
     public static SharedPreferences userpreferences;
     public static SharedPreferences rolepreferences;
     public static SharedPreferences notifpreferences;
+    public static SharedPreferences salespreferences;  //added by Tonny @01-Aug-2017
     public static SharedPreferences datapreferences;
 
     public static User user;
+    public static Sales sales;  //added by Tonny @01-Aug-2017
     public static Data data;
     public static Shared shared;
 
@@ -26,10 +28,12 @@ public class GlobalVar {
             userpreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
             rolepreferences = context.getSharedPreferences("role", Context.MODE_PRIVATE);
             notifpreferences = context.getSharedPreferences("notif", Context.MODE_PRIVATE);
+            salespreferences = context.getSharedPreferences("sales", Context.MODE_PRIVATE);  //added by Tonny @01-Aug-2017
             datapreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
 
             data = new Data();
             user = new User();
+            sales = new Sales();  //added by Tonny @01-Aug-2017
             shared = new Shared();
         }
 
@@ -38,6 +42,7 @@ public class GlobalVar {
             LibInspira.clearShared(userpreferences);
             LibInspira.clearShared(rolepreferences);
             LibInspira.clearShared(notifpreferences);
+            LibInspira.clearShared(salespreferences);  //added by Tonny @01-Aug-2017
         }
 
         public class Shared
@@ -61,5 +66,11 @@ public class GlobalVar {
         {
             public String user = "user"; // nomor~nama~location~hp
             public String barang = "barang"; // nomor~nama~namajual~kode
+        }
+
+        public class Sales  //added by Tonny @01-Aug-2017
+        {
+            public String target = "target";
+            public String omzet = "omzet";
         }
 }
