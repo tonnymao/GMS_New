@@ -1,9 +1,36 @@
 Catatan ini digunakan mencatat script baru yang diapply pada saat pengerjaan project ini
+o> 01-Aug-2017 (Tonny)
+    * Script untuk menambahkan table whtarget_mobile (dump dari venus table thtarget)
+        DROP TABLE IF EXISTS `whtarget_mobile`;
+        CREATE TABLE `whtarget_mobile` (
+          `intNomor` int(11) NOT NULL AUTO_INCREMENT,
+          `intNomorMSales` int(11) DEFAULT NULL,
+          `vcKode` varchar(50) COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `dtTanggal` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intPeriode` int(11) DEFAULT NULL,
+          `intTahun` int(11) DEFAULT NULL,
+          `decTarget` decimal(30,6) NOT NULL DEFAULT '0.000000',
+          `vcKeterangan` varchar(250) COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `intApproved` tinyint(4) NOT NULL DEFAULT '0',
+          `intApproveUserID` int(11) NOT NULL DEFAULT '0',
+          `dtApproveTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intDisapproveUserID` int(11) NOT NULL DEFAULT '0',
+          `dtDisapproveTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intOldApproved` tinyint(4) NOT NULL DEFAULT '0',
+          `intNoApproval` tinyint(4) NOT NULL DEFAULT '0',
+          `intInsertUserID` int(11) NOT NULL DEFAULT '0',
+          `dtInsertTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intUpdateUserID` int(11) NOT NULL DEFAULT '0',
+          `dtUpdateTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intDeleteUserID` int(11) NOT NULL DEFAULT '0',
+          `dtDeleteTime` datetime NOT NULL DEFAULT '1900-01-01 00:00:00',
+          `intStatus` tinyint(4) NOT NULL DEFAULT '1',
+          `intPrinted` int(4) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`intNomor`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 o> 23-Jul-2017 (Tonny)
     * Script untuk menambahkan table whuser_mobile (copy dari project gmr):
         DROP TABLE IF EXISTS `whuser_mobile`;
-          /*!40101 SET @saved_cs_client     = @@character_set_client */;
-          /*!40101 SET character_set_client = utf8 */;
 		  CREATE TABLE `whuser_mobile` (
 			`nomor` INT(11) NOT NULL AUTO_INCREMENT,
 			`nomortuser` INT(11) NOT NULL DEFAULT '0',
@@ -20,8 +47,6 @@ o> 23-Jul-2017 (Tonny)
 
     * Script untuk menambahkan table whrole_mobile (copy dari project gmr):
         DROP TABLE IF EXISTS `whrole_mobile`;
-        /*!40101 SET @saved_cs_client     = @@character_set_client */;
-        /*!40101 SET character_set_client = utf8 */;
         CREATE TABLE `whrole_mobile` (
           `nomor` int(11) NOT NULL AUTO_INCREMENT,
           `nama` varchar(50) NOT NULL,
@@ -34,4 +59,3 @@ o> 23-Jul-2017 (Tonny)
           `dibuat_pada` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
           PRIMARY KEY (`nomor`)
         ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-        /*!40101 SET character_set_client = @saved_cs_client */;

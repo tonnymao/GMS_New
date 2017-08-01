@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import org.json.JSONObject;
 
@@ -37,6 +38,7 @@ public class IndexInternal extends AppCompatActivity
 
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
+    TextView tvUsername;
     private FragmentManager fm = getSupportFragmentManager();
 
     @Override
@@ -66,6 +68,9 @@ public class IndexInternal extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View navigationHeader = navigationView.getHeaderView(0);
+        tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
+        tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User"));
 
         Context context = getApplicationContext();
         LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
@@ -132,15 +137,14 @@ public class IndexInternal extends AppCompatActivity
 
         if (id == R.id.nav_dashboard) {
             // Handle the camera action
-        } else if (id == R.id.nav_targetcomparison) {
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
+        } else if (id == R.id.nav_contact) {
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());  //added by Tonny @01-Aug-2017
+        } else if (id == R.id.nav_group) {
 
-        } else if (id == R.id.nav_privatemessage) {
+        } else if (id == R.id.nav_salesorder) {
 
-        } else if (id == R.id.nav_groupmessage) {
-
-        } else if (id == R.id.nav_changepassword) {
-
-        } else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_stockreport) {
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
