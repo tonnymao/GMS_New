@@ -9,7 +9,9 @@ package layout;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import android.widget.RelativeLayout;
 
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
+
+import static com.inspira.gms.IndexInternal.RefreshUserData;
 
 //import android.app.Fragment;
 
@@ -56,6 +60,20 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         super.onActivityCreated(bundle);
         ((RelativeLayout) getView().findViewById(R.id.btnContact)).setOnClickListener(this);
         ((RelativeLayout) getView().findViewById(R.id.btnScheduleTask)).setOnClickListener(this);
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                RefreshUserData();
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
     }
 
     @Override

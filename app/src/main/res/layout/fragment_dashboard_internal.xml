@@ -7,14 +7,17 @@
     tools:context="layout.MenuFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -326,7 +329,111 @@
                 </RelativeLayout>
 
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/menu_line4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/menu_line3"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/btnScheduleTask4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnScheduleTask4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/scheduletask"
+                        android:backgroundTint="@color/colorBackground"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvScheduleTask4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnScheduleTask4"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Schedule Task"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnOmzet4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnOmzet4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/omzet"
+                        android:backgroundTint="@color/colorBackground"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvOmzet4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnOmzet4"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:gravity="center"
+                        android:text="Omzet"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnReport4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="33.3"
+                    android:clickable="true">
+
+                    <ImageButton
+                        android:id="@+id/ibtnReport4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:clickable="false"
+                        android:elevation="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/report"
+                        android:backgroundTint="@color/colorBackground"
+                        android:tint="@color/colorGMS" />
+
+                    <TextView
+                        android:id="@+id/tvReport4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ibtnReport4"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:text="Report"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>
 

@@ -4,14 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -33,7 +36,9 @@ public class IndexInternal extends AppCompatActivity
 
     public static GlobalVar global;
     public static JSONObject jsonObject;   //added by Tonny @30-Jul-2017
-    TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
+    public  static TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
+    public static NavigationView navigationView;
+    private static Context context;  //added by Tonny @02-Aug-2017
     private FragmentManager fm = getSupportFragmentManager();
 
     @Override
@@ -60,16 +65,41 @@ public class IndexInternal extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        context = getApplicationContext();
+        LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
+        //remarked by Tonny @02-Aug-2017  dipindah ke procedure RefreshUserData
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+//        View navigationHeader = navigationView.getHeaderView(0);
+//        tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
+//        tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
+
+//        //added by Tonny @01-Aug-2017
+//        String actionUrl = "Sales/getOmzet/";
+//        new checkOmzet().execute( actionUrl );
+//
+//        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
+//        tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
+//
+//        String targetUrl = "Sales/getTarget/";
+//        new checkTarget().execute( targetUrl );
+//
+//        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
+//        tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
+        /////
+        RefreshUserData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RefreshUserData();
+    }
+
+    public static void RefreshUserData(){
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
-
-        Context context = getApplicationContext();
-        LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
-
         //added by Tonny @01-Aug-2017
         String actionUrl = "Sales/getOmzet/";
         new checkOmzet().execute( actionUrl );
@@ -99,7 +129,7 @@ public class IndexInternal extends AppCompatActivity
         Date      : 01-Aug-2017
         Function  : Untuk mendapatkan omzet dari sales yang bersangkutan
     ******************************************************************************/
-    private class checkOmzet extends AsyncTask<String, Void, String> {
+    private static class checkOmzet extends AsyncTask<String, Void, String> {
         JSONObject jsonObject;
 
         @Override
@@ -112,7 +142,7 @@ public class IndexInternal extends AppCompatActivity
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            return LibInspira.executePost(IndexInternal.this, urls[0], jsonObject);
+            return LibInspira.executePost(context, urls[0], jsonObject);
         }
 
         // onPostExecute displays the results of the AsyncTask.
@@ -125,22 +155,17 @@ public class IndexInternal extends AppCompatActivity
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            LibInspira.hideLoading();
                             String success = obj.getString("success");
                             if (success.equals("true")) {
                                 LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("omzet"));
-                            } else {
-                                GlobalVar.clearDataUser();
                             }
-                        } else {
-                            Toast.makeText(IndexInternal.this, "Retrieve Omzet Failed", Toast.LENGTH_LONG).show();
+                        }else{
+                            LibInspira.setShared(global.salespreferences, global.sales.omzet, "0");
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(IndexInternal.this, "Retrieve Omzet Failed", Toast.LENGTH_LONG).show();
-                LibInspira.hideLoading();
             }
         }
     }
@@ -151,7 +176,7 @@ public class IndexInternal extends AppCompatActivity
         Date      : 02-Aug-2017
         Function  : Untuk mendapatkan nilai target dari sales yang bersangkutan
     ******************************************************************************/
-    private class checkTarget extends AsyncTask<String, Void, String> {
+    private static class checkTarget extends AsyncTask<String, Void, String> {
         JSONObject jsonObject;
 
         @Override
@@ -164,7 +189,7 @@ public class IndexInternal extends AppCompatActivity
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            return LibInspira.executePost(IndexInternal.this, urls[0], jsonObject);
+            return LibInspira.executePost(context, urls[0], jsonObject);
         }
 
         // onPostExecute displays the results of the AsyncTask.
@@ -177,22 +202,17 @@ public class IndexInternal extends AppCompatActivity
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            LibInspira.hideLoading();
                             String success = obj.getString("success");
                             if (success.equals("true")) {
                                 LibInspira.setShared(global.salespreferences, global.sales.target, obj.getString("target"));
-                            } else {
-                                GlobalVar.clearDataUser();
                             }
-                        } else {
-                            Toast.makeText(IndexInternal.this, "Retrieve Target Failed", Toast.LENGTH_LONG).show();
+                        }else{
+                            LibInspira.setShared(global.salespreferences, global.sales.target, "0");
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(IndexInternal.this, "Retrieve Target Failed", Toast.LENGTH_LONG).show();
-                LibInspira.hideLoading();
             }
         }
     }
@@ -259,6 +279,6 @@ public class IndexInternal extends AppCompatActivity
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
     }
 }
