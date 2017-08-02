@@ -55,6 +55,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
         ((RelativeLayout) getView().findViewById(R.id.btnContact)).setOnClickListener(this);
+        ((RelativeLayout) getView().findViewById(R.id.btnScheduleTask)).setOnClickListener(this);
     }
 
     @Override
@@ -69,6 +70,10 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         if(id==R.id.btnContact)
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());
+        }
+        else if(id==R.id.btnScheduleTask)
+        {
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ScheduleTaskFragment());
         }
     }
 }

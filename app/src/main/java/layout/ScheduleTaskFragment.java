@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,13 +21,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.inspira.gms.IndexInternal;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -41,16 +39,14 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class ChooseBarangFragment extends Fragment implements View.OnClickListener{
-    private EditText etSearch;
-    private ImageButton ibtnSearch;
-
+public class ScheduleTaskFragment extends Fragment implements View.OnClickListener{
+    private FloatingActionButton fab;
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ChooseBarangFragment() {
+    public ScheduleTaskFragment() {
         // Required empty public constructor
     }
 
@@ -65,7 +61,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Barang");
+        getActivity().setTitle("Schedule Task");
         return v;
     }
 
@@ -85,37 +81,22 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
-        ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
-        etSearch = (EditText) getView().findViewById(R.id.etSearch);
 
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                search();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
+        fab = (FloatingActionButton) getView().findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(this);
 
         refreshList();
 
-        String actionUrl = "Master/getBarang/";
-        new getData().execute( actionUrl );
+//        String actionUrl = "Master/getBarang/";
+//        new getData().execute( actionUrl );
     }
 
     @Override
@@ -126,32 +107,6 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         int id = view.getId();
-
-        if(id==R.id.ibtnSearch)
-        {
-            search();
-        }
-    }
-
-    private void search()
-    {
-        itemadapter.clear();
-        for(int ctr=0;ctr<list.size();ctr++)
-        {
-            if(etSearch.getText().equals(""))
-            {
-                itemadapter.add(list.get(ctr));
-                itemadapter.notifyDataSetChanged();
-            }
-            else
-            {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
-                {
-                    itemadapter.add(list.get(ctr));
-                    itemadapter.notifyDataSetChanged();
-                }
-            }
-        }
     }
 
     private void refreshList()
@@ -159,7 +114,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.barang, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.schedule, "");
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1)
         {

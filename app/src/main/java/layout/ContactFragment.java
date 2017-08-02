@@ -49,7 +49,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
-    private TextView tvInformation;
+    private TextView tvInformation, tvNoData;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -91,6 +91,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
         ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
+        tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
 
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
@@ -170,32 +171,40 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
         String data = LibInspira.getShared(global.datapreferences, global.data.user, "");
         String[] pieces = data.trim().split("\\|");
-        for(int i=0 ; i < pieces.length ; i++){
-            if(!pieces[i].equals(""))
-            {
-                String[] parts = pieces[i].trim().split("\\~");
-
-                String nomor = parts[0];
-                String nama = parts[1];
-                String location = parts[2];
-                String hp = parts[3];
-
-                if(nomor.equals("null")) nomor = "";
-                if(nama.equals("null")) nama = "";
-                if(location.equals("null")) location = "-";
-                if(hp.equals("null")) hp = "";
-
-                ItemAdapter dataItem = new ItemAdapter();
-                dataItem.setNomor(nomor);
-                dataItem.setNama(nama);
-                dataItem.setLocation(location);
-                dataItem.setHp(hp);
-                list.add(dataItem);
-
-                if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+        if(pieces.length==1)
+        {
+            tvNoData.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            tvNoData.setVisibility(View.GONE);
+            for(int i=0 ; i < pieces.length ; i++){
+                if(!pieces[i].equals(""))
                 {
-                    itemadapter.add(dataItem);
-                    itemadapter.notifyDataSetChanged();
+                    String[] parts = pieces[i].trim().split("\\~");
+
+                    String nomor = parts[0];
+                    String nama = parts[1];
+                    String location = parts[2];
+                    String hp = parts[3];
+
+                    if(nomor.equals("null")) nomor = "";
+                    if(nama.equals("null")) nama = "";
+                    if(location.equals("null")) location = "-";
+                    if(hp.equals("null")) hp = "";
+
+                    ItemAdapter dataItem = new ItemAdapter();
+                    dataItem.setNomor(nomor);
+                    dataItem.setNama(nama);
+                    dataItem.setLocation(location);
+                    dataItem.setHp(hp);
+                    list.add(dataItem);
+
+                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    {
+                        itemadapter.add(dataItem);
+                        itemadapter.notifyDataSetChanged();
+                    }
                 }
             }
         }
