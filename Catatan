@@ -1,4 +1,15 @@
 Catatan ini digunakan mencatat script baru yang diapply pada saat pengerjaan project ini
+o> 03-Aug-2017 (Tonny)
+    * Script untuk menambahkan table tsetting (dump dari venus mobile table tsetting)
+        DROP TABLE IF EXISTS `whsetting_mobile`;
+        CREATE TABLE `whsetting_mobile` (
+          `intNomor` int(11) NOT NULL AUTO_INCREMENT,
+          `vcNama` varchar(200) COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `intNilai` varchar(200) COLLATE latin1_general_ci NOT NULL DEFAULT '0' COMMENT '[tracking -> 1 = GPS, 2 = GPSNetwork]',
+          `dtInsertDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `intStatus` int(11) NOT NULL DEFAULT '1',
+          PRIMARY KEY (`intNomor`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 o> 01-Aug-2017 (Tonny)
     * Script untuk menambahkan table whtarget_mobile (dump dari venus table thtarget)
         DROP TABLE IF EXISTS `whtarget_mobile`;

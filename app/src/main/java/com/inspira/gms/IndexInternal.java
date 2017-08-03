@@ -87,6 +87,7 @@ public class IndexInternal extends AppCompatActivity
 //        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
 //        tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
         /////
+        //LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
     }
 
@@ -153,10 +154,11 @@ public class IndexInternal extends AppCompatActivity
                             String success = obj.getString("success");
                             if (success.equals("true")) {
                                 LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("omzet"));
-                                LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("target"));
+                                LibInspira.setShared(global.salespreferences, global.sales.target, obj.getString("target"));
                             }
                         }else{
                             LibInspira.setShared(global.salespreferences, global.sales.omzet, "0");
+                            LibInspira.setShared(global.salespreferences, global.sales.target, "0");
                         }
                     }
                 }
