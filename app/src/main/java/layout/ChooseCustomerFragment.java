@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -39,14 +38,16 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class ScheduleTaskFragment extends Fragment implements View.OnClickListener{
-    private FloatingActionButton fab;
+public class ChooseCustomerFragment extends Fragment implements View.OnClickListener{
+    private EditText etSearch;
+    private ImageButton ibtnSearch;
+
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ScheduleTaskFragment() {
+    public ChooseCustomerFragment() {
         // Required empty public constructor
     }
 
@@ -61,7 +62,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Schedule Task");
+        getActivity().setTitle("Customer");
         return v;
     }
 
@@ -81,22 +82,37 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
+        ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
+        etSearch = (EditText) getView().findViewById(R.id.etSearch);
 
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
-        fab = (FloatingActionButton) getView().findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
-        fab.setOnClickListener(this);
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                search();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         refreshList();
 
-//        String actionUrl = "Master/getBarang/";
-//        new getData().execute( actionUrl );
+        String actionUrl = "Master/getCustomer/";
+        new getData().execute( actionUrl );
     }
 
     @Override
@@ -107,9 +123,31 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if(id==R.id.fab)
+
+        if(id==R.id.ibtnSearch)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new Form_ScheduleTaskFragment());
+            search();
+        }
+    }
+
+    private void search()
+    {
+        itemadapter.clear();
+        for(int ctr=0;ctr<list.size();ctr++)
+        {
+            if(etSearch.getText().equals(""))
+            {
+                itemadapter.add(list.get(ctr));
+                itemadapter.notifyDataSetChanged();
+            }
+            else
+            {
+                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                {
+                    itemadapter.add(list.get(ctr));
+                    itemadapter.notifyDataSetChanged();
+                }
+            }
         }
     }
 
@@ -118,7 +156,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.schedule, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.customer, "");
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1)
         {
@@ -134,18 +172,21 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
                     String nomor = parts[0];
                     String nama = parts[1];
-                    String namajual = parts[2];
-                    String kode = parts[3];
+                    String alamat = parts[2];
+                    String telepon = parts[3];
+                    String kode = parts[4];
 
                     if(nomor.equals("null")) nomor = "";
                     if(nama.equals("null")) nama = "";
-                    if(namajual.equals("null")) namajual = "";
+                    if(alamat.equals("null")) alamat = "-";
+                    if(telepon.equals("null")) telepon = "-";
                     if(kode.equals("null")) kode = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
-                    dataItem.setNamajual(namajual);
+                    dataItem.setAlamat(alamat);
+                    dataItem.setTelepon(telepon);
                     dataItem.setKode(kode);
                     list.add(dataItem);
 
@@ -176,22 +217,24 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
-                            String namajual = (obj.getString("namajual"));
+                            String alamat = (obj.getString("alamat"));
+                            String telepon = (obj.getString("telepon"));
                             String kode = (obj.getString("kode"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
-                            if(namajual.equals("")) namajual = "null";
+                            if(alamat.equals("")) alamat = "null";
+                            if(alamat.equals("")) telepon = "null";
                             if(kode.equals("")) kode = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + nama + "~" + alamat + "~" + telepon + "~" + kode + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.customer, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.barang,
+                                global.data.customer,
                                 tempData
                         );
                         refreshList();
@@ -217,7 +260,8 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         private String nomor;
         private String nama;
-        private String namajual;
+        private String alamat;
+        private String telepon;
         private String kode;
 
         public ItemAdapter() {}
@@ -228,8 +272,11 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
 
-        public String getNamajual() {return namajual;}
-        public void setNamajual(String _param) {this.namajual = _param;}
+        public String getAlamat() {return alamat;}
+        public void setAlamat(String _param) {this.alamat = _param;}
+
+        public String getTelepon() {return telepon;}
+        public void setTelepon(String _param) {this.telepon = _param;}
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
@@ -255,6 +302,8 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
+            TextView tvKeterangan;
+            TextView tvKeterangan1;
         }
 
         @Override
@@ -272,6 +321,8 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvKeterangan1 = (TextView)row.findViewById(R.id.tvKeterangan1);
 
             row.setTag(holder);
             setupItem(holder);
@@ -288,6 +339,10 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvKeterangan.setVisibility(View.VISIBLE);
+            holder.tvKeterangan1.setVisibility(View.VISIBLE);
+            holder.tvKeterangan.setText("Alamat: " + holder.adapterItem.getAlamat());
+            holder.tvKeterangan1.setText("Telpon: " + holder.adapterItem.getTelepon());
         }
     }
 }

@@ -66,7 +66,9 @@ public class GlobalVar {
         {
             public String user = "user"; // nomor~nama~location~hp
             public String barang = "barang"; // nomor~nama~namajual~kode
-            public String schedule = "schedule"; //
+            public String schedule = "schedule";
+            public String customer = "customer"; // nomor~nama~alamat~telpon~kode
+            public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

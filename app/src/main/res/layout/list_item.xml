@@ -48,6 +48,21 @@
             android:textColor="@color/colorPrimaryDark"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="-10dp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvKeterangan"
+            android:layout_toLeftOf="@id/ivCall"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="[ Keterangan ] "
+            android:id="@+id/tvKeterangan1"
+            android:textSize="30px"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"
+            />
     </RelativeLayout>
 </RelativeLayout>
