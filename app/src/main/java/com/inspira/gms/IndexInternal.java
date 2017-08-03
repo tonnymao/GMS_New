@@ -2,13 +2,18 @@ package com.inspira.gms;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +28,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.location.LocationServices;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +48,7 @@ public class IndexInternal extends AppCompatActivity
     public static NavigationView navigationView;
     private static Context context;  //added by Tonny @02-Aug-2017
     private FragmentManager fm = getSupportFragmentManager();
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +98,17 @@ public class IndexInternal extends AppCompatActivity
         /////
         //LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
+
+        //added by Shodiq @01-Aug-2017
+        //creating background service
+
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
+
+        }
+        Intent service = new Intent(IndexInternal.this, GMSbackgroundTask.class);
+        startService(service);
     }
 
     @Override
@@ -110,13 +130,24 @@ public class IndexInternal extends AppCompatActivity
         tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
     }
 
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        //added by Shodiq @01-Aug-2017
-        //creating background service
-        Intent service = new Intent(IndexInternal.this, GMSbackgroundTask.class);
-        startService(service);
-        return super.onCreateView(name, context, attrs);
+    /******************************************************************************
+     Class     : checkGPSstatus
+     Author    : Shodiq
+     Date      : 03-Aug-2017
+     Function  : Untuk mengecek aktif tidaknya GPS / location
+     ******************************************************************************/
+    public boolean checkGPSstatus(){
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean enabled = service
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (!enabled) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            Toast.makeText(getApplicationContext(), "Please Turn On Your Location", Toast.LENGTH_LONG).show();
+            startActivity(intent);
+        }
+
+        return !enabled;
     }
 
     /******************************************************************************

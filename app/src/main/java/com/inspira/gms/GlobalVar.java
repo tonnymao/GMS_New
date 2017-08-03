@@ -2,6 +2,7 @@ package com.inspira.gms;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.LocationListener;
 
 /**
  * Created by Tonny on 7/24/2017.
