@@ -60,6 +60,15 @@ public class GlobalVar {
             public String tipe = "tipe";
             public String role = "role";
             public String hash = "hash";
+            public String role_isowner = "role_isowner"; //role untuk mengetahui user termasuk owner atau tidak (0/1)
+            public String role_issales = "role_issales"; //role untuk mengetahui user termasuk sales atau tidak (0/1)
+            public String role_setting = "role_setting"; //role apakah user dapat melakukan setting atau tidak (0/1)
+            public String role_settingtarget = "role_settingtarget"; //role apakah user dapat melakukan setting target atau tidak (0/1)
+            public String role_salesorder = "role_salesorder"; //role apakah user dapat melakukan sales order atau tidak (0/1)
+            public String role_stockmonitoring = "role_stockmonitoring"; //role apakah user dapat melihat stok atau tidak (0/1)
+            public String role_pricelist = "role_pricelist"; //role apakah user dapat melihat pricelist atau tidak (0/1)
+            public String role_addscheduletask = "role_addscheduletask"; //role apakah user dapat melihat pricelist atau tidak (0/1)
+            public String role_salestracking = "role_salestracking"; //role apakah user dapat melihat trangking dari sales atau tidak (0/1)
         }
 
         public class Data
