@@ -340,8 +340,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
+                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
                 }
             });
 

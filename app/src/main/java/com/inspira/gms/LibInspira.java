@@ -152,6 +152,21 @@ public class LibInspira {
         }
     }
 
+    //added by ADI @02-Aug-2017
+    public static String getVersion(Context _context)
+    {
+        String version = "";
+        try
+        {
+            PackageInfo pInfo = _context.getPackageManager().getPackageInfo(_context.getPackageName(), 0);
+            version = pInfo.versionName;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return version;
+    }
+
     //added by Adi @24-Jul-2017
     public static String getShared(SharedPreferences _preference, String _key, String _defaultValue) {
         return _preference.getString(_key, _defaultValue);
