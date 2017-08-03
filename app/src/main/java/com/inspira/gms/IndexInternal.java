@@ -122,7 +122,7 @@ public class IndexInternal extends AppCompatActivity
         Class     : checkOmzetTarget
         Author    : Tonny
         Date      : 01-Aug-2017
-        Function  : Untuk mendapatkan omzet dari sales yang bersangkutan
+        Function  : Untuk mendapatkan omzet dan target dari sales berdasarkan kode/nomor sales
     ******************************************************************************/
     private static class checkOmzetTarget extends AsyncTask<String, Void, String> {
         JSONObject jsonObject;
