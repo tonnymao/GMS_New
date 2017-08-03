@@ -100,16 +100,11 @@ public class IndexInternal extends AppCompatActivity
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
-        //added by Tonny @01-Aug-2017
-        String actionUrl = "Sales/getOmzet/";
-        new checkOmzet().execute( actionUrl );
-
+        //modified by Tonny @03-Aug-2017 function untuk get omzet dan target dijadikan satu
+        String actionUrl = "Sales/getOmzetTarget/";
+        new checkOmzetTarget().execute( actionUrl );
         tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
         tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
-
-        String targetUrl = "Sales/getTarget/";
-        new checkTarget().execute( targetUrl );
-
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
     }
@@ -124,12 +119,12 @@ public class IndexInternal extends AppCompatActivity
     }
 
     /******************************************************************************
-        Procedure : checkOmzet
+        Class     : checkOmzetTarget
         Author    : Tonny
         Date      : 01-Aug-2017
         Function  : Untuk mendapatkan omzet dari sales yang bersangkutan
     ******************************************************************************/
-    private static class checkOmzet extends AsyncTask<String, Void, String> {
+    private static class checkOmzetTarget extends AsyncTask<String, Void, String> {
         JSONObject jsonObject;
 
         @Override
@@ -158,56 +153,10 @@ public class IndexInternal extends AppCompatActivity
                             String success = obj.getString("success");
                             if (success.equals("true")) {
                                 LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("omzet"));
+                                LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("target"));
                             }
                         }else{
                             LibInspira.setShared(global.salespreferences, global.sales.omzet, "0");
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /******************************************************************************
-        Procedure : checkTarget
-        Author    : Tonny
-        Date      : 02-Aug-2017
-        Function  : Untuk mendapatkan nilai target dari sales yang bersangkutan
-    ******************************************************************************/
-    private static class checkTarget extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                jsonObject = new JSONObject();
-                Log.d("kodesalestarget: ", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-                jsonObject.put("kodesales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return LibInspira.executePost(context, urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("target", result);
-            try {
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            String success = obj.getString("success");
-                            if (success.equals("true")) {
-                                LibInspira.setShared(global.salespreferences, global.sales.target, obj.getString("target"));
-                            }
-                        }else{
-                            LibInspira.setShared(global.salespreferences, global.sales.target, "0");
                         }
                     }
                 }
