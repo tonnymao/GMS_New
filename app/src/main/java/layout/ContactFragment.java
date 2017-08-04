@@ -344,6 +344,14 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                 }
             });
 
+            final Holder finalHolder = holder;
+            holder.tvNama.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String nomeruser = finalHolder.adapterItem.getNomor();
+                }
+            });
+
             return row;
         }
 

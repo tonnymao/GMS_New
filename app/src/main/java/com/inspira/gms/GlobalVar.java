@@ -14,11 +14,13 @@ public class GlobalVar {
     public static SharedPreferences notifpreferences;
     public static SharedPreferences salespreferences;  //added by Tonny @01-Aug-2017
     public static SharedPreferences datapreferences;
+    public static SharedPreferences settingpreferences;  //added by Tonny @03-Aug-2017
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
     public static Data data;
     public static Shared shared;
+    public static Settings settings;  //added by Tonny @03-Aug-2017
 
     public static String webserviceURL = "/wsGMS/gms/index.php/api/";
 
@@ -30,11 +32,13 @@ public class GlobalVar {
             notifpreferences = context.getSharedPreferences("notif", Context.MODE_PRIVATE);
             salespreferences = context.getSharedPreferences("sales", Context.MODE_PRIVATE);  //added by Tonny @01-Aug-2017
             datapreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+            settingpreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);  //added by Tonny @03-Aug-2017
 
             data = new Data();
             user = new User();
             sales = new Sales();  //added by Tonny @01-Aug-2017
             shared = new Shared();
+            settings = new Settings();  //added by Tonny @03-Aug-2017
         }
 
         public static void clearDataUser()
@@ -43,6 +47,7 @@ public class GlobalVar {
             LibInspira.clearShared(rolepreferences);
             LibInspira.clearShared(notifpreferences);
             LibInspira.clearShared(salespreferences);  //added by Tonny @01-Aug-2017
+            LibInspira.clearShared(settingpreferences); //added by Tonny @03-Aug-2017
         }
 
         public class Shared
@@ -78,11 +83,21 @@ public class GlobalVar {
             public String schedule = "schedule";
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
+            public String periode = "periode"; // bulan~tahun
         }
 
         public class Sales  //added by Tonny @01-Aug-2017
         {
             public String target = "target";
             public String omzet = "omzet";
+        }
+
+        public class Settings  //added by Tonny @03-Aug-2017
+        {
+            public String interval = "interval";
+            public String radius = "radius";
+            public String tracking = "tracking";
+            public String jam_awal = "jam_awal";
+            public String jam_akhir = "jam_akhir";
         }
 }

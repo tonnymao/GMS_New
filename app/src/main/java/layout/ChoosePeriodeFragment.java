@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
-import com.inspira.gms.SalesTargetFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

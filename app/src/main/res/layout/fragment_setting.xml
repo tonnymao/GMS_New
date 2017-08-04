@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.inspira.gms.SettingFragment">
+    android:background="@color/colorBackground">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,7 +12,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingTop="10dp">
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -31,6 +31,7 @@
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Interval"
+                        android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
@@ -42,9 +43,9 @@
                         android:textColor="@color/colorPrimaryDark" />
 
                     <EditText
-                        android:id="@+id/edtinterval"
-                        android:layout_width="100dp"
-                        android:layout_height="match_parent"
+                        android:id="@+id/edtInterval"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:hint="[ 1 sec = 1000 ms ]"
                         android:inputType="number"
@@ -55,7 +56,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="ms"
@@ -74,6 +74,7 @@
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Radius"
+                        android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
@@ -87,7 +88,7 @@
                     <EditText
                         android:id="@+id/edtRadius"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:hint=""
                         android:inputType="number"
@@ -98,7 +99,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="meter"
@@ -118,6 +118,7 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Tracking Mode"
                         android:textColor="@color/colorPrimaryDark"
+                        android:gravity="right"
                         android:layout_gravity="center_vertical" />
 
                     <TextView
@@ -135,6 +136,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
+                        android:entries="@array/list_tracking"
                         android:spinnerMode="dialog"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
@@ -142,8 +144,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:layout_weight="1"
+                        android:layout_margin="10dp"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text=""
                         android:textColor="@color/colorPrimaryDark" />
@@ -161,6 +163,7 @@
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Start Tracking"
+                        android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
@@ -201,6 +204,7 @@
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="End Tracking"
+                        android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
@@ -247,7 +251,7 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@color/colorGMS"
+        android:background="@color/colorButton"
         android:text="Update"
         android:textColor="@color/colorBackground" />
 
