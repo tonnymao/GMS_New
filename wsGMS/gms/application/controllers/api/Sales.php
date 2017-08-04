@@ -227,6 +227,107 @@ class Sales extends REST_Controller {
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
-
     }
+	
+	function getOmzetTarget_post(){
+		$data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+		$kodesales = (isset($jsonObject["kodesales"]) ? $this->clean($jsonObject["kodesales"])     : "a");
+        $omzet  = $this->db->query(
+					"SELECT SUM(a.TotalRp) omzet
+					FROM thnotajual a
+						LEFT JOIN thsales c
+							ON a.nomorsales = c.nomor
+						LEFT JOIN tcustomer b
+							ON a.nomorcustomer = b.nomor
+					WHERE a.status <> 0 
+						AND a.jenis = 'fj' 
+						AND a.approve = 1
+						AND c.nomor = $kodesales ")->row()->omzet;
+        $target = $this->db->query(
+					"SELECT
+					  decTarget target
+					FROM
+					  whtarget_mobile
+					WHERE
+					  intNomorMSales = $kodesales
+					  AND intPeriode = MONTH(NOW())
+					  AND intTahun = YEAR(NOW())")->row()->target;
+        
+        array_push($data['data'], array( 
+										'success'   => "true",
+    									'omzet' 	=> $omzet, 
+    									'target'	=> $target
+        								)
+        );
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
+	
+	// --- POST get periode --- //
+	function getPeriode_post()
+	{     
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+		$jsonObject = (json_decode($value , true));
+		
+		$query = "	SELECT DISTINCT 
+						MONTHNAME(STR_TO_DATE(intPeriode, '%m')) periode,
+						intTahun AS tahun
+					FROM whtarget_mobile
+					ORDER BY intPeriode DESC;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                								'periode'					=> $r['periode'],
+												'tahun' 					=> $r['tahun']
+                								)
+               	);
+            }
+        }else{		
+			array_push($data['data'], array( 'query' => $this->error($query) ));
+		}  
+	
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+	
+	// made by Shodiq @3-aug-2017
+    // insert GPS history to data base without returning any value (no need to check)
+    // if it got error, the data will gets rollbacked
+    // if nothing went wrong, the data gets commited
+    function pushTrackingData_post()
+    {
+		$data['data'] = array();
+		
+		$value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        
+        $nomortuser	= (isset($jsonObject["nomortuser"])	? $jsonObject["nomortuser"]	: "");
+        $latitude	= (isset($jsonObject["latitude"])	? $jsonObject["latitude"]	: "");
+        $longitude	= (isset($jsonObject["longitude"])	? $jsonObject["longitude"]	: "");
+        $fakeGPS	= (isset($jsonObject["fakeGPS"])	? $jsonObject["fakeGPS"]	: "");
+        
+        $this->db->trans_begin();
+        
+        $query = "INSERT INTO `gms`.`whtracking_mobile`(`nomortuser`,`latitude`,`longitude`,`trackingDate`,`fakeGPS`) VALUES ($nomortuser, $latitude, $longitude, NOW(), $fakeGPS)";
+		
+        $this->db->query($query);
+        
+        if ($this->db->trans_status() === FALSE)
+			$this->db->trans_rollback();
+		else
+			$this->db->trans_commit();
+	}
 }
