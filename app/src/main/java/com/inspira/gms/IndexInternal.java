@@ -38,7 +38,6 @@ import layout.ChangePasswordFragment;
 import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
-import layout.SalesTargetFragment;
 import layout.SettingFragment;
 
 
@@ -79,26 +78,8 @@ public class IndexInternal extends AppCompatActivity
         toggle.syncState();
         context = getApplicationContext();
         LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
-        //remarked by Tonny @02-Aug-2017  dipindah ke procedure RefreshUserData
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-//        View navigationHeader = navigationView.getHeaderView(0);
-//        tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
-//        tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
-
-//        //added by Tonny @01-Aug-2017
-//        String actionUrl = "Sales/getOmzet/";
-//        new checkOmzet().execute( actionUrl );
-//
-//        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-//        tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
-//
-//        String targetUrl = "Sales/getTarget/";
-//        new checkTarget().execute( targetUrl );
-//
-//        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
-//        tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
-        /////
         LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
 

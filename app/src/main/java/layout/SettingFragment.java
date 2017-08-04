@@ -65,6 +65,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
 
         tvStartTracking.setOnClickListener(this);
         tvEndTracking.setOnClickListener(this);
+        btnUpdate.setOnClickListener(this);
 
         Calendar newTime = Calendar.getInstance();
         tp= new TimePickerDialog(getActivity(), R.style.DialogTheme, new TimePickerDialog.OnTimeSetListener() {
@@ -103,8 +104,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
             timetype = 2;
             tp.show();
         }else if(id == R.id.btnUpdate){
-            String actionUrl = "Settings/saveSettings/";
-            new updateSetting().execute( actionUrl );
+            String actionUrl = "Settings/setSettings/";
+            new updateSettings().execute( actionUrl );
+            LibInspira.ShowShortToast(getContext(), "Saving...");
         }
     }
 
@@ -167,7 +169,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private class updateSetting extends AsyncTask<String, Void, String> {
+    private class updateSettings extends AsyncTask<String, Void, String> {
         JSONObject jsonObject;
         String interval = edtInterval.getText().toString();
         String radius = edtRadius.getText().toString();
@@ -203,6 +205,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
                         LibInspira.ShowShortToast(getContext(), "Setting Updated");
                         LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
                     }else{
+                        Log.d("FAILED: ", success);
                         LibInspira.ShowShortToast(getContext(), "Update Settings Failed");
                     }
                 }
