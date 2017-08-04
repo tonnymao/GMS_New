@@ -314,20 +314,31 @@ class Sales extends REST_Controller {
 		$value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
         
-        $nomortuser	= (isset($jsonObject["nomortuser"])	? $jsonObject["nomortuser"]	: "");
-        $latitude	= (isset($jsonObject["latitude"])	? $jsonObject["latitude"]	: "");
-        $longitude	= (isset($jsonObject["longitude"])	? $jsonObject["longitude"]	: "");
-        $fakeGPS	= (isset($jsonObject["fakeGPS"])	? $jsonObject["fakeGPS"]	: "");
+        $nomortuser	= (isset($jsonObject["nomorthsales"])	? $jsonObject["nomorthsales"]	: "0");
+        $latitude	= (isset($jsonObject["latitude"])	? $jsonObject["latitude"]	: "0");
+        $longitude	= (isset($jsonObject["longitude"])	? $jsonObject["longitude"]	: "0");
+        $fakeGPS	= (isset($jsonObject["fakeGPS"])	? $jsonObject["fakeGPS"]	: "0");
         
         $this->db->trans_begin();
         
-        $query = "INSERT INTO `gms`.`whtracking_mobile`(`nomortuser`,`latitude`,`longitude`,`trackingDate`,`fakeGPS`) VALUES ($nomortuser, $latitude, $longitude, NOW(), $fakeGPS)";
+        $query = "INSERT INTO `gms`.`whtracking_mobile`(`nomorthsales`,`latitude`,`longitude`,`trackingDate`,`fakeGPS`) VALUES ($nomortuser, $latitude, $longitude, NOW(), $fakeGPS)";
 		
         $this->db->query($query);
         
         if ($this->db->trans_status() === FALSE)
+		{
 			$this->db->trans_rollback();
+			array_push($data['data'], array( 'query' => $this->error($query) ));	
+		}
 		else
+		{
 			$this->db->trans_commit();
+			array_push($data['data'], array( 'success' => 'true' ));
+		}
+		
+		if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
 	}
 }
