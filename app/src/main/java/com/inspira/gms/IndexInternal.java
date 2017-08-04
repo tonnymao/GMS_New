@@ -35,8 +35,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
+import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
+import layout.SalesTargetFragment;
+import layout.SettingFragment;
 
 
 public class IndexInternal extends AppCompatActivity
@@ -96,7 +99,7 @@ public class IndexInternal extends AppCompatActivity
 //        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
 //        tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
         /////
-        //LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
+        LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
 
         //added by Shodiq @01-Aug-2017
@@ -125,9 +128,7 @@ public class IndexInternal extends AppCompatActivity
         String actionUrl = "Sales/getOmzetTarget/";
         new checkOmzetTarget().execute( actionUrl );
         tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-        tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
-        tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
     }
 
     /******************************************************************************
@@ -186,6 +187,8 @@ public class IndexInternal extends AppCompatActivity
                             if (success.equals("true")) {
                                 LibInspira.setShared(global.salespreferences, global.sales.omzet, obj.getString("omzet"));
                                 LibInspira.setShared(global.salespreferences, global.sales.target, obj.getString("target"));
+                                tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
+                                tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
                             }
                         }else{
                             LibInspira.setShared(global.salespreferences, global.sales.omzet, "0");
@@ -226,6 +229,7 @@ public class IndexInternal extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {  //added by Tonny @30-Jul-2017
             // Handle the camera action
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SettingFragment());  //added by Tonny @04-Aug-2017
         } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
         } else if (id == R.id.action_logout) {
@@ -252,6 +256,8 @@ public class IndexInternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_contact) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());  //added by Tonny @01-Aug-2017
+        } else if (id == R.id.nav_target) {
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChoosePeriodeFragment());  //added by Tonny @04-Aug-2017
         } else if (id == R.id.nav_group) {
 
         } else if (id == R.id.nav_salesorder) {
