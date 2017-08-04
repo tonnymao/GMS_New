@@ -105,11 +105,11 @@ public class IndexInternal extends AppCompatActivity
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
+        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
+        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         //modified by Tonny @03-Aug-2017 function untuk get omzet dan target dijadikan satu
         String actionUrl = "Sales/getOmzetTarget/";
         new checkOmzetTarget().execute( actionUrl );
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
-        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
     }
 
     /******************************************************************************
@@ -157,7 +157,7 @@ public class IndexInternal extends AppCompatActivity
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Log.d("omzet", result);
+            //Log.d("omzettarget", result);  //remarked by Tonny @04-Aug-2017
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
