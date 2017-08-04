@@ -20,6 +20,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,7 +82,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         public void handleMessage(Message msg) {
             if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Log.i("GMSbackgroundTask", "background process works fine!!!");
-                locationManager.requestLocationUpdates(provider, 400, 0, GMSbackgroundTask.this);
+                locationManager.requestLocationUpdates(provider, 0, 0, GMSbackgroundTask.this);
             }
 //            try {
 //                while(true) {
@@ -152,8 +154,46 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        String actionUrl = "Sales/pushTrackingData/";
-        new pushTrackingGPStoDB(globalVar.userpreferences.getString("nomor_sales", ""), location).execute(actionUrl);
+        if(!LibInspira.getShared(globalVar.sharedpreferences, globalVar.shared.oldlat, "").equals(""))
+        {
+            double d = distance(Double.parseDouble(LibInspira.getShared(globalVar.sharedpreferences, globalVar.shared.oldlat, "")), Double.parseDouble(LibInspira.getShared(globalVar.sharedpreferences, globalVar.shared.oldlon, "")), location.getLatitude(), location.getLongitude());
+            if(d>1)
+            {
+                Log.d("GMSbackgroundTask", d + "");
+                LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlat, String.valueOf(location.getLatitude()));
+                LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlon, String.valueOf(location.getLongitude()));
+                String actionUrl = "Sales/pushTrackingData/";
+                new pushTrackingGPStoDB(globalVar.userpreferences.getString("nomor_sales", ""), location).execute(actionUrl);
+            }
+            else
+                Log.d("GMSbackgroundTask", "Location on radius");
+        }
+        else
+        {
+            LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlat, String.valueOf(location.getLatitude()));
+            LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlon, String.valueOf(location.getLongitude()));
+        }
+        Log.d("GMSbackgroundTask", "Location updated");
+    }
+
+    private double distance(double lat1, double lng1, double lat2, double lng2) {
+        //3958.75
+        double earthRadius = 6371; // in miles, change to 6371 for kilometer output
+
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        double dist = earthRadius * c;
+
+        return dist; // output distance, in MILES
     }
 
     @Override

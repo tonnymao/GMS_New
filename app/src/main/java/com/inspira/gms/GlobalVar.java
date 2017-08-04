@@ -54,6 +54,8 @@ public class GlobalVar {
         public class Shared
         {
             public String server = "server";
+            public String oldlat = "oldlat";
+            public String oldlon = "oldlon";
         }
 
         public class User

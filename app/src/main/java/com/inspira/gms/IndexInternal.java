@@ -1,5 +1,7 @@
 package com.inspira.gms;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -91,8 +93,14 @@ public class IndexInternal extends AppCompatActivity
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
 
         }
-        Intent service = new Intent(IndexInternal.this, GMSbackgroundTask.class);
-        startService(service);
+//        Intent service = new Intent(IndexInternal.this, GMSbackgroundTask.class);
+//        startService(service);
+        Intent service = new Intent(getApplicationContext(), trackerBroadcastReciver.class);
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, 88088, service, PendingIntent.FLAG_UPDATE_CURRENT);
+        long firstMillis = System.currentTimeMillis();
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+//        alarm.set(AlarmManager.RTC_WAKEUP, firstMillis, pIntent);
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
     }
 
     @Override
