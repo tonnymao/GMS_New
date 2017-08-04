@@ -1,8 +1,12 @@
 package com.inspira.gms;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -54,6 +58,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             String actionUrl = "Login/checkUser/";
             new checkUser().execute( actionUrl );
         }
+
+        //Permission for enabling location feature
+        if (Build.VERSION.SDK_INT >= 23)
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
     }
 
     @Override
