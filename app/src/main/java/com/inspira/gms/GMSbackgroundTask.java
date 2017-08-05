@@ -20,6 +20,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,9 +35,11 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     private LocationManager locationManager;
     private String provider;
     private Location oldLocation;
+    private GlobalVar globalVar;
 
     @Override
     public void onCreate() {
+        globalVar = new GlobalVar(this);
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
@@ -47,7 +51,9 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         // Define the criteria how to select the locatioin provider -> use
         // default
         Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
+        locationManager.getBestProvider(criteria, true);
+//        provider = locationManager.getBestProvider(criteria, false);
+        provider = LocationManager.NETWORK_PROVIDER;
         if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location location = locationManager.getLastKnownLocation(provider);
             if (location != null) {
@@ -74,21 +80,30 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
         @Override
         public void handleMessage(Message msg) {
-            try {
-                while(true) {
-                    if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        locationManager.requestLocationUpdates(provider, 400, 1, GMSbackgroundTask.this);
-                        Location location = locationManager.getLastKnownLocation(provider);
-                        if (oldLocation.getLatitude() - location.getLatitude() != 0 || oldLocation.getLongitude() - location.getLongitude() != 0) {
-                            onLocationChanged(location);
-                        }
-                        Log.i("GMSbackgroundTask", "background process works fine!");
-                    }
-                    Thread.sleep(5000);
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Log.i("GMSbackgroundTask", "background process works fine!!!");
+                locationManager.requestLocationUpdates(provider, 0, 0, GMSbackgroundTask.this);
             }
+//            try {
+//                while(true) {
+//                    if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                        locationManager.requestLocationUpdates(provider, 0, 0, GMSbackgroundTask.this);
+//                        Location location = locationManager.getLastKnownLocation(provider);
+//                        if(location!=null)
+//                        {
+//                            Log.i("GMSbackgroundTask", "background process works fine!");
+//                            if (oldLocation.getLatitude() - location.getLatitude() != 0 || oldLocation.getLongitude() - location.getLongitude() != 0) {
+//                                Log.i("GMSbackgroundTask", "background process works fine!!!");
+//                                onLocationChanged(location);
+//                            }
+//                        }
+//
+//                    }
+//                    Thread.sleep(5000);
+//                }
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
             //stopSelf(msg.arg1); <- don't use, ur gonna kill this
         }
     }
@@ -117,8 +132,8 @@ public class GMSbackgroundTask extends Service implements LocationListener {
                 jsonObject = new JSONObject();
                 jsonObject.put("nomorthsales", nomorthsales);
                 jsonObject.put("latitude", location.getLatitude());
-                jsonObject.put("longitude", location.getLatitude());
-                jsonObject.put("fakeGPS", gpsFakeStatus);
+                jsonObject.put("longitude", location.getLongitude());
+                jsonObject.put("fakeGPS", String.valueOf(gpsFakeStatus));
                 Log.i("GMSbackgroundTask", "sales number: " + nomorthsales);
                 Log.i("GMSbackgroundTask", "latitude: " + location.getLatitude());
                 Log.i("GMSbackgroundTask", "longitude: " + location.getLongitude());
@@ -132,14 +147,53 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.i("GMSbackgroundTask", "data inserted");
+            Log.i("GMSbackgroundTask", s);
             super.onPostExecute(s);
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        new pushTrackingGPStoDB(GlobalVar.userpreferences.getString("nomor_sales", ""), location).execute("Sales/pushTrackingData/");
+        if(!LibInspira.getShared(globalVar.sharedpreferences, globalVar.shared.oldlat, "").equals(""))
+        {
+            double d = distance(Double.parseDouble(LibInspira.getShared(globalVar.sharedpreferences, globalVar.shared.oldlat, "")), Double.parseDouble(LibInspira.getShared(globalVar.sharedpreferences, globalVar.shared.oldlon, "")), location.getLatitude(), location.getLongitude());
+            if(d>1)
+            {
+                Log.d("GMSbackgroundTask", d + "");
+                LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlat, String.valueOf(location.getLatitude()));
+                LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlon, String.valueOf(location.getLongitude()));
+                String actionUrl = "Sales/pushTrackingData/";
+                new pushTrackingGPStoDB(globalVar.userpreferences.getString("nomor_sales", ""), location).execute(actionUrl);
+            }
+            else
+                Log.d("GMSbackgroundTask", "Location on radius");
+        }
+        else
+        {
+            LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlat, String.valueOf(location.getLatitude()));
+            LibInspira.setShared(globalVar.sharedpreferences, globalVar.shared.oldlon, String.valueOf(location.getLongitude()));
+        }
+        Log.d("GMSbackgroundTask", "Location updated");
+    }
+
+    private double distance(double lat1, double lng1, double lat2, double lng2) {
+        //3958.75
+        double earthRadius = 6371; // in miles, change to 6371 for kilometer output
+
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        double dist = earthRadius * c;
+
+        return dist; // output distance, in MILES
     }
 
     @Override
