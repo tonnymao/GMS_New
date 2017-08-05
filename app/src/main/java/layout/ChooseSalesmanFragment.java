@@ -62,7 +62,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Barang");
+        getActivity().setTitle("Browse Salesman");
         return v;
     }
 
@@ -157,6 +157,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         list.clear();
 
         String data = LibInspira.getShared(global.datapreferences, global.data.salesman, "");
+        Log.d("DATA: ", data);
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1)
         {
@@ -203,27 +204,27 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
+                    Log.d("jsonarray length: ", Integer.toString(jsonarray.length()));
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomor = (obj.getString("nomor"));
+                            String nomorsales = (obj.getString("nomorsales"));
                             String nama = (obj.getString("nama"));
-                            String namajual = (obj.getString("namajual"));
-                            String kode = (obj.getString("kode"));
 
-                            if(nomor.equals("")) nomor = "null";
+                            if(nomorsales.equals("")) nomorsales = "null";
                             if(nama.equals("")) nama = "null";
-                            if(namajual.equals("")) namajual = "null";
-                            if(kode.equals("")) kode = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "|";
+                            tempData = tempData + nomorsales + "~" + nama + "|";
+                        }else{
+                            Log.d("FAILED: ", obj.getString("query"));
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
+                    Log.d("tempData: ", tempData);
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.salesman, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.barang,
+                                global.data.salesman,
                                 tempData
                         );
                         refreshList();

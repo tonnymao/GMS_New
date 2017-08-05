@@ -327,8 +327,8 @@ class Master extends REST_Controller {
         $jsonObject = (json_decode($value , true));
 
         $query = "SELECT
-                    //a.nomor AS `nomor`,
-                    //a.nomortuser AS `nomorTUser`,
+                    #a.nomor AS `nomor`,
+                    #a.nomortuser AS `nomorTUser`,
                     a.nomorthsales AS `nomorSales`,
                     b.kode AS `nama`
                  FROM whuser_mobile a
@@ -345,7 +345,7 @@ class Master extends REST_Controller {
                 array_push($data['data'], array(
                                                 //'nomor'					=> $r['nomor'],
                                                 //'nomorTUser' 			=> $r['nomorTUser'],
-                                                'nomorSales'         	=> $r['nomorSales'],
+                                                'nomorsales'         	=> $r['nomorsales'],
                                                 'nama' 					=> $r['nama']
                                                 )
                 );
