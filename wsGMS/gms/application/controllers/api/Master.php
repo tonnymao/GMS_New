@@ -315,6 +315,50 @@ class Master extends REST_Controller {
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
+    }
+
+    //--- Added by Tonny --- //
+    // --- POST get sales --- //
+    function getSales_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "SELECT
+                    a.nomor AS `nomor`,
+                    a.nomortuser AS `nomorTUser`,
+                    a.nomorthsales AS `nomorTHSales`,
+                    b.kode AS `nama`
+                 FROM whuser_mobile a
+                 JOIN tuser b
+                    ON b.nomor = a.nomortuser
+                 WHERE b.status = 1
+                    AND a.nomorthsales > 0
+                 ORDER BY b.kode DESC;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'nomorTUser' 			=> $r['nomorTUser'],
+                                                'nomorTHSales'         	=> $r['nomorTHSales'],
+                                                'nama' 					=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
 
     }
+
 }
