@@ -87,6 +87,7 @@ public class GlobalVar {
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
             public String periode = "periode"; // bulan~tahun
+            public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

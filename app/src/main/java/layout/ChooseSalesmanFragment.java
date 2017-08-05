@@ -156,7 +156,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.barang, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.salesman, "");
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1)
         {
@@ -170,21 +170,15 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomor = parts[0];
+                    String nomorsales = parts[0];
                     String nama = parts[1];
-                    String namajual = parts[2];
-                    String kode = parts[3];
 
-                    if(nomor.equals("null")) nomor = "";
+                    if(nomorsales.equals("null")) nomorsales = "";
                     if(nama.equals("null")) nama = "";
-                    if(namajual.equals("null")) namajual = "";
-                    if(kode.equals("null")) kode = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomor);
+                    dataItem.setNomor(nomorsales);
                     dataItem.setNama(nama);
-                    dataItem.setNamajual(namajual);
-                    dataItem.setKode(kode);
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -253,24 +247,16 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
 
     public class ItemAdapter {
 
-        private String nomor;
+        private String nomorsales;
         private String nama;
-        private String namajual;
-        private String kode;
 
         public ItemAdapter() {}
 
-        public String getNomor() {return nomor;}
-        public void setNomor(String _param) {this.nomor = _param;}
+        public String getNomor() {return nomorsales;}
+        public void setNomor(String _param) {this.nomorsales = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
-
-        public String getNamajual() {return namajual;}
-        public void setNamajual(String _param) {this.namajual = _param;}
-
-        public String getKode() {return kode;}
-        public void setKode(String _param) {this.kode = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {

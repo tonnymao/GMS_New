@@ -71,7 +71,7 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
         int id = v.getId();
         if(id == R.id.tvSales){
             //tampilkan browse sales
-
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
         }else if (id == R.id.btnAdd){
             if(edtBulan.getText().equals("") ||
             edtTahun.getText().equals("") ||
@@ -204,12 +204,12 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
             row.setTag(holder);
             setupItem(holder);
 
-            row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
-                }
-            });
+//            row.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    LibInspira.ShowLongToast(context, "coba");
+//                }
+//            });
 
             return row;
         }
