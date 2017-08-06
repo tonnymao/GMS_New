@@ -329,7 +329,7 @@ class Master extends REST_Controller {
         $query = "SELECT
                     #a.nomor AS `nomor`,
                     #a.nomortuser AS `nomorTUser`,
-                    a.nomorthsales AS `nomorSales`,
+                    a.nomorthsales AS `nomorsales`,
                     b.kode AS `nama`
                  FROM whuser_mobile a
                  JOIN tuser b
