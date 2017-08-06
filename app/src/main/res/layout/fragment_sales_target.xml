@@ -1,241 +1,201 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     android:padding="10dp">
 
     <ScrollView
+        android:id="@+id/scv1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="?android:attr/actionBarSize"
         android:isScrollContainer="true"
         android:scrollbarStyle="insideOverlay"
-        android:scrollbars="vertical"
-        android:layout_marginBottom="?android:attr/actionBarSize"
-        android:id="@+id/scv1">
+        android:scrollbars="vertical">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp"
-                android:id="@+id/tblTarget">
+            <TextView
+                android:id="@+id/tvMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="Month :"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
+            <Spinner
+                android:id="@+id/spBulan"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:paddingRight="10dp"
+                android:entries="@array/list_month"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/tvMonth"
+                android:layout_marginLeft="8dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Month"
-                        android:textColor="@color/colorPrimaryDark" />
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="Year :"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/tvMonth"
+                android:layout_marginRight="0dp"
+                app:layout_constraintRight_toRightOf="@+id/tvMonth" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=" : "
-                        android:textColor="@color/colorPrimaryDark" />
+            <Spinner
+                android:id="@+id/spTahun"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toTopOf="@+id/textView3"
+                android:paddingRight="10dp"
+                app:layout_constraintLeft_toRightOf="@+id/textView3"
+                android:layout_marginLeft="8dp" />
 
-                    <EditText
-                        android:id="@+id/edtBulan"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:hint="[BULAN]"
-                        android:singleLine="true"
-                        android:inputType="number" />
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="Sales :"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintRight_toRightOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=""
-                        android:textColor="@color/colorPrimaryDark" />
-                </TableRow>
+            <TextView
+                android:id="@+id/tvSales"
+                style="@android:style/Widget.Button"
+                android:layout_width="280dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="2"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintLeft_toLeftOf="@+id/spTahun"
+                app:layout_constraintTop_toTopOf="@+id/textView4" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="Target :"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintRight_toRightOf="@+id/textView4"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Year"
-                        android:textColor="@color/colorPrimaryDark" />
+            <EditText
+                android:id="@+id/edtTarget"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="1"
+                android:hint=""
+                android:inputType="number"
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintLeft_toLeftOf="@+id/tvSales"
+                app:layout_constraintRight_toLeftOf="@+id/textView6"
+                app:layout_constraintTop_toTopOf="@+id/textView5" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=" : "
-                        android:textColor="@color/colorPrimaryDark" />
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="0dp"
+                android:layout_weight="1"
+                android:text="IDR"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintBottom_toBottomOf="@+id/edtTarget"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView5"
+                app:layout_constraintVertical_bias="1.0" />
 
-                    <EditText
-                        android:id="@+id/edtTahun"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:hint="[TAHUN]"
-                        android:singleLine="true"
-                        android:inputType="number" />
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="3"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimaryDark"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="324dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=""
-                        android:textColor="@color/colorPrimaryDark" />
-                </TableRow>
+            <Button
+                android:id="@+id/btnAdd"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:background="@color/colorButton"
+                android:text="Add"
+                android:textColor="@color/colorBackground"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Sales"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=" : "
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <TextView
-                        android:id="@+id/tvSales"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        style="@android:style/Widget.Button"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="0"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Target"
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=" : "
-                        android:textColor="@color/colorPrimaryDark" />
-
-                    <EditText
-                        android:id="@+id/edtTarget"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:hint=""
-                        android:singleLine="true"
-                        android:inputType="number" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="IDR"
-                        android:textColor="@color/colorPrimaryDark" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="3"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=""
-                        android:textColor="@color/colorPrimaryDark" />
-                    <Button
-                        style="?android:attr/buttonStyleSmall"
-                        android:id="@+id/btnAdd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Add"
-                        android:background="@color/colorButton"
-                        android:textColor="@color/colorBackground"
-                        android:layout_weight="1"/>
-                </TableRow>
-
-            </TableLayout>
             <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/tblTarget"
-                android:id="@+id/lvGridSales" />
-        </RelativeLayout>
+                android:id="@+id/lvGridSales"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_below="@id/btnAdd"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnAdd"
+                app:layout_constraintVertical_bias="0.0" />
+        </android.support.constraint.ConstraintLayout>
     </ScrollView>
+
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set"
         android:id="@+id/btnSet"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorButton"
-        android:textColor="@color/colorBackground"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true" />
+        android:text="Set"
+        android:textColor="@color/colorBackground" />
 </RelativeLayout>

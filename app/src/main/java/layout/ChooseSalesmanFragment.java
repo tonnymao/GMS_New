@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.inspira.gms.IndexInternal;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -283,7 +284,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View row = convertView;
             Holder holder = null;
 
@@ -304,7 +305,13 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
+                    //LibInspira.ShowLongToast(context, "coba");
+                    //LibInspira.ShowShortToast(context, itemadapter.getItem(position).getNomor());
+
+                    // untuk mengirim data yang dipilih ke activity
+//                    LibInspira.sendDataFragmentToActivity(getActivity(), IndexInternal.class, "nomorsales", itemadapter.getItem(position).toString());
+//                    LibInspira.sendDataFragmentToActivity(getActivity(), IndexInternal.class, "namasales", itemadapter.getItem(position).toString());
+                    getFragmentManager().popBackStack();  //untuk kembali ke stack sebelumnya
                 }
             });
 

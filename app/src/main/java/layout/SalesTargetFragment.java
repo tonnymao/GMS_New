@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.inspira.gms.LibInspira;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.inspira.gms.IndexInternal.global;
@@ -34,17 +36,17 @@ import static com.inspira.gms.IndexInternal.global;
  * A simple {@link Fragment} subclass.
  */
 public class SalesTargetFragment extends Fragment implements View.OnClickListener{
-    EditText edtBulan, edtTahun, edtTarget;
+    EditText edtTarget;
+    Spinner spBulan, spTahun;
     TextView tvSales;
     Button btnAdd, btnSet;
     ListView lvGridSales;
-
+    private Integer batasTahun = 5;
     private SalesTargetFragment.ItemListAdapter itemadapter;
     private ArrayList<SalesTargetFragment.ItemAdapter> list;
     public SalesTargetFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,13 +59,34 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle("New Sales Target");
-        edtBulan = (EditText) getView().findViewById(R.id.edtBulan);
-        edtTahun= (EditText) getView().findViewById(R.id.edtTahun);
+        spBulan = (Spinner) getView().findViewById(R.id.spBulan);
+        spTahun = (Spinner) getView().findViewById(R.id.spTahun);
         edtTarget = (EditText) getView().findViewById(R.id.edtTarget);
         tvSales = (TextView) getView().findViewById(R.id.tvSales);
         btnAdd = (Button) getView().findViewById(R.id.btnAdd);
         btnSet = (Button) getView().findViewById(R.id.btnSet);
         lvGridSales = (ListView) getView().findViewById(R.id.lvGridSales);
+
+        ArrayAdapter<String> adapter;
+        List<String> list;
+
+
+        Integer year = Calendar.getInstance().get(Calendar.YEAR);
+        list = new ArrayList<String>();
+
+        //added by Tonny @06-Aug-2017  untuk mengisi spTahun sebanyak batasTahun dari tahun sekarang
+        for (int i = 0; i < batasTahun; i++){
+            list.add(year.toString());
+            year ++;
+        }
+        adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spTahun.setAdapter(adapter);
+
+        btnAdd.setOnClickListener(this);
+        btnSet.setOnClickListener(this);
+        tvSales.setOnClickListener(this);
     }
 
     @Override
@@ -73,8 +96,7 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
             //tampilkan browse sales
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
         }else if (id == R.id.btnAdd){
-            if(edtBulan.getText().equals("") ||
-            edtTahun.getText().equals("") ||
+            if(
             edtTarget.getText().equals("") ||
             tvSales.getText().equals("")){
                 //jika data kosong, tampilkan pesan error
@@ -82,8 +104,8 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
             }else{
                 //tambahkan data ke lvGridSales
                 SalesTargetFragment.ItemAdapter dataItem = new SalesTargetFragment.ItemAdapter();
-                dataItem.setBulan(edtBulan.getText().toString());
-                dataItem.setTahun(edtTahun.getText().toString());
+                dataItem.setBulan(spBulan.getSelectedItem().toString());
+                dataItem.setTahun(spTahun.getSelectedItem().toString());
                 dataItem.setTarget(edtTarget.getText().toString());
                 dataItem.setSales(tvSales.getText().toString());
                 list.add(dataItem);
