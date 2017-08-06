@@ -144,7 +144,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
         @Override
         protected void onPostExecute(String result) {
             Log.d("settings", result);
-            LibInspira.ShowShortToast(getContext(), "Updating...");
+            //LibInspira.ShowShortToast(getContext(), "Updating...");
             try {
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
