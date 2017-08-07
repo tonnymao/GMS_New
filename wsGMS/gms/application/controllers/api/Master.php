@@ -326,7 +326,7 @@ class Master extends REST_Controller {
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
-        $query = "SELECT
+        $query = "SELECT DISTINCT
                     #a.nomor AS `nomor`,
                     #a.nomortuser AS `nomorTUser`,
                     a.nomorthsales AS `nomorsales`,
