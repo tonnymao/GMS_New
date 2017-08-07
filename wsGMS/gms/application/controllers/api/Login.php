@@ -184,6 +184,7 @@ class Login extends REST_Controller {
 						a.tipeuser AS tipe,
 						a.nomorrole AS role,
 						a.hash AS hash,
+						c.nomorcabang AS cabang,
 						b.isowner AS isowner,
 						b.issales AS issales,
 						b.setting AS setting,
@@ -192,10 +193,14 @@ class Login extends REST_Controller {
 						b.stockmonitoring AS stockmonitoring,
 						b.pricelist AS pricelist,
 						b.addscheduletask AS addscheduletask,
-						b.salestracking AS salestracking
+						b.salestracking AS salestracking,
+						b.hpp AS hpp,
+						b.crossbranch AS crossbranch
 					FROM whuser_mobile a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
+					JOIN tuser c ON a.nomortuser = c.nomor
 					WHERE a.status_aktif = 1
+					AND c.status = 1
 					AND a.userid = ? 
 					AND BINARY a.password = ?";
         $result = $this->db->query($query, array($user, $pass));
@@ -212,6 +217,7 @@ class Login extends REST_Controller {
 												'user_tipe' 					=> $r['tipe'], 
 												'user_role' 					=> $r['role'], 
 												'user_hash' 					=> $r['hash'], 
+												'user_cabang' 					=> $r['cabang'],
 												'role_isowner'					=> $r['isowner'],
 												'role_issales'					=> $r['issales'],
 												'role_setting'					=> $r['setting'],
@@ -220,7 +226,9 @@ class Login extends REST_Controller {
 												'role_stockmonitoring'			=> $r['stockmonitoring'],
 												'role_pricelist'				=> $r['pricelist'],
 												'role_addscheduletask'			=> $r['addscheduletask'],
-												'role_salestracking'			=> $r['salestracking']
+												'role_salestracking'			=> $r['salestracking'],
+												'role_hpp'          			=> $r['hpp'],
+                                                'role_crossbranch'  			=> $r['crossbranch']
                 								)
                	);
             }
@@ -276,6 +284,7 @@ class Login extends REST_Controller {
 						a.tipeuser AS tipe,
 						a.nomorrole AS role,
 						a.hash AS hash,
+						c.nomorcabang AS cabang,
 						b.isowner AS isowner,
 						b.issales AS issales,
 						b.setting AS setting,
@@ -284,10 +293,14 @@ class Login extends REST_Controller {
 						b.stockmonitoring AS stockmonitoring,
 						b.pricelist AS pricelist,
 						b.addscheduletask AS addscheduletask,
-						b.salestracking AS salestracking
+						b.salestracking AS salestracking,
+						b.hpp AS hpp,
+                        b.crossbranch AS crossbranch
 					FROM whuser_mobile a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
-					WHERE a.status_aktif = 1					
+					JOIN tuser c ON a.nomortuser = c.nomor
+					WHERE a.status_aktif = 1
+						AND c.status = 1		
 						AND hash = '$hash'";
         $result = $this->db->query($query);
 
@@ -305,6 +318,7 @@ class Login extends REST_Controller {
 													'user_tipe' 					=> $r['tipe'], 
 													'user_role' 					=> $r['role'], 
 													'user_hash' 					=> $r['hash'], 
+													'user_cabang' 					=> $r['cabang'], 
 													'role_isowner'					=> $r['isowner'],
 													'role_issales'					=> $r['issales'],
 													'role_setting'					=> $r['setting'],
@@ -313,7 +327,9 @@ class Login extends REST_Controller {
 													'role_stockmonitoring'			=> $r['stockmonitoring'],
 													'role_pricelist'				=> $r['pricelist'],
 													'role_addscheduletask'			=> $r['addscheduletask'],
-													'role_salestracking'			=> $r['salestracking']
+													'role_salestracking'			=> $r['salestracking'],
+													'role_hpp'          			=> $r['hpp'],
+                                                    'role_crossbranch'  			=> $r['crossbranch']
 											)
 				);
 			}

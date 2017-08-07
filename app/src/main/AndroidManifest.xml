@@ -43,7 +43,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
-        <service android:name=".GMSbackgroundTask1" />
 
         <meta-data
             android:name="com.google.android.gms.version"
