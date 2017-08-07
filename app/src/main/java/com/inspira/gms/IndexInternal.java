@@ -7,31 +7,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,12 +44,11 @@ public class IndexInternal extends AppCompatActivity
     public  static TextView tvUsername, tvSales, tvTarget;  //modified by Tonny @02-Aug-2017
     public static NavigationView navigationView;
     private static Context context;  //added by Tonny @02-Aug-2017
-    private FragmentManager fm = getSupportFragmentManager();
-    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_index_internal);
 
         global = new GlobalVar(this);
@@ -86,21 +78,32 @@ public class IndexInternal extends AppCompatActivity
         RefreshUserData();
 
         //added by Shodiq @01-Aug-2017
-        //creating background service
+        // Permission for enabling location feature only for SDK Marshmallow | Android 6
+        if (Build.VERSION.SDK_INT >= 23)
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
 
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
-
+        // made by Shodiq @8-aug-2017
+        // check GPS status and ask to activate if GPS is disabled
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
+            // AlarmManager for background service
+            Intent service = new Intent(getApplicationContext(), trackerBroadcastReciver.class);
+            final PendingIntent pIntent = PendingIntent.getBroadcast(this, 88088, service, PendingIntent.FLAG_UPDATE_CURRENT);
+            long firstMillis = System.currentTimeMillis();
+            AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
+            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
+        } else {
+            Runnable commandOk = new Runnable() {
+                @Override
+                public void run() {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            };
+            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
         }
-//        Intent service = new Intent(IndexInternal.this, GMSbackgroundTask.class);
-//        startService(service);
-        Intent service = new Intent(getApplicationContext(), trackerBroadcastReciver.class);
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, 88088, service, PendingIntent.FLAG_UPDATE_CURRENT);
-        long firstMillis = System.currentTimeMillis();
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        alarm.set(AlarmManager.RTC_WAKEUP, firstMillis, pIntent);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
     }
 
     @Override
@@ -118,26 +121,10 @@ public class IndexInternal extends AppCompatActivity
         //modified by Tonny @03-Aug-2017 function untuk get omzet dan target dijadikan satu
         String actionUrl = "Sales/getOmzetTarget/";
         new checkOmzetTarget().execute( actionUrl );
-    }
-
-    /******************************************************************************
-     Class     : checkGPSstatus
-     Author    : Shodiq
-     Date      : 03-Aug-2017
-     Function  : Untuk mengecek aktif tidaknya GPS / location
-     ******************************************************************************/
-    public boolean checkGPSstatus(){
-        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean enabled = service
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if (!enabled) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            Toast.makeText(getApplicationContext(), "Please Turn On Your Location", Toast.LENGTH_LONG).show();
-            startActivity(intent);
-        }
-
-        return !enabled;
+        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
+        tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
+        tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
+        tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
     }
 
     /******************************************************************************

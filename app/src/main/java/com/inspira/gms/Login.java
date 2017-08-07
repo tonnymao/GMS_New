@@ -1,6 +1,5 @@
 package com.inspira.gms;
 
-import android.*;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -18,8 +17,6 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Created by Tonny on 7/22/2017.
@@ -60,10 +57,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             new checkUser().execute( actionUrl );
         }
 
-        //Permission for enabling location feature
+        // made by Shodiq
+        // Permission for enabling location feature only for SDK Marshmallow | Android 6
         if (Build.VERSION.SDK_INT >= 23)
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 1600);
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
     }
 
     @Override

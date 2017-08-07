@@ -389,12 +389,14 @@ public class LibInspira {
         alertDialog.setMessage(_message);
         alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                _commandOK.run();
+                if (_commandOK != null)
+                    _commandOK.run();
             } });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                _commandCancel.run();
-            } });
+        if (_commandCancel != null){
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                        _commandCancel.run();
+            } });}
         alertDialog.show();
     }
 }

@@ -36,6 +36,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
         <service android:name=".GMSbackgroundTask"
                 android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>

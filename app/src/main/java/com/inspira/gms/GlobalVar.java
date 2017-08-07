@@ -2,7 +2,6 @@ package com.inspira.gms;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.LocationListener;
 
 /**
  * Created by Tonny on 7/24/2017.
@@ -55,8 +54,6 @@ public class GlobalVar {
         public class Shared
         {
             public String server = "server";
-            public String oldlat = "oldlat";
-            public String oldlon = "oldlon";
             public String position = "position";  //added by Tonny @07-Aug-2017
             public String namasales = "namasales"; //added by Tonny @07-Aug-2017
             public String nomorsales = "nomorsales"; //added by Tonny @07-Aug-2017
