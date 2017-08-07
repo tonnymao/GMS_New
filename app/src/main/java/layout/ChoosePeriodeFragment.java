@@ -161,7 +161,8 @@ public class ChoosePeriodeFragment extends Fragment implements View.OnClickListe
                     if(tahun.equals("null")) tahun = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setPeriode(periode);
+                    dataItem.setIntPeriode(periode);
+                    dataItem.setPeriode(LibInspira.getMonth(periode));
                     dataItem.setTahun(tahun);
                     list.add(dataItem);
 
@@ -227,13 +228,18 @@ public class ChoosePeriodeFragment extends Fragment implements View.OnClickListe
 
     public class ItemAdapter {
 
+        private String intperiode;
         private String periode;
         private String tahun;
 
         public ItemAdapter() {}
 
+
         public String getPeriode() {return periode;}
         public void setPeriode(String _param) {this.periode = _param;}
+
+        public String getIntPeriode() {return intperiode;}
+        public void setIntPeriode(String _param) {this.intperiode = _param;}
 
         public String getTahun() {return tahun;}
         public void setTahun(String _param) {this.tahun = _param;}
@@ -280,10 +286,15 @@ public class ChoosePeriodeFragment extends Fragment implements View.OnClickListe
             row.setTag(holder);
             setupItem(holder);
 
+            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
+//                    LibInspira.ShowLongToast(context, "coba");
+                    LibInspira.setShared(global.sharedpreferences, global.shared.periode, finalHolder.adapterItem.getIntPeriode());
+                    LibInspira.setShared(global.sharedpreferences, global.shared.tahun, finalHolder.adapterItem.getTahun());
+                    Log.d("periode: ", finalHolder.adapterItem.getPeriode());
+                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SalesTargetMonthly());
                 }
             });
 

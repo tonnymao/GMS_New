@@ -20,15 +20,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.inspira.gms.IndexInternal;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class ChooseSalesmanFragment extends Fragment implements View.OnClickListener{
+public class SalesTargetMonthly extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
@@ -48,7 +49,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ChooseSalesmanFragment() {
+    public SalesTargetMonthly() {
         // Required empty public constructor
     }
 
@@ -63,7 +64,9 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Browse Salesman");
+        String bulan = LibInspira.getMonth(LibInspira.getShared(global.sharedpreferences, global.shared.periode, "1"));
+        String tahun = LibInspira.getShared(global.sharedpreferences, global.shared.tahun, "0");
+        getActivity().setTitle(bulan + " " +  tahun);
         return v;
     }
 
@@ -112,7 +115,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
 
         refreshList();
 
-        String actionUrl = "Master/getSales/";
+        String actionUrl = "Sales/getSalesmanMonthly/";
         new getData().execute( actionUrl );
     }
 
@@ -138,15 +141,21 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         {
             if(etSearch.getText().equals(""))
             {
-                itemadapter.add(list.get(ctr));
-                itemadapter.notifyDataSetChanged();
+                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                {
+                    itemadapter.add(list.get(ctr));
+                    itemadapter.notifyDataSetChanged();
+                }
             }
             else
             {
                 if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
                 {
-                    itemadapter.add(list.get(ctr));
-                    itemadapter.notifyDataSetChanged();
+                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    {
+                        itemadapter.add(list.get(ctr));
+                        itemadapter.notifyDataSetChanged();
+                    }
                 }
             }
         }
@@ -157,8 +166,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.salesman, "");
-        Log.d("DATA: ", data);
+        String data = LibInspira.getShared(global.datapreferences, global.data.salesmanmonthly, "");
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1)
         {
@@ -172,19 +180,27 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomorsales = parts[0];
+                    String nomor = parts[0];
                     String nama = parts[1];
+                    String target = parts[2];
 
-                    if(nomorsales.equals("null")) nomorsales = "";
+
+                    if(nomor.equals("null")) nomor = "";
                     if(nama.equals("null")) nama = "";
+                    if(target.equals("null")) target = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomorsales);
+
+                    dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
+                    dataItem.setTarget(target);
                     list.add(dataItem);
 
-                    itemadapter.add(dataItem);
-                    itemadapter.notifyDataSetChanged();
+                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    {
+                        itemadapter.add(dataItem);
+                        itemadapter.notifyDataSetChanged();
+                    }
                 }
             }
         }
@@ -194,6 +210,13 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            try {
+                jsonObject.put("periode", LibInspira.getShared(global.sharedpreferences, global.shared.periode, ""));
+                jsonObject.put("tahun", LibInspira.getShared(global.sharedpreferences, global.shared.tahun, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -205,27 +228,26 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
-                    Log.d("jsonarray length: ", Integer.toString(jsonarray.length()));
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomorsales = (obj.getString("nomorsales"));
+                            String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
+                            String target = (obj.getString("target"));
 
-                            if(nomorsales.equals("")) nomorsales = "null";
+                            if(nomor.equals("")) nomor = "null";
+                            if(target.equals("")) target = "null";
                             if(nama.equals("")) nama = "null";
 
-                            tempData = tempData + nomorsales + "~" + nama + "|";
-                        }else{
-                            Log.d("FAILED: ", obj.getString("query"));
+                            tempData = tempData + nomor + "~" + nama + "~" + target + "|";
                         }
                     }
-                    Log.d("tempData: ", tempData);
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.salesman, "")))
+
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.salesmanmonthly, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.salesman,
+                                global.data.salesmanmonthly,
                                 tempData
                         );
                         refreshList();
@@ -249,16 +271,20 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
 
     public class ItemAdapter {
 
-        private String nomorsales;
+        private String nomor;
         private String nama;
+        private String target;
 
         public ItemAdapter() {}
 
-        public String getNomor() {return nomorsales;}
-        public void setNomor(String _param) {this.nomorsales = _param;}
+        public String getNomor() {return nomor;}
+        public void setNomor(String _param) {this.nomor = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
+
+        public String getTarget() {return target;}
+        public void setTarget(String _param) {this.target = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -281,10 +307,11 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
+            TextView tvTarget;
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
             Holder holder = null;
 
@@ -298,24 +325,23 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvTarget = (TextView)row.findViewById(R.id.tvKeterangan);
 
             row.setTag(holder);
             setupItem(holder);
 
-            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //LibInspira.ShowLongToast(context, "coba");
-                    //LibInspira.ShowShortToast(context, itemadapter.getItem(position).getNomor());
-                    // untuk mengirim data yang dipilih ke activity
-//                    LibInspira.sendDataFragmentToActivity(getActivity(), IndexInternal.class, "nomorsales", itemadapter.getItem(position).toString());
-//                    LibInspira.sendDataFragmentToActivity(getActivity(), IndexInternal.class, "namasales", itemadapter.getItem(position).toString());
-                    LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
-                    LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")){
-                        getFragmentManager().popBackStack();  //untuk kembali ke stack sebelumnya
-                    }
+                    //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
+                }
+            });
+
+            final Holder finalHolder = holder;
+            holder.tvNama.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String nomeruser = finalHolder.adapterItem.getNomor();
                 }
             });
 
@@ -324,6 +350,9 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+
+            holder.tvTarget.setVisibility(View.VISIBLE);
+            holder.tvTarget.setText("Target: Rp. " + LibInspira.delimeter(holder.adapterItem.getTarget()));
         }
     }
 }

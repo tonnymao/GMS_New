@@ -8,7 +8,10 @@
 package com.inspira.gms;
 
 //import android.app.Fragment;  // is the Fragment class in the native version of the Android SDK. It was introduced in Android 3 (API 11)
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -36,6 +39,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -371,5 +375,26 @@ public class LibInspira {
             return false;
         else
             return true;
+    }
+
+    //added by Tonny @07-Aug-2017  untuk convert integer menjadi nama bulan
+    public static String getMonth(String _month) {
+        int _intMonth = Integer.parseInt(_month);
+        return new DateFormatSymbols().getMonths()[_intMonth-1];
+    }
+
+    public static void alertbox(String _title, String _message, final Activity _activity, final Runnable _commandOK, final Runnable _commandCancel) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
+        alertDialog.setTitle(_title);
+        alertDialog.setMessage(_message);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                _commandOK.run();
+            } });
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                _commandCancel.run();
+            } });
+        alertDialog.show();
     }
 }

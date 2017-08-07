@@ -16,6 +16,7 @@ public class GlobalVar {
     public static SharedPreferences salespreferences;  //added by Tonny @01-Aug-2017
     public static SharedPreferences datapreferences;
     public static SharedPreferences settingpreferences;  //added by Tonny @03-Aug-2017
+    public static SharedPreferences salestargetpreferences;  //added by Tonny @07-Aug-2017
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
@@ -56,6 +57,11 @@ public class GlobalVar {
             public String server = "server";
             public String oldlat = "oldlat";
             public String oldlon = "oldlon";
+            public String position = "position";  //added by Tonny @07-Aug-2017
+            public String namasales = "namasales"; //added by Tonny @07-Aug-2017
+            public String nomorsales = "nomorsales"; //added by Tonny @07-Aug-2017
+            public String periode = "periode"; //added by Tonny @07-Aug-2017 digunakan pada SalesTargetMonthly
+            public String tahun = "tahun"; //added by Tonny @07-Aug-2017 digunakan pada SalesTargetMonthly
         }
 
         public class User
@@ -91,6 +97,7 @@ public class GlobalVar {
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
             public String periode = "periode"; // bulan~tahun
             public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017
+            public String salesmanmonthly = "salesmanmonthly";  // nomorsales-nama-target  //added by Tonny @07-Aug-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

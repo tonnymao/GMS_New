@@ -48,7 +48,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:hint="[ 1 sec = 1000 ms ]"
                         android:inputType="number"
                         android:maxLines="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -235,24 +234,16 @@
                 </TableRow>
 
             </TableLayout>
-            <Button
-                android:id="@+id/btnUpdate"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/colorButton"
-                android:text="Update"
-                android:layout_below="@id/tblLayout"
-                android:textColor="@color/colorBackground" />
-
         </RelativeLayout>
     </ScrollView>
+    <Button
+        android:id="@+id/btnUpdate"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorButton"
+        android:text="Update"
+        android:textColor="@color/colorBackground" />
 </RelativeLayout>

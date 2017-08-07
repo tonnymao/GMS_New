@@ -278,7 +278,7 @@ class Sales extends REST_Controller {
 		$jsonObject = (json_decode($value , true));
 		
 		$query = "	SELECT DISTINCT 
-						MONTHNAME(STR_TO_DATE(intPeriode, '%m')) periode,
+						intPeriode periode,
 						intTahun AS tahun
 					FROM whtarget_mobile
 					ORDER BY intPeriode DESC;";
@@ -341,4 +341,78 @@ class Sales extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
 	}
+
+	function setTarget_post(){
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $rawdata = (isset($jsonObject["rawdata"]) ? $jsonObject["rawdata"]     : "a");
+        $newdata = explode('|',$rawdata);
+        $query = '';
+
+        $this->db->trans_begin();
+        for ($i = 0; $i < count($newdata); $i++) {
+            if($newdata[$i] != ''){
+                $strdata = explode('~', $newdata[$i]);
+                $nomorsales = $strdata[0];
+                $periode    = $strdata[1];
+                $tahun      = $strdata[2];
+                $target     = $strdata[3];
+                $status     = 1;
+
+                $query = "	INSERT INTO
+                                whtarget_mobile (intNomorMsales, intPeriode, intTahun, decTarget, intStatus)
+                            VALUES ($nomorsales, $periode, $tahun, $target, $status);";
+                $result = $this->db->query($query);
+
+                if ($this->db->trans_status() === FALSE){
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'success' => $newdata ));
+                    break;
+                }
+            }
+
+        }
+        if ($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            array_push($data['data'], array( 'success' => $query ));
+        }else{
+            $this->db->trans_commit();
+            array_push($data['data'], array( 'success' => "true", 'query' => $query));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    function getSalesmanMonthly_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $periode = (isset($jsonObject["periode"]) ? $this->clean($jsonObject["periode"])     : "1");
+        $tahun = (isset($jsonObject["tahun"]) ? $this->clean($jsonObject["tahun"])     : "1");
+        $query = "  SELECT a.nomor nomor, a.nama nama, b.decTarget target FROM thsales a JOIN whtarget_mobile b ON b.intNomorMSales = a.nomor WHERE b.intPeriode = $periode AND b.intTahun = $tahun; ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'success'				=> "true",
+                                                'nomor'  				=> $r['nomor'],
+                                                'nama'  				=> $r['nama'],
+                                                'target'				=> $r['target']
+                                                )
+                );
+            }
+        }else{
+            //array_push($data['data'], array( 'query' => $this->error($query) ));
+            array_push($data['data'], array( 'success' => "false", 'query' => $this->error($query)));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
 }
