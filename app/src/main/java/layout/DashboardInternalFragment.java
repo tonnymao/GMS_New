@@ -58,8 +58,9 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        ((RelativeLayout) getView().findViewById(R.id.btnContact)).setOnClickListener(this);
-        ((RelativeLayout) getView().findViewById(R.id.btnScheduleTask)).setOnClickListener(this);
+        getView().findViewById(R.id.btnContact).setOnClickListener(this);
+        getView().findViewById(R.id.btnScheduleTask).setOnClickListener(this);
+        getView().findViewById(R.id.btnPriceList).setOnClickListener(this);
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
@@ -92,6 +93,10 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         else if(id==R.id.btnScheduleTask)
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ScheduleTaskFragment());
+        }
+        else if(id==R.id.btnPriceList)
+        {
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
         }
     }
 }

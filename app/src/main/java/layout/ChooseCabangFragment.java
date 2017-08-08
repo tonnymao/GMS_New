@@ -29,7 +29,6 @@ import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,16 +39,14 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class SalesTargetMonthly extends Fragment implements View.OnClickListener{
+public class ChooseCabangFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
-    private ImageButton ibtnSearch;
-
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public SalesTargetMonthly() {
+    public ChooseCabangFragment() {
         // Required empty public constructor
     }
 
@@ -64,9 +61,7 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        String bulan = LibInspira.getMonth(LibInspira.getShared(global.sharedpreferences, global.shared.periode, "1"));
-        String tahun = LibInspira.getShared(global.sharedpreferences, global.shared.tahun, "0");
-        getActivity().setTitle(bulan + " " +  tahun);
+        getActivity().setTitle("Cabang");
         return v;
     }
 
@@ -115,7 +110,7 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
 
         refreshList();
 
-        String actionUrl = "Sales/getSalesmanMonthly/";
+        String actionUrl = "Master/getCabang/";
         new getData().execute( actionUrl );
     }
 
@@ -141,7 +136,7 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -149,9 +144,9 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
             }
             else
             {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                if(LibInspira.contains(list.get(ctr).getNamaCabang(),etSearch.getText().toString() ))
                 {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                     {
                         itemadapter.add(list.get(ctr));
                         itemadapter.notifyDataSetChanged();
@@ -166,9 +161,10 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.salesmanmonthly, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.cabang, "");
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1 && pieces[0].equals(""))
+
+        if(pieces.length == 1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }
@@ -180,27 +176,18 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomor = parts[0];
-                    String nama = parts[1];
-                    String target = parts[2];
+                    String nomorcabang = parts[0];
+                    String namacabang = parts[1];
 
-
-                    if(nomor.equals("null")) nomor = "";
-                    if(nama.equals("null")) nama = "";
-                    if(target.equals("null")) target = "";
+                    if(nomorcabang.equals("null")) nomorcabang = "";
+                    if(namacabang.equals("null")) namacabang = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-
-                    dataItem.setNomor(nomor);
-                    dataItem.setNama(nama);
-                    dataItem.setTarget(target);
+                    dataItem.setNomorCabang(nomorcabang);
+                    dataItem.setNamaCabang(namacabang);
                     list.add(dataItem);
-
-                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
-                    {
-                        itemadapter.add(dataItem);
-                        itemadapter.notifyDataSetChanged();
-                    }
+                    itemadapter.add(dataItem);
+                    itemadapter.notifyDataSetChanged();
                 }
             }
         }
@@ -210,13 +197,6 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
-            try {
-                jsonObject.put("periode", LibInspira.getShared(global.sharedpreferences, global.shared.periode, ""));
-                jsonObject.put("tahun", LibInspira.getShared(global.sharedpreferences, global.shared.tahun, ""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -231,27 +211,28 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomor = (obj.getString("nomor"));
-                            String nama = (obj.getString("nama"));
-                            String target = (obj.getString("target"));
+                            String nomorcabang = (obj.getString("nomorcabang"));
+                            String namacabang = (obj.getString("namacabang"));
 
-                            if(nomor.equals("")) nomor = "null";
-                            if(target.equals("")) target = "null";
-                            if(nama.equals("")) nama = "null";
+                            if(nomorcabang.equals("")) nomorcabang = "null";
+                            if(namacabang.equals("")) namacabang = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + target + "|";
+                            tempData = tempData + nomorcabang + "~" + namacabang + "|";
                         }
                     }
 
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.salesmanmonthly, "")))
+                    //cek offline
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.cabang, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.salesmanmonthly,
+                                global.data.cabang,
                                 tempData
                         );
+                        Log.d("tempdata: ", tempData);
                         refreshList();
                     }
+                    Log.d("tempdata: ", tempData);
                 }
                 tvInformation.animate().translationYBy(-80);
             }
@@ -271,20 +252,15 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
 
     public class ItemAdapter {
 
-        private String nomor;
-        private String nama;
-        private String target;
-
+        private String nomorcabang;
+        private String namacabang;
         public ItemAdapter() {}
 
-        public String getNomor() {return nomor;}
-        public void setNomor(String _param) {this.nomor = _param;}
+        public String getNomorCabang() {return nomorcabang;}
+        public void setNomorCabang(String _param) {this.nomorcabang = _param;}
 
-        public String getNama() {return nama;}
-        public void setNama(String _param) {this.nama = _param;}
-
-        public String getTarget() {return target;}
-        public void setTarget(String _param) {this.target = _param;}
+        public String getNamaCabang() {return namacabang;}
+        public void setNamaCabang(String _param) {this.namacabang = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -307,7 +283,6 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
-            TextView tvTarget;
         }
 
         @Override
@@ -325,7 +300,6 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvTarget = (TextView)row.findViewById(R.id.tvKeterangan);
 
             row.setTag(holder);
             setupItem(holder);
@@ -337,22 +311,11 @@ public class SalesTargetMonthly extends Fragment implements View.OnClickListener
                 }
             });
 
-            final Holder finalHolder = holder;
-            holder.tvNama.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String nomeruser = finalHolder.adapterItem.getNomor();
-                }
-            });
-
             return row;
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
-
-            holder.tvTarget.setVisibility(View.VISIBLE);
-            holder.tvTarget.setText("Target: Rp. " + LibInspira.delimeter(holder.adapterItem.getTarget()));
+            holder.tvNama.setText(holder.adapterItem.getNamaCabang().toUpperCase());
         }
     }
 }

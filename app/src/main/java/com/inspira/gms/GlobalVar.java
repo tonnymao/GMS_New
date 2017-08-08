@@ -95,6 +95,7 @@ public class GlobalVar {
             public String periode = "periode"; // bulan~tahun
             public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017
             public String salesmanmonthly = "salesmanmonthly";  // nomorsales-nama-target  //added by Tonny @07-Aug-2017
+            public String cabang = "cabang";  // nomorcabang~namacabang //added by Tonny @08-Aug-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017
