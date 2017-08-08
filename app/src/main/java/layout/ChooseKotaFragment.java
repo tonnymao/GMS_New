@@ -158,7 +158,7 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
 
         String data = LibInspira.getShared(global.datapreferences, global.data.kota, "");
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1)
+        if(pieces.length==1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }

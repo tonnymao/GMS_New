@@ -169,7 +169,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         {
             tvNoData.setVisibility(View.GONE);
             for(int i=0 ; i < pieces.length ; i++){
-                if(!pieces[i].equals(""))
+                if(!pieces[i].equals("") && pieces[0].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 

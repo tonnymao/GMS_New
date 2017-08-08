@@ -158,9 +158,9 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         list.clear();
 
         String data = LibInspira.getShared(global.datapreferences, global.data.salesman, "");
-        Log.d("DATA: ", data);
+
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1)
+        if(pieces.length==1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }

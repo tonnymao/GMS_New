@@ -158,7 +158,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
 
         String data = LibInspira.getShared(global.datapreferences, global.data.customer, "");
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1)
+        if(pieces.length==1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }
