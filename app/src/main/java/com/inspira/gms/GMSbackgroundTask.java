@@ -1,5 +1,6 @@
 package com.inspira.gms;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -25,6 +26,8 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 /**
  * Created by shoma on 02/08/17.
  */
@@ -33,11 +36,16 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
     private LocationManager locationManager;
-    private String provider;
+    private String GPSprovider;
+    private String Networkprovider;
     private Location oldLocation;
     private GlobalVar globalVar;
     private static Double oldLatitude;
     private static Double oldLongitude;
+    private static int startState;
+    private static int endState;
+    private static double trackingRadius;
+    private static long trackingInterval;
 
     @Override
     public void onCreate() {
@@ -53,13 +61,25 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         Criteria criteria = new Criteria();
         locationManager.getBestProvider(criteria, true);
 
-        //if (globalVar.settingpreferences.getString("tracking", "").equals("GPS Only"))
-            provider = LocationManager.GPS_PROVIDER;
+        Networkprovider = locationManager.NETWORK_PROVIDER;
+        GPSprovider = LocationManager.GPS_PROVIDER;
 
+        String[] stateTime = globalVar.settingpreferences.getString("jam_awal", "").split(":");
+        String stateTimeValue = stateTime[0] + stateTime[1];
+        startState = Integer.valueOf(stateTimeValue);
+        stateTime = globalVar.settingpreferences.getString("jam_akhir", "").split(":");
+        stateTimeValue = stateTime[0] + stateTime [1];
+        endState = Integer.valueOf(stateTimeValue);
+        trackingRadius = Double.valueOf(globalVar.settingpreferences.getString("radius", ""));
+        trackingInterval = Long.valueOf(globalVar.settingpreferences.getString("interval", ""));
 
-        if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Location location = locationManager.getLastKnownLocation(provider);
+        if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Location location = locationManager.getLastKnownLocation(GPSprovider);
             if (location != null) {
+                oldLocation = location;
+            }
+            else if (globalVar.settingpreferences.getString("tracking", "").equals("GPS and Network")) {
+                location = locationManager.getLastKnownLocation(Networkprovider);
                 oldLocation = location;
             }
         }
@@ -85,9 +105,24 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
         @Override
         public void handleMessage(Message msg) {
-            if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Log.i("GMSbackgroundTask", "background process works fine!!!");
-                locationManager.requestLocationUpdates(provider, 0, 0, GMSbackgroundTask.this);
+            Date currentDate = new Date();
+            currentDate.getTime();
+            String[] currentTime = currentDate.toString().substring(11, 16).split(":");
+            String currentTimeValue = currentTime[0] + currentTime[1];
+            if (Integer.valueOf(currentTimeValue) >= startState && Integer.valueOf(currentTimeValue) <= endState) {
+                if (ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(GPSprovider, 0, 0, GMSbackgroundTask.this);
+
+                    if (globalVar.settingpreferences.getString("tracking", "").equals("GPS and Network"))
+                        locationManager.requestLocationUpdates(Networkprovider, 0, 0, GMSbackgroundTask.this);
+                    Log.i("GMSbackgroundTask", "background process works fine");
+                }
+                try {
+                    Thread.sleep(trackingInterval);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             //stopSelf(msg.arg1); <- don't use, ur gonna kill this
         }
@@ -146,7 +181,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         if(oldLatitude != null)
         {
-            double currentDistrance = distance(oldLatitude, oldLongitude, location.getLatitude(), location.getLongitude());
+            double currentDistrance = distance(oldLatitude, oldLongitude, location.getLatitude(), location.getLongitude(), trackingRadius);
             Log.i("GMSbackgroundTask", "Distance value: " + currentDistrance);
             if(currentDistrance > 1)
             {
@@ -166,9 +201,9 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         Log.d("GMSbackgroundTask", "Location updated");
     }
 
-    private double distance(double oldLatitude, double oldLongitude, double newLatitude, double newLongitude) {
+    private double distance(double oldLatitude, double oldLongitude, double newLatitude, double newLongitude, double radiusInMetre) {
         //3958.75
-        double earthRadius = 6371; // in miles, change to 6371 for kilometer output
+        double earthRadius = radiusInMetre * 0.000621371; // in miles, change to 6371 for kilometer output
 
         double dLat = Math.toRadians(newLatitude-oldLatitude);
         double dLng = Math.toRadians(newLongitude-oldLongitude);
