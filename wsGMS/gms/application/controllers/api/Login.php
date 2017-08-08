@@ -167,6 +167,11 @@ class Login extends REST_Controller {
         $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "a");
         $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a"));
 
+        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
+        $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
+        $tracking  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 3 LIMIT 1")->row()->intnilai;
+        $jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
+        $jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
 		
 		$query = "	UPDATE whuser_mobile a 
 					SET hash = UUID()
@@ -228,7 +233,12 @@ class Login extends REST_Controller {
 												'role_addscheduletask'			=> $r['addscheduletask'],
 												'role_salestracking'			=> $r['salestracking'],
 												'role_hpp'          			=> $r['hpp'],
-                                                'role_crossbranch'  			=> $r['crossbranch']
+                                                'role_crossbranch'  			=> $r['crossbranch'],
+                                                'setting_interval'  			=> $interval,
+                                                'setting_radius'      			=> $radius,
+                                                'setting_tracking'  			=> $tracking,
+                                                'setting_jamawal'     			=> $jam_awal,
+                                                'setting_jamakhir'  			=> $jam_akhir
                 								)
                	);
             }
@@ -274,6 +284,11 @@ class Login extends REST_Controller {
 
         $hash = (isset($jsonObject["hash"]) ? $jsonObject["hash"]     : "");
 
+        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
+        $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
+		$tracking  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 3 LIMIT 1")->row()->intnilai;
+		$jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
+		$jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
 		
         $query = "	SELECT 
 						a.nomor AS nomor_android,
@@ -329,7 +344,12 @@ class Login extends REST_Controller {
 													'role_addscheduletask'			=> $r['addscheduletask'],
 													'role_salestracking'			=> $r['salestracking'],
 													'role_hpp'          			=> $r['hpp'],
-                                                    'role_crossbranch'  			=> $r['crossbranch']
+                                                    'role_crossbranch'  			=> $r['crossbranch'],
+                                                    'setting_interval'  			=> $interval,
+                                                    'setting_radius'      			=> $radius,
+                                                    'setting_tracking'  			=> $tracking,
+                                                    'setting_jamawal'     			=> $jam_awal,
+                                                    'setting_jamakhir'  			=> $jam_akhir
 											)
 				);
 			}
