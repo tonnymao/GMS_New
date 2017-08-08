@@ -161,6 +161,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
         String data = LibInspira.getShared(global.datapreferences, global.data.barang, "");
         String[] pieces = data.trim().split("\\|");
+
         if(pieces.length==1)
         {
             tvNoData.setVisibility(View.VISIBLE);
