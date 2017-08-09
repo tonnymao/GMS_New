@@ -159,14 +159,14 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
                                 LibInspira.setShared(global.settingpreferences, global.settings.tracking, obj.getString("tracking"));
                                 LibInspira.setShared(global.settingpreferences, global.settings.jam_awal, obj.getString("jam_awal"));
                                 LibInspira.setShared(global.settingpreferences, global.settings.jam_akhir, obj.getString("jam_akhir"));
-                                Integer ms = Integer.parseInt(LibInspira.getShared(global.settingpreferences, global.settings.interval, "0"));
-                                Integer sec = 0;
+                                int ms = Integer.parseInt(LibInspira.getShared(global.settingpreferences, global.settings.interval, "0"));
+                                Integer minute = 0;
                                 if (ms > 0){
-                                    sec = ms/1000;
+                                    minute = ms/1000/60;  //added by Tonny @09-Aug-2017 dari ms diubah menjadi minute
                                 }
                                 //modified by Tonny @07-Aug-2017
                                 //edtInterval.setText(LibInspira.delimeter(LibInspira.getShared(global.settingpreferences, global.settings.interval, "0"), true));
-                                edtInterval.setText(LibInspira.delimeter(sec.toString()));
+                                edtInterval.setText(LibInspira.delimeter(minute.toString()));
                                 edtRadius.setText(LibInspira.delimeter(LibInspira.getShared(global.settingpreferences, global.settings.radius, "0"), true));
                                 if(obj.getString("tracking").equals("GPS Only")){
                                     spTracking.setSelection(0);
@@ -201,7 +201,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
         JSONObject jsonObject;
         //remarked by Tonny @07-Aug-2017
         //String interval = edtInterval.getText().toString();
-        Integer ms = Integer.parseInt(edtInterval.getText().toString()) * 1000;  //modified by Tonny @07-Aug-2017 diubah menjadi millisecond (ms)
+        Integer ms = Integer.parseInt(edtInterval.getText().toString()) * 1000 * 60;  //modified by Tonny @09-Aug-2017 diubah dari minute menjadi millisecond (ms)
         String interval = ms.toString();
         String radius = edtRadius.getText().toString();
         String tracking = spTracking.getSelectedItem().toString();
