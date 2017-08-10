@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import static com.inspira.gms.IndexInternal.RefreshUserData;
+import static com.inspira.gms.IndexInternal.global;
 
 //import android.app.Fragment;
 
@@ -96,7 +98,13 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }
         else if(id==R.id.btnPriceList)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
+            Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
+            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
+            }else{
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
+            }
+
         }
     }
 }

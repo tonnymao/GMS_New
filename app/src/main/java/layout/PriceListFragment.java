@@ -29,6 +29,7 @@ import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -39,14 +40,15 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class ChooseCabangFragment extends Fragment implements View.OnClickListener{
+public class PriceListFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    private boolean isShowHPP;
 
-    public ChooseCabangFragment() {
+    public PriceListFragment() {
         // Required empty public constructor
     }
 
@@ -61,7 +63,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Cabang");
+        getActivity().setTitle("Contact");
         return v;
     }
 
@@ -108,9 +110,19 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
             }
         });
 
+        //pengecekan jika user boleh melihat HPP
+        if(LibInspira.getShared(global.userpreferences, global.user.role_hpp, "").equals("1")){
+            isShowHPP = true;
+        }else{
+            isShowHPP = false;
+        }
+
         refreshList();
 
-        String actionUrl = "Master/getCabang/";
+        String actionUrl = "Master/getPrice/";
+        if(isShowHPP){
+            actionUrl = "Master/getPriceHPP/";
+        }
         new getData().execute( actionUrl );
     }
 
@@ -136,7 +148,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -144,9 +156,9 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
             }
             else
             {
-                if(LibInspira.contains(list.get(ctr).getNamaCabang(),etSearch.getText().toString() ))
+                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
                 {
-                    if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                     {
                         itemadapter.add(list.get(ctr));
                         itemadapter.notifyDataSetChanged();
@@ -161,10 +173,11 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.cabang, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.price, "");
+        if (isShowHPP)
+            data = LibInspira.getShared(global.datapreferences, global.data.pricehpp, "");
         String[] pieces = data.trim().split("\\|");
-
-        if(pieces.length == 1 && pieces[0].equals(""))
+        if(pieces.length==1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }
@@ -176,27 +189,47 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomorcabang = parts[0];
-                    String namacabang = parts[1];
+                    String nomor = parts[0];
+                    String kode = parts[1];
+                    String nama = parts[2];
+                    String harga = parts[3];
+                    String hpp = parts[4];
 
-                    if(nomorcabang.equals("null")) nomorcabang = "";
-                    if(namacabang.equals("null")) namacabang = "";
+                    if(nomor.equals("null")) nomor = "";
+                    if(kode.equals("null")) kode = "";
+                    if(nama.equals("null")) nama = "";
+                    if(harga.equals("null")) harga = "";
+                    if(hpp.equals("null")) hpp = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomorCabang(nomorcabang);
-                    dataItem.setNamaCabang(namacabang);
+                    dataItem.setNomor(nomor);
+                    dataItem.setKode(kode);
+                    dataItem.setNama(nama);
+                    dataItem.setHarga(harga);
+                    dataItem.setHpp(hpp);
                     list.add(dataItem);
-                    itemadapter.add(dataItem);
-                    itemadapter.notifyDataSetChanged();
+
+                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    {
+                        itemadapter.add(dataItem);
+                        itemadapter.notifyDataSetChanged();
+                    }
                 }
             }
         }
     }
 
     private class getData extends AsyncTask<String, Void, String> {
+        String cabang = LibInspira.getShared(global.userpreferences, global.user.cabang, "");
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            try {
+                jsonObject.put("cabang", cabang);
+                Log.d("cabang", cabang);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -211,28 +244,43 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomorcabang = (obj.getString("nomorcabang"));
-                            String namacabang = (obj.getString("namacabang"));
+                            String nomor = (obj.getString("nomor"));
+                            String nama = (obj.getString("nama"));
+                            String kode = (obj.getString("kode"));
+                            String harga = (obj.getString("harga"));
+                            String hpp = "";
+                            if(isShowHPP)
+                                hpp = (obj.getString("hpp"));
 
-                            if(nomorcabang.equals("")) nomorcabang = "null";
-                            if(namacabang.equals("")) namacabang = "null";
+                            if(nomor.equals("")) nomor = "null";
+                            if(kode.equals("")) kode = "null";
+                            if(nama.equals("")) nama = "null";
+                            if(harga.equals("")) harga = "null";
+                            if(hpp.equals("")) hpp = "null";
 
-                            tempData = tempData + nomorcabang + "~" + namacabang + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + nama + "~" + harga + "~" + hpp + "|";
                         }
                     }
 
-                    //cek offline
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.cabang, "")))
+                    //pengecekan offline
+
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.pricehpp, "")) && isShowHPP)
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.cabang,
+                                global.data.pricehpp,
                                 tempData
                         );
-                        Log.d("tempdata: ", tempData);
+                        refreshList();
+                    }else if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.price, "")) && !isShowHPP)
+                    {
+                        LibInspira.setShared(
+                                global.datapreferences,
+                                global.data.price,
+                                tempData
+                        );
                         refreshList();
                     }
-                    Log.d("tempdata: ", tempData);
                 }
                 tvInformation.animate().translationYBy(-80);
             }
@@ -252,15 +300,28 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
 
     public class ItemAdapter {
 
-        private String nomorcabang;
-        private String namacabang;
+        private String nomor;
+        private String nama;
+        private String kode;
+        private String harga;
+        private String hpp;
+
         public ItemAdapter() {}
 
-        public String getNomorCabang() {return nomorcabang;}
-        public void setNomorCabang(String _param) {this.nomorcabang = _param;}
+        public String getNomor() {return nomor;}
+        public void setNomor(String _param) {this.nomor = _param;}
 
-        public String getNamaCabang() {return namacabang;}
-        public void setNamaCabang(String _param) {this.namacabang = _param;}
+        public String getNama() {return nama;}
+        public void setNama(String _param) {this.nama = _param;}
+
+        public String getKode() {return kode;}
+        public void setKode(String _param) {this.kode = _param;}
+
+        public String getHarga() {return harga;}
+        public void setHarga(String _param) {this.harga = _param;}
+
+        public String getHpp() {return hpp;}
+        public void setHpp(String _param) {this.hpp = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -283,6 +344,8 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
+            TextView tvLocation;
+            ImageView ivCall;
         }
 
         @Override
@@ -300,16 +363,24 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvLocation = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.ivCall = (ImageView)row.findViewById(R.id.ivCall);
 
             row.setTag(holder);
             setupItem(holder);
 
-            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.setShared(global.userpreferences, global.user.cabang, finalHolder.adapterItem.getNomorCabang());
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
+                    //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
+                }
+            });
+
+            final Holder finalHolder = holder;
+            holder.tvNama.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //String nomeruser = finalHolder.adapterItem.getNomor();
                 }
             });
 
@@ -317,7 +388,15 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNamaCabang().toUpperCase());
+            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvLocation.setVisibility(View.VISIBLE);
+            holder.tvLocation.setText("Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHarga()));
+            String hpp = holder.adapterItem.getHpp();
+            if(isShowHPP){
+                if (hpp.equals(""))
+                    hpp = "null";
+                holder.tvLocation.setText(holder.tvLocation.getText() + "\r\n HPP: Rp. " + LibInspira.delimeter(hpp));
+            }
         }
     }
 }
