@@ -395,7 +395,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             if(isShowHPP){
                 if (hpp.equals(""))
                     hpp = "null";
-                holder.tvLocation.setText(holder.tvLocation.getText() + "\r\n HPP: Rp. " + LibInspira.delimeter(hpp));
+                holder.tvLocation.setText(holder.tvLocation.getText() + "\r\nHPP: Rp. " + LibInspira.delimeter(hpp));
             }
         }
     }
