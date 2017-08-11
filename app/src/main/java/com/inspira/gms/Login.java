@@ -9,7 +9,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     EditText edtUsername, edtPassword;
     Button btnSubmit;
     GlobalVar global;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

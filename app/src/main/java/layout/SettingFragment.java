@@ -126,7 +126,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener, V
         if(id == R.id.edtInterval){
             edtInterval.setText(edtInterval.getText().toString().replace(",",""));
         }else if(id == R.id.edtRadius){
-            edtRadius.setText(edtInterval.getText().toString().replace(",",""));
+            edtRadius.setText(edtRadius.getText().toString().replace(",",""));
         }
         return false;
     }

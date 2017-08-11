@@ -51,6 +51,10 @@ public class IndexInternal extends AppCompatActivity
 
         setContentView(R.layout.activity_index_internal);
 
+        // Start Registering FCM
+        Intent intent = new Intent(this, MyFirebaseInstanceIDService.class);
+        startService(intent);
+
         global = new GlobalVar(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
