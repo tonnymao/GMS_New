@@ -181,44 +181,46 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         if(oldLatitude != null)
         {
-            double currentDistrance = distance(oldLatitude, oldLongitude, location.getLatitude(), location.getLongitude(), trackingRadius);
-            Log.i("GMSbackgroundTask", "Distance value: " + currentDistrance);
-            if(currentDistrance > 1)
+            boolean currentDistranceState = distanceOverRadius(oldLatitude, oldLongitude, location.getLatitude(), location.getLongitude(), trackingRadius);
+            if(currentDistranceState)
             {
                 oldLatitude = location.getLatitude();
                 oldLongitude = location.getLongitude();
                 String actionUrl = "Sales/pushTrackingData/";
                 new pushTrackingGPStoDB(globalVar.userpreferences.getString("nomor", ""), globalVar.userpreferences.getString("nomor_sales", ""), location).execute(actionUrl);
-            }
-            else
                 Log.d("GMSbackgroundTask", "Location on radius");
+            }
         }
         else
         {
             oldLatitude = location.getLatitude();
             oldLongitude = location.getLongitude();
+            Log.d("GMSbackgroundTask", "Location updated");
         }
-        Log.d("GMSbackgroundTask", "Location updated");
     }
 
-    private double distance(double oldLatitude, double oldLongitude, double newLatitude, double newLongitude, double radiusInMetre) {
-        //3958.75
-        double earthRadius = radiusInMetre * 0.000621371; // in miles, change to 6371 for kilometer output
+    private boolean distanceOverRadius(double oldLatitude, double oldLongitude, double newLatitude, double newLongitude, double radiusInMetre) {
+        double theta = oldLongitude - newLongitude;
+        double dist = Math.sin(deg2rad(oldLatitude))
+                * Math.sin(deg2rad(newLatitude))
+                + Math.cos(deg2rad(oldLatitude))
+                * Math.cos(deg2rad(newLatitude))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515; // distance in Kilometers
+        dist = dist * 1000; // distance in meters
+        Log.i("GMSbackgroundTask", "Distance value: " + dist);
 
-        double dLat = Math.toRadians(newLatitude-oldLatitude);
-        double dLng = Math.toRadians(newLongitude-oldLongitude);
+        return dist > radiusInMetre;
+    }
 
-        double sindLat = Math.sin(dLat / 2);
-        double sindLng = Math.sin(dLng / 2);
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
 
-        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-                * Math.cos(Math.toRadians(oldLatitude)) * Math.cos(Math.toRadians(newLatitude));
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-        double dist = earthRadius * c;
-
-        return dist; // output distance, in MILES
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
     @Override
