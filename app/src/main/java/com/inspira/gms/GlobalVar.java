@@ -102,6 +102,11 @@ public class GlobalVar {
             public String cabang = "cabang";  // nomorcabang~namacabang //added by Tonny @08-Aug-2017
             public String price = "price"; //nomor~kode~nama~harga
             public String pricehpp = "pricehpp"; //nomor~kode~nama~harga~hpp
+            public String stockKategori = "stockkategori";  //added by Tonny @18-Aug-2017
+            public String stockBentuk = "stockrBentuk";  //added by Tonny @19-Aug-2017
+            public String stockJenis = "stockJenis";  //added by Tonny @19-Aug-2017
+            public String stockGrade = "stockGrade";  //added by Tonny @19-Aug-2017
+            public String stockSurface = "stockSurface";  //added by Tonny @19-Aug-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017
@@ -122,5 +127,9 @@ public class GlobalVar {
         public class Stock //added by Tonny @18-Aug-2017
         {
             public String filterKategori = "filterkategori";  //added by Tonny @18-Aug-2017
+            public String filterBentuk = "filterBentuk";  //added by Tonny @19-Aug-2017
+            public String filterJenis = "filterJenis";  //added by Tonny @19-Aug-2017
+            public String filterGrade = "filterGrade";  //added by Tonny @19-Aug-2017
+            public String filterSurface = "filterSurface";  //added by Tonny @19-Aug-2017
         }
 }

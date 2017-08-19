@@ -1,9 +1,9 @@
 /******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
-    History          :
+ Author           : Tonny
+ Description      : filter untuk stock monitoring
+ History          :
 
-******************************************************************************/
+ ******************************************************************************/
 package layout;
 
 import android.app.DatePickerDialog;
@@ -20,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.inspira.gms.ItemListAdapter;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -119,6 +120,56 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         actionUrl = "Stock/getGrade/";
         new checkGrade().execute( actionUrl );
 
+        refreshList("all");
+    }
+
+    private void refreshList(String _param)
+    {
+        String data = "";
+        Spinner spinner = spKategori;
+        if(_param.equals("all")){
+            refreshList("kategori");
+            refreshList("bentuk");
+            refreshList("jenis");
+            refreshList("grade");
+            refreshList("surface");
+        }else {
+            if (_param.equals("kategori")) {
+                data = LibInspira.getShared(global.datapreferences, global.data.stockKategori, "");
+                Log.d("data ", data);
+                spinner = spKategori;
+            } else if (_param.equals("bentuk")) {
+                data = LibInspira.getShared(global.datapreferences, global.data.stockBentuk, "");
+                spinner = spBentuk;
+            } else if (_param.equals("jenis")) {
+                data = LibInspira.getShared(global.datapreferences, global.data.stockJenis, "");
+                spinner = spJenis;
+            } else if (_param.equals("grade")) {
+                data = LibInspira.getShared(global.datapreferences, global.data.stockGrade, "");
+                spinner = spGrade;
+            } else if (_param.equals("surface")) {
+                data = LibInspira.getShared(global.datapreferences, global.data.stockSurface, "");
+                spinner = spSurface;
+            }
+
+            String[] pieces = data.trim().split("\\|");
+
+            if (pieces.length == 1 && pieces[0].equals("")) {
+            } else {
+                ArrayAdapter<String> adapter;
+                List<String> list;
+                list = new ArrayList<>();
+                for (int i = 0; i < pieces.length; i++) {
+                    if (!pieces[i].equals("")) {
+                        list.add(pieces[i]);
+                    }
+                }
+                adapter = new ArrayAdapter<>(getContext(),
+                        android.R.layout.simple_spinner_item, list);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+            }
+        }
     }
 
     private class checkKategori extends AsyncTask<String, Void, String> {
@@ -135,26 +186,23 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         protected void onPostExecute(String result) {
             Log.d("filter stok", result);
             try {
+                String tempData = "";
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
-                    ArrayAdapter<String> adapter;
-                    List<String> list;
-                    list = new ArrayList<>();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
                             Log.d("status", "UPDATING");
-                            //LibInspira.setShared(global.stockmonitoringpreferences, global.stock.filterKategori, obj.getString("kategori"));
-                            list.add(obj.getString("kategori"));
+                            tempData = tempData + obj.getString("kategori") + "|";
                         }else{
                             LibInspira.ShowShortToast(getContext(), "Failed getting kategori");
                         }
                     }
-                    Log.d("list: ", list.get(0));
-                    adapter = new ArrayAdapter<>(getContext(),
-                            android.R.layout.simple_spinner_item, list);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spKategori.setAdapter(adapter);
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockKategori, "")))
+                    {
+                        LibInspira.setShared(global.datapreferences, global.data.stockKategori, tempData);
+                        refreshList("kategori");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -175,25 +223,23 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         @Override
         protected void onPostExecute(String result) {
             try {
+                String tempData = "";
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
-                    ArrayAdapter<String> adapter;
-                    List<String> list;
-                    list = new ArrayList<String>();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            //LibInspira.setShared(global.stockmonitoringpreferences, global.stock.filterKategori, obj.getString("kategori"));
-                            list.add(obj.getString("bentuk"));
+                            Log.d("status", "UPDATING");
+                            tempData = tempData + obj.getString("bentuk") + "|";
                         }else{
                             LibInspira.ShowShortToast(getContext(), "Failed getting bentuk");
                         }
                     }
-                    Log.d("list: ", list.get(0));
-                    adapter = new ArrayAdapter<String>(getContext(),
-                            android.R.layout.simple_spinner_item, list);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spBentuk.setAdapter(adapter);
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockBentuk, "")))
+                    {
+                        LibInspira.setShared(global.datapreferences, global.data.stockBentuk, tempData);
+                        refreshList("bentuk");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -214,23 +260,22 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         @Override
         protected void onPostExecute(String result) {
             try {
+                String tempData = "";
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
-                    ArrayAdapter<String> adapter;
-                    List<String> list;
-                    list = new ArrayList<String>();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            list.add(obj.getString("surface"));
+                            tempData = tempData + obj.getString("surface") + "|";
                         }else{
                             LibInspira.ShowShortToast(getContext(), "Failed getting surface");
                         }
                     }
-                    adapter = new ArrayAdapter<String>(getContext(),
-                            android.R.layout.simple_spinner_item, list);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spSurface.setAdapter(adapter);
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockSurface, "")))
+                    {
+                        LibInspira.setShared(global.datapreferences, global.data.stockSurface, tempData);
+                        refreshList("surface");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -251,23 +296,22 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         @Override
         protected void onPostExecute(String result) {
             try {
+                String tempData = "";
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
-                    ArrayAdapter<String> adapter;
-                    List<String> list;
-                    list = new ArrayList<String>();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            list.add(obj.getString("jenis"));
+                            tempData = tempData + obj.getString("jenis") + "|";
                         }else{
                             LibInspira.ShowShortToast(getContext(), "Failed getting jenis");
                         }
                     }
-                    adapter = new ArrayAdapter<String>(getContext(),
-                            android.R.layout.simple_spinner_item, list);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spJenis.setAdapter(adapter);
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockJenis, "")))
+                    {
+                        LibInspira.setShared(global.datapreferences, global.data.stockJenis, tempData);
+                        refreshList("jenis");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -288,23 +332,23 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         @Override
         protected void onPostExecute(String result) {
             try {
+                String tempData = "";
                 JSONArray jsonarray = new JSONArray(result);
                 if (jsonarray.length() > 0) {
-                    ArrayAdapter<String> adapter;
-                    List<String> list;
-                    list = new ArrayList<String>();
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            list.add(obj.getString("grade"));
+                            Log.d("status", "UPDATING");
+                            tempData = tempData + obj.getString("grade") + "|";
                         }else{
                             LibInspira.ShowShortToast(getContext(), "Failed getting grade");
                         }
                     }
-                    adapter = new ArrayAdapter<String>(getContext(),
-                            android.R.layout.simple_spinner_item, list);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spGrade.setAdapter(adapter);
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockGrade, "")))
+                    {
+                        LibInspira.setShared(global.datapreferences, global.data.stockGrade, tempData);
+                        refreshList("grade");
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
