@@ -26,6 +26,7 @@ public class GlobalVar {
     public static Shared shared;
     public static Settings settings;  //added by Tonny @03-Aug-2017
     public static Stock stock;  //added by Tonny @18-Aug-2017
+    public static Temp temp; //added by ADI @20-Aug-2017
 
     public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
     public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
@@ -49,6 +50,7 @@ public class GlobalVar {
             shared = new Shared();
             settings = new Settings();  //added by Tonny @03-Aug-2017
             stock = new Stock();  //added by Tonny @18-Aug-2017
+            temp = new Temp(); //added by ADI @20-Aug-2017
         }
 
         public static void clearDataUser()
