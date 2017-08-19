@@ -8,6 +8,8 @@
     <color name="colorDanger">#EB3D01</color>
     <color name="colorAccentDanger">#A04B4B</color>
     <color name="colorSuccess">#97FB7E</color>
+    <color name="colorMoney">#00cc4a</color>
+    <color name="colorDarkGreen">#00773a</color>
 
     <color name="colorFacebook">#4B67A0</color>
     <color name="colorYoutube">#E12B28</color>
@@ -22,4 +24,5 @@
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorDarkBlue">#005ad1</color>
 </resources>

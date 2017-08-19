@@ -79,7 +79,7 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
 
         if(id==R.id.btnPosisiStok)
         {
-
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FilterStockFragment());
         }
         else if(id==R.id.btnPosisiStokRandom)
         {

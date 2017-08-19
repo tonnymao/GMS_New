@@ -63,6 +63,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         getView().findViewById(R.id.btnContact).setOnClickListener(this);
         getView().findViewById(R.id.btnScheduleTask).setOnClickListener(this);
         getView().findViewById(R.id.btnPriceList).setOnClickListener(this);
+        getView().findViewById(R.id.btnStockMonitoring).setOnClickListener(this);
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
@@ -109,11 +110,12 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         else if(id==R.id.btnStockMonitoring)  //added by Tonny @16-Aug-2017
         {
             Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
-            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
-            }else{
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
-            }
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
+//            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
+//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
+//            }else{
+//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
+//            }
 
         }
     }
