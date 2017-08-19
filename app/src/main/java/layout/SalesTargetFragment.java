@@ -209,7 +209,8 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
                             itemListAdapter.clear();
                             LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, "");
                             LibInspira.setShared(global.sharedpreferences, global.shared.namasales, "");
-                            getFragmentManager().popBackStack();  // back to ChoosePeriode
+
+                            LibInspira.BackFragment(getFragmentManager()); // back to ChoosePeriode
                         }
                         else
                         {

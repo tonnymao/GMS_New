@@ -314,7 +314,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                     LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
                     LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")){
-                        getFragmentManager().popBackStack();  //untuk kembali ke stack sebelumnya
+                        LibInspira.BackFragment(getFragmentManager()); //untuk kembali ke stack sebelumnya
                     }
                 }
             });

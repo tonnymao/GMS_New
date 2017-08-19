@@ -36,6 +36,7 @@ public class GlobalVar {
         public GlobalVar(Context context)
         {
             sharedpreferences = context.getSharedPreferences("global", Context.MODE_PRIVATE);
+            temppreferences = context.getSharedPreferences("temp", Context.MODE_PRIVATE); //added by ADI @20-Aug-2017
             userpreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
             rolepreferences = context.getSharedPreferences("role", Context.MODE_PRIVATE);
             notifpreferences = context.getSharedPreferences("notif", Context.MODE_PRIVATE);
