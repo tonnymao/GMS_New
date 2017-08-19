@@ -2,6 +2,7 @@ package com.inspira.gms;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.animation.AlphaAnimation;
 
 /**
  * Created by Tonny on 7/24/2017.
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 
 public class GlobalVar {
     public static SharedPreferences sharedpreferences;
+    public static SharedPreferences temppreferences;  //added by ADI @19-Aug-2017 //buat data-data yang cuma sementara  //boleh di clear kapan aja
     public static SharedPreferences userpreferences;
     public static SharedPreferences rolepreferences;
     public static SharedPreferences notifpreferences;
@@ -24,6 +26,9 @@ public class GlobalVar {
     public static Shared shared;
     public static Settings settings;  //added by Tonny @03-Aug-2017
     public static Stock stock;  //added by Tonny @18-Aug-2017
+
+    public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
+    public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
 
     public static String webserviceURL = "/wsGMS/gms/index.php/api/";
 
@@ -63,6 +68,15 @@ public class GlobalVar {
             public String nomorsales = "nomorsales"; //added by Tonny @07-Aug-2017
             public String periode = "periode"; //added by Tonny @07-Aug-2017 digunakan pada SalesTargetMonthly
             public String tahun = "tahun"; //added by Tonny @07-Aug-2017 digunakan pada SalesTargetMonthly
+        }
+
+        public class Temp
+        {
+            public String scheduletask_date = "scheduletask_date";
+            public String scheduletask_time = "scheduletask_time";
+            public String scheduletask_reminder = "scheduletask_reminder";
+            public String scheduletask_description = "scheduletask_description";
+            public String scheduletask_type = "scheduletask_type";
         }
 
         public class User
