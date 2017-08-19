@@ -6,6 +6,7 @@
 ******************************************************************************/
 package layout;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
@@ -23,7 +26,11 @@ import com.inspira.gms.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static com.inspira.gms.IndexInternal.global;
@@ -31,7 +38,10 @@ import static com.inspira.gms.IndexInternal.global;
 //import android.app.Fragment;
 
 public class FilterStockFragment extends Fragment implements View.OnClickListener{
-    Spinner spKategori, spBentuk, spSurface, spJenis, spGrade;
+    private Spinner spKategori, spBentuk, spSurface, spJenis, spGrade;
+    private DatePickerDialog dp;
+    private TextView tvFilterStockDate;
+
     public FilterStockFragment() {
         // Required empty public constructor
     }
@@ -69,6 +79,29 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         spSurface = (Spinner) getView().findViewById(R.id.spSurface);
         spJenis = (Spinner) getView().findViewById(R.id.spJenis);
         spGrade = (Spinner) getView().findViewById(R.id.spGrade);
+
+        tvFilterStockDate = (TextView) getView().findViewById(R.id.tvFilterStockDate);
+        tvFilterStockDate.setOnClickListener(this);
+
+        // Define DatePicker
+        Calendar newCalendar = Calendar.getInstance();
+        dp = new DatePickerDialog(getActivity(), R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                try {
+                    String date = year + "-" + (monthOfYear+1) + "-" + dayOfMonth;
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date newdate = sdf.parse(date);
+                    date = sdf.format(newdate);
+
+                    tvFilterStockDate.setText(date);
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
         getView().findViewById(R.id.btnFilterUpdate).setOnClickListener(this);
         String actionUrl = "Stock/getKategori/";
@@ -289,6 +322,9 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         int id = view.getId();
         if (id == R.id.btnFilterUpdate){
 
+        }
+        else if (id == R.id.tvFilterStockDate){
+            dp.show();
         }
     }
 }
