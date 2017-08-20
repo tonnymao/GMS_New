@@ -11,13 +11,20 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.inspira.gms.GlobalVar;
+import com.inspira.gms.IndexInternal;
+import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import java.text.SimpleDateFormat;
@@ -25,12 +32,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.inspira.gms.IndexInternal.global;
+
 //import android.app.Fragment;
 
 public class Form_ScheduleTaskFragment extends Fragment implements View.OnClickListener{
     private DatePickerDialog dp;
     private TimePickerDialog tp;
     private TextView tvDate, tvTime;
+    private Button btnNext;
+    private Spinner spType;
+    private EditText edtReminder, edtDescription;
 
     public Form_ScheduleTaskFragment() {
         // Required empty public constructor
@@ -68,9 +80,14 @@ public class Form_ScheduleTaskFragment extends Fragment implements View.OnClickL
 
         tvDate = (TextView) getView().findViewById(R.id.tvDate);
         tvTime = (TextView) getView().findViewById(R.id.tvTime);
+        btnNext = (Button) getView().findViewById(R.id.btnNext);
+        spType = (Spinner) getView().findViewById(R.id.spType);
+        edtReminder = (EditText) getView().findViewById(R.id.edtReminder);
+        edtDescription = (EditText) getView().findViewById(R.id.edtDescription);
 
         tvDate.setOnClickListener(this);
         tvTime.setOnClickListener(this);
+        btnNext.setOnClickListener(this);
 
         // Define DatePicker
         Calendar newCalendar = Calendar.getInstance();
@@ -123,6 +140,13 @@ public class Form_ScheduleTaskFragment extends Fragment implements View.OnClickL
                 }
             }
         }, newTime.get(Calendar.HOUR_OF_DAY), newTime.get(Calendar.MINUTE), true);
+
+        tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_date, "[Date]"));
+        tvTime.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_time, "[Time]"));
+        edtReminder.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_reminder, "30"));
+        edtDescription.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_description, ""));
+
+        tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_date, "[Date]"));
     }
 
     @Override
@@ -133,6 +157,7 @@ public class Form_ScheduleTaskFragment extends Fragment implements View.OnClickL
     @Override
     public void onClick(View view) {
         int id = view.getId();
+        view.startAnimation(GlobalVar.buttoneffect);
 
         if(id==R.id.tvDate)
         {
@@ -141,6 +166,39 @@ public class Form_ScheduleTaskFragment extends Fragment implements View.OnClickL
         else if(id==R.id.tvTime)
         {
             tp.show();
+        }
+        else if(id==R.id.btnNext)
+        {
+            String date = tvDate.getText().toString();
+            String time = tvTime.getText().toString();
+            String type = spType.getSelectedItem().toString();
+            String reminder = edtReminder.getText().toString();
+            String description = edtDescription.getText().toString();
+
+            if(date.equals("[Date]") || time.equals("[Time]") || reminder.equals("") || description.equals(""))
+            {
+                LibInspira.ShowShortToast(getContext(), "Please fill in all fields");
+            }
+            else
+            {
+                LibInspira.clearShared(global.temppreferences);
+                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_date, date);
+                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_time, time);
+                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_reminder, reminder);
+                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_type, type);
+                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_description, description);
+
+                LibInspira.setShared(global.sharedpreferences, global.shared.position, "scheduletask");
+
+                if(type.toLowerCase().equals("group meeting"))
+                {
+
+                }
+                else
+                {
+                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
+                }
+            }
         }
     }
 }

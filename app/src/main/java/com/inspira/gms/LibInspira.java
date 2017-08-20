@@ -78,6 +78,11 @@ public class LibInspira {
         fragmentTransaction.commit();
     }
 
+    public static void BackFragment(FragmentManager _fragmentManager)
+    {
+        _fragmentManager.popBackStack();
+    }
+
     //added by Tonny @15-Jul-2017
     public static void ShowShortToast(Context _context, String _message){
         Context context = _context;

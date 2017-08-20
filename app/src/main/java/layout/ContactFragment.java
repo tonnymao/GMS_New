@@ -340,15 +340,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    view.startAnimation(GlobalVar.listeffect);
                     LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
-                }
-            });
-
-            final Holder finalHolder = holder;
-            holder.tvNama.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String nomeruser = finalHolder.adapterItem.getNomor();
                 }
             });
 
