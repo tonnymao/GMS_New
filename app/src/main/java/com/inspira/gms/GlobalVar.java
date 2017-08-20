@@ -102,11 +102,16 @@ public class GlobalVar {
             public String cabang = "cabang";  // nomorcabang~namacabang //added by Tonny @08-Aug-2017
             public String price = "price"; //nomor~kode~nama~harga
             public String pricehpp = "pricehpp"; //nomor~kode~nama~harga~hpp
+
+            //mendapatkan value untuk diisi ke dalam spinner
             public String stockKategori = "stockkategori";  //added by Tonny @18-Aug-2017
-            public String stockBentuk = "stockrBentuk";  //added by Tonny @19-Aug-2017
-            public String stockJenis = "stockJenis";  //added by Tonny @19-Aug-2017
-            public String stockGrade = "stockGrade";  //added by Tonny @19-Aug-2017
-            public String stockSurface = "stockSurface";  //added by Tonny @19-Aug-2017
+            public String stockBentuk = "stockbentuk";  //added by Tonny @19-Aug-2017
+            public String stockJenis = "stockjenis";  //added by Tonny @19-Aug-2017
+            public String stockGrade = "stockgrade";  //added by Tonny @19-Aug-2017
+            public String stockSurface = "stocksurface";  //added by Tonny @19-Aug-2017
+            public String stockGudang = "stockgudang";  //added by Tonny @20-Aug-2017
+            ///
+            public String stockPosisi = "stockposisi";  //nomorgudang~namagudang~nomorbarang~namabarang~satuan~qty~m2 //added by Tonny @20-Aug-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017
@@ -124,12 +129,20 @@ public class GlobalVar {
             public String jam_akhir = "jam_akhir";
         }
 
+        //filter yang sudah terpilih
         public class Stock //added by Tonny @18-Aug-2017
         {
-            public String filterKategori = "filterkategori";  //added by Tonny @18-Aug-2017
-            public String filterBentuk = "filterBentuk";  //added by Tonny @19-Aug-2017
-            public String filterJenis = "filterJenis";  //added by Tonny @19-Aug-2017
-            public String filterGrade = "filterGrade";  //added by Tonny @19-Aug-2017
-            public String filterSurface = "filterSurface";  //added by Tonny @19-Aug-2017
+            public String kategori = "kategori";  //added by Tonny @18-Aug-2017
+            public String bentuk = "bentuk";  //added by Tonny @19-Aug-2017
+            public String jenis = "jenis";  //added by Tonny @19-Aug-2017
+            public String grade = "grade";  //added by Tonny @19-Aug-2017
+            public String surface = "surface";  //added by Tonny @19-Aug-2017
+            public String kodegudang = "kodegudang";  //added by Tonny @20-Aug-2017
+            public String namagudang = "namagudang";  //added by Tonny @20-Aug-2017
+            public String nomorbarang = "nomorbarang";  //added by Tonny @20-Aug-2017
+            public String ukuran = "ukuran";  //aaxbb //added by Tonny @20-Aug-2017
+            public String tebal = "tebal";  //added by Tonny @20-Aug-2017
+            public String motif = "motif";  //added by Tonny @20-Aug-2017
+            public String tanggal = "tanggal"; //yyyy-MM-dd //added by Tonny @20-Aug-2017
         }
 }

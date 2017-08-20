@@ -29,6 +29,7 @@ import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
 
         refreshList();
 
-        String actionUrl = "Master/getContact/";
+        String actionUrl = "Stock/getStockPosisi/";
         new getData().execute( actionUrl );
     }
 
@@ -138,7 +139,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                if(!list.get(ctr).getNomorBarang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -146,9 +147,9 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             }
             else
             {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                if(LibInspira.contains(list.get(ctr).getNamaBarang(),etSearch.getText().toString() ))
                 {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!list.get(ctr).getNomorBarang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                     {
                         itemadapter.add(list.get(ctr));
                         itemadapter.notifyDataSetChanged();
@@ -163,7 +164,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.user, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.stockPosisi, "");
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1 && pieces[0].equals(""))
         {
@@ -177,28 +178,33 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomor = parts[0];
-                    String nama = parts[1];
-                    String location = parts[2];
-                    String hp = parts[3];
+                    String nomorgudang = parts[0];
+                    String namagudang = parts[1];
+                    String nomorbarang = parts[2];
+                    String namabarang = parts[3];
+                    String satuan = parts[4];
+                    String qty = parts[5];
+                    String m2 = parts[6];
 
-                    if(nomor.equals("null")) nomor = "";
-                    if(nama.equals("null")) nama = "";
-                    if(location.equals("null")) location = "-";
-                    if(hp.equals("null")) hp = "";
+                    if(nomorgudang.equals("")) nomorgudang = "null";
+                    if(namagudang.equals("")) namagudang = "null";
+                    if(nomorbarang.equals("")) nomorbarang = "null";
+                    if(namabarang.equals("")) namabarang = "null";
+                    if(satuan.equals("")) satuan = "null";
+                    if(qty.equals("")) qty = "0";
+                    if(m2.equals("")) m2 = "0";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomor);
-                    dataItem.setNama(nama);
-                    dataItem.setLocation(location);
-                    dataItem.setHp(hp);
+                    dataItem.setNomorGudang(nomorgudang);
+                    dataItem.setNamaGudang(namagudang);
+                    dataItem.setNomorBarang(nomorbarang);
+                    dataItem.setNamaBarang(namabarang);
+                    dataItem.setSatuan(satuan);
+                    dataItem.setQty(qty);
+                    dataItem.setM2(m2);
                     list.add(dataItem);
-
-                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
-                    {
-                        itemadapter.add(dataItem);
-                        itemadapter.notifyDataSetChanged();
-                    }
+                    itemadapter.add(dataItem);
+                    itemadapter.notifyDataSetChanged();
                 }
             }
         }
@@ -208,6 +214,37 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            String nomorbarang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.nomorbarang, "");
+            String namagudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, "");
+            String kategori = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kategori, "");
+            String bentuk = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.bentuk, "");
+            String jenis = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.jenis, "");
+            String grade = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.grade, "");
+            String surface = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.surface, "");
+            String ukuran = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
+            String tebal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tebal, "");
+            String motif = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.motif, "");
+            String tanggal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggal, "");
+            String nomorcabang = LibInspira.getShared(global.userpreferences, global.user.cabang, "");
+            String kodegudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, "");
+            try {
+                jsonObject.put("kodegudang", kodegudang);
+                jsonObject.put("nomorbarang", nomorbarang);
+                jsonObject.put("namagudang", namagudang);
+                jsonObject.put("kategori", kategori);
+                jsonObject.put("bentuk", bentuk);
+                jsonObject.put("jenis", jenis);
+                jsonObject.put("grade", grade);
+                jsonObject.put("surface", surface);
+                jsonObject.put("ukuran", ukuran);
+                jsonObject.put("tebal", tebal);
+                jsonObject.put("motif", motif);
+                jsonObject.put("tanggal", tanggal);
+                jsonObject.put("nomorcabang", nomorcabang);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -222,27 +259,31 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomor = (obj.getString("nomor"));
-                            String nama = (obj.getString("nama"));
-                            String lat = "0";
-                            String lon = "0";
-                            String hp = "";
-                            String location = "";
+                            String nomorgudang = (obj.getString("nomorgudang"));
+                            String namagudang = (obj.getString("namagudang"));
+                            String nomorbarang = (obj.getString("nomorbarang"));
+                            String namabarang = (obj.getString("namabarang"));
+                            String satuan = (obj.getString("satuan"));
+                            String qty = (obj.getString("qty"));
+                            String m2 = (obj.getString("m2"));
 
-                            if(nomor.equals("")) nomor = "null";
-                            if(nama.equals("")) nama = "null";
-                            if(location.equals("")) location = "null";
-                            if(hp.equals("")) hp = "null";
+                            if(nomorgudang.equals("")) nomorgudang = "null";
+                            if(namagudang.equals("")) namagudang = "null";
+                            if(nomorbarang.equals("")) nomorbarang = "null";
+                            if(namabarang.equals("")) namabarang = "null";
+                            if(satuan.equals("")) satuan = "null";
+                            if(qty.equals("")) qty = "0";
+                            if(m2.equals("")) m2 = "0";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + location + "~" + hp + "|";
+                            tempData = tempData + nomorgudang + "~" + namagudang + "~" + nomorbarang + "~" + namabarang + "~" + satuan + "~" + qty + "~" + m2 + "|";
                         }
                     }
 
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.user, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockPosisi, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.user,
+                                global.data.stockPosisi,
                                 tempData
                         );
                         refreshList();
@@ -266,24 +307,36 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
 
     public class ItemAdapter {
 
-        private String nomor;
-        private String nama;
-        private String hp;
-        private String location;
+        private String nomorgudang;
+        private String namagudang;
+        private String nomorbarang;
+        private String namabarang;
+        private String satuan;
+        private String qty;
+        private String m2;
 
         public ItemAdapter() {}
 
-        public String getNomor() {return nomor;}
-        public void setNomor(String _param) {this.nomor = _param;}
+        public String getNomorGudang() {return nomorgudang;}
+        public void setNomorGudang(String _param) {this.nomorgudang= _param;}
 
-        public String getNama() {return nama;}
-        public void setNama(String _param) {this.nama = _param;}
+        public String getNamaGudang() {return namagudang;}
+        public void setNamaGudang(String _param) {this.namagudang = _param;}
 
-        public String getHp() {return hp;}
-        public void setHp(String _param) {this.hp = _param;}
+        public String getNomorBarang() {return nomorbarang;}
+        public void setNomorBarang(String _param) {this.nomorbarang = _param;}
 
-        public String getLocation() {return location;}
-        public void setLocation(String _param) {this.location = _param;}
+        public String getNamaBarang() {return namabarang;}
+        public void setNamaBarang(String _param) {this.namabarang = _param;}
+
+        public String getSatuan() {return satuan;}
+        public void setSatuan(String _param) {this.satuan = _param;}
+
+        public String getQty() {return qty;}
+        public void setQty(String _param) {this.qty = _param;}
+
+        public String getM2() {return m2;}
+        public void setM2(String _param) {this.m2 = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -336,7 +389,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
+                    //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
                 }
             });
 
@@ -344,7 +397,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             holder.tvNama.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String nomeruser = finalHolder.adapterItem.getNomor();
+                    //String nomeruser = finalHolder.adapterItem.getNomor();
                 }
             });
 
@@ -352,14 +405,11 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase() + " " + holder.adapterItem.getHp());
+            holder.tvNama.setText(holder.adapterItem.getNamaBarang().toUpperCase());
             holder.tvKeterangan.setVisibility(View.VISIBLE);
-            holder.tvKeterangan.setText("Location: " + holder.adapterItem.getLocation());
-            if(!holder.adapterItem.getHp().equals(""))
-            {
-                holder.ivCall.setVisibility(View.VISIBLE);
-            }
-
+            holder.tvKeterangan.setText("Gudang: " + holder.adapterItem.getNamaGudang());
+            holder.tvValue.setVisibility(View.VISIBLE);
+            holder.tvValue.setText("Qty: " + holder.adapterItem.getQty() + " " + holder.adapterItem.getSatuan());
         }
     }
 }

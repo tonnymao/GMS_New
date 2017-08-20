@@ -309,7 +309,12 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
                 @Override
                 public void onClick(View view) {
                     LibInspira.setShared(global.userpreferences, global.user.cabang, finalHolder.adapterItem.getNomorCabang());
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition")){
+                        //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockPosisiFragment());
+                        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());
+                    }else {
+                        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
+                    }
                 }
             });
 

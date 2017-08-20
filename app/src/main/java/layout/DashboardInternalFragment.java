@@ -110,12 +110,12 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         else if(id==R.id.btnStockMonitoring)  //added by Tonny @16-Aug-2017
         {
             Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
-//            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
-//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
-//            }else{
-//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
-//            }
+            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
+                LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockposition");
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
+            }else{
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());  //modified by Tonny @17-Aug-2017
+            }
 
         }
     }

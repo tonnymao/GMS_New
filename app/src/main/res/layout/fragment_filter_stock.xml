@@ -56,14 +56,13 @@
                         android:text=" : "
                         android:textColor="@color/colorPrimaryDark" />
 
-                    <EditText
-                        android:id="@+id/edtInterval"
+                    <Spinner
+                        android:id="@+id/spGudang"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1.9"
-                        android:inputType="number"
-
-                        android:maxLines="1"
+                        android:spinnerMode="dialog"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
 
@@ -102,7 +101,7 @@
                         android:textColor="@color/colorPrimaryDark" />
 
                     <EditText
-                        android:id="@+id/edtRadius"
+                        android:id="@+id/edtBarang"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.9"

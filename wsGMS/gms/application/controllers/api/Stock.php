@@ -114,46 +114,6 @@ class Stock extends REST_Controller {
         $this->gcm->send();
     }
 
-	function test_get()
-	{
-
-		$result = "a";
-
-		$data['data'] = array();
-
-		// START SEND NOTIFICATION
-        $vcGCMId = $this->getGCMId(3);
-
-        $this->send_gcm($vcGCMId, $this->ellipsis('$new_message'),'New Message(s) From ','PrivateMessage','0','0');
-
-		$this->response($vcGCMId);
-
-		/*
-		$regisID = array();
-
-		$query_getuser = " SELECT
-							a.gcmid
-							FROM whuser_mobile a
-							JOIN whrole_mobile b ON a.nomorrole = b.nomor
-							WHERE a.status_aktif > 0 AND (a.gcmid <> '' AND a.gcmid IS NOT NULL) AND b.approveberitaacara = 1 ";
-		$result_getuser = $this->db->query($query_getuser);
-
-		if( $result_getuser && $result_getuser->num_rows() > 0){
-			foreach ($result_getuser->result_array() as $r_user){
-
-				// START SEND NOTIFICATION
-				$vcGCMId = $r_user['gcmid'];
-				if( $vcGCMId != "null" ){
-					array_push($regisID, $vcGCMId);
-				}
-
-			}
-			$count = $this->db->query("SELECT COUNT(1) AS elevasi_baru FROM mhberitaacara a WHERE a.status_disetujui = 0")->row()->elevasi_baru;
-			$this->send_gcm_group($regisID, $this->ellipsis("Berita Acara Elevasi"),$count . ' pending elevasi','ChooseApprovalElevasi','','');
-		}
-		*/
-	}
-
 	//--- Added by Tonny --- //
     // --- POST filter Kategori --- //
     function getKategori_post()
@@ -248,7 +208,7 @@ class Stock extends REST_Controller {
     }
 
     //--- Added by Tonny --- //
-     // --- POST filter jenis--- //
+    // --- POST filter jenis--- //
     function getJenis_post()
     {
         $data['data'] = array();
@@ -263,6 +223,41 @@ class Stock extends REST_Controller {
             {
                 array_push($data['data'], array(
                                                     'jenis'		=> $r['jenis']
+                                                )
+                );
+            }
+        }
+        else
+        {
+            array_push($data['data'], array( 'success' => "false" ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //--- Added by Tonny --- //
+    // --- POST filter gudang--- //
+    function getGudang_post()
+    {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = 'SELECT DISTINCT
+                    kode kodegudang, nama namagudang
+                  FROM thgudang
+                  ORDER BY namagudang ';
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0)
+        {
+            foreach ($result->result_array() as $r)
+            {
+                array_push($data['data'], array(
+                                                    'kodegudang'	=> $r['kodegudang'],
+                                                    'namagudang'	=> $r['namagudang']
                                                 )
                 );
             }
@@ -301,6 +296,73 @@ class Stock extends REST_Controller {
         else
         {
             array_push($data['data'], array( 'success' => "false" ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    function getStockPosisi_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $kodegudang = (isset($jsonObject["kodegudang"]) ? $this->clean($jsonObject["kodegudang"])     : "");
+        $nomorbarang = (isset($jsonObject["nomorbarang"]) ? $this->clean($jsonObject["nomorbarang"])     : "");
+        $kategori = (isset($jsonObject["kategori"]) ? $this->clean($jsonObject["kategori"])     : "");
+        $bentuk = (isset($jsonObject["bentuk"]) ? $this->clean($jsonObject["bentuk"])     : "");
+        $jenis = (isset($jsonObject["jenis"]) ? $this->clean($jsonObject["jenis"])     : "");
+        $grade = (isset($jsonObject["grade"]) ? $this->clean($jsonObject["grade"])     : "");
+        $surface = (isset($jsonObject["surface"]) ? $this->clean($jsonObject["surface"])     : "");
+        $ukuran = (isset($jsonObject["ukuran"]) ? $this->clean($jsonObject["ukuran"])     : "");
+        $tebal = (isset($jsonObject["tebal"]) ? $this->clean($jsonObject["tebal"])     : "");
+        $motif = (isset($jsonObject["motif"]) ? $this->clean($jsonObject["motif"])     : "");
+        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "");
+        $nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "");
+
+        $query = "SELECT c.kode nomorgudang, c.nama namagudang, b.kode nomorbarang, b.nama namabarang, b.satuan, sum(a.qty) qty, sum(a.jumlah) m2
+                 FROM thlaporanstok a
+                   join vwbarang b
+                     on a.nomorbarang = b.nomor
+                   join thgudang c
+                     on a.nomorgudang = c.nomor
+                 WHERE a.status<>0
+                 AND c.kode like '%$kodegudang%'
+                 AND b.kode like '%$nomorbarang%'
+                 AND b.kategori like '%$kategori%'
+                 AND b.jenis like '%$jenis%'
+                 AND b.grade like '%$grade%'
+                 AND b.bentuk like '%$bentuk%'
+                 AND b.ukuran like '%$ukuran%'
+                 AND b.tebal like '%$tebal%'
+                 AND b.motif like '%$motif%'
+                 AND b.surface like '%$surface%'
+                 AND a.tanggal <= '$tanggal'
+                 AND c.nomorcabang = '$nomorcabang'
+                 GROUP BY c.kode, c.nama, b.kode, b.nama, b.satuan
+                 HAVING (sum(a.jumlah) <> 0)
+                 ORDER BY c.kode, b.satuan, b.nama";
+        $this->db->query($query);
+        $result = $this->db->query($query, array($user, $pass));
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomorgudang'			=> $r['nomorgudang'],
+                                                'namagudang'			=> $r['namagudang'],
+                                                'nomorbarang'			=> $r['nomorbarang'],
+                                                'namabarang'			=> $r['namabarang'],
+                                                'satuan'                => $r['satuan'],
+                                                'qty' 					=> $r['qty'],
+                                                'm2' 					=> $r['m2']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
         }
 
         if ($data){
