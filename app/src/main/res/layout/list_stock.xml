@@ -13,10 +13,13 @@
             android:id="@+id/tvValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="15dp"
             android:layout_alignParentRight="true"
             android:gravity="end"
             android:text="[ Value ] "
+            android:textSize="15dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorDarkGreen" />
 
@@ -30,6 +33,21 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorPrimaryDark" />
 
+
+        <TextView
+            android:id="@+id/tvValue1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-10dp"
+            android:layout_marginRight="15dp"
+            android:layout_below="@id/tvName"
+            android:layout_alignParentRight="true"
+            android:gravity="end"
+            android:text="[ Value ] "
+            android:textSize="15dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/colorDarkGreen" />
+
         <TextView
             android:id="@+id/tvKeterangan"
             android:layout_width="match_parent"
@@ -37,7 +55,7 @@
             android:layout_below="@id/tvName"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="-10dp"
-            android:layout_toLeftOf="@id/ivCall"
+            android:layout_toLeftOf="@id/tvValue1"
             android:text="[ Keterangan 1] "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorDarkBlue"

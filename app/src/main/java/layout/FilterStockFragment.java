@@ -449,13 +449,23 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.jenis, spJenis.getSelectedItem().toString());
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.grade, spGrade.getSelectedItem().toString());
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.bentuk, spBentuk.getSelectedItem().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, edtUkuran1.getText().toString() + "x" + edtUkuran2.getText().toString());
+            if(edtUkuran1.getText().toString().equals("") && edtUkuran2.getText().toString().equals("")){
+                LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
+            }else {
+                LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, edtUkuran1.getText().toString() + "x" + edtUkuran2.getText().toString());
+            }
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.surface, spSurface.getSelectedItem().toString());
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvFilterStockDate.getText().toString());
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namagudang, spGudang.getSelectedItem().toString());
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockPosisiFragment());
+
+            LibInspira.setShared(global.datapreferences, global.data.stockPosisi, "");  //added by Tonny @21-Aug-2017  clear data stockposisi
+            if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition")){
+                LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockPosisiFragment());
+            }else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockpositionrandom")){
+                LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockPosisiRandomFragment());
+            }
         }
         else if (id == R.id.tvFilterStockDate){
             dp.show();

@@ -41,6 +41,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 //import android.app.Fragment;
 
 public class StockPosisiFragment extends Fragment implements View.OnClickListener{
+    protected String actionUrl = "Stock/getStockPosisi/";
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
@@ -113,7 +114,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
 
         refreshList();
 
-        String actionUrl = "Stock/getStockPosisi/";
+        //actionUrl = "Stock/getStockPosisi/";
         new getData().execute( actionUrl );
     }
 
@@ -256,26 +257,27 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                    //for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                    for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            String nomorgudang = (obj.getString("nomorgudang"));
+                            String kodegudang = (obj.getString("kodegudang"));
                             String namagudang = (obj.getString("namagudang"));
-                            String nomorbarang = (obj.getString("nomorbarang"));
+                            String kodebarang = (obj.getString("kodebarang"));
                             String namabarang = (obj.getString("namabarang"));
                             String satuan = (obj.getString("satuan"));
                             String qty = (obj.getString("qty"));
                             String m2 = (obj.getString("m2"));
 
-                            if(nomorgudang.equals("")) nomorgudang = "null";
+                            if(kodegudang.equals("")) kodegudang = "null";
                             if(namagudang.equals("")) namagudang = "null";
-                            if(nomorbarang.equals("")) nomorbarang = "null";
+                            if(kodebarang.equals("")) kodebarang = "null";
                             if(namabarang.equals("")) namabarang = "null";
                             if(satuan.equals("")) satuan = "null";
                             if(qty.equals("")) qty = "0";
                             if(m2.equals("")) m2 = "0";
 
-                            tempData = tempData + nomorgudang + "~" + namagudang + "~" + nomorbarang + "~" + namabarang + "~" + satuan + "~" + qty + "~" + m2 + "|";
+                            tempData = tempData + kodegudang + "~" + namagudang + "~" + kodebarang + "~" + namabarang + "~" + satuan + "~" + qty + "~" + m2 + "|";
                         }
                     }
 
@@ -359,7 +361,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
-            TextView tvValue;
+            TextView tvValue, tvValue1;
             TextView tvKeterangan;
             ImageView ivCall;
         }
@@ -380,6 +382,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
             holder.tvValue = (TextView)row.findViewById(R.id.tvValue);
+            holder.tvValue1 = (TextView)row.findViewById(R.id.tvValue1);
             holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
             holder.ivCall = (ImageView)row.findViewById(R.id.ivCall);
 
@@ -409,7 +412,9 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             holder.tvKeterangan.setVisibility(View.VISIBLE);
             holder.tvKeterangan.setText("Gudang: " + holder.adapterItem.getNamaGudang());
             holder.tvValue.setVisibility(View.VISIBLE);
-            holder.tvValue.setText("Qty: " + holder.adapterItem.getQty() + " " + holder.adapterItem.getSatuan());
+            holder.tvValue.setText("Qty: " + holder.adapterItem.getQty());
+            holder.tvValue1.setVisibility(View.VISIBLE);
+            holder.tvValue1.setText(LibInspira.delimeter(holder.adapterItem.getM2()) + " " + holder.adapterItem.getSatuan());
         }
     }
 }

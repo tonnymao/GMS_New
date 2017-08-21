@@ -128,6 +128,8 @@ public class GlobalVar {
             public String stockSurface = "stocksurface";  //added by Tonny @19-Aug-2017
             public String stockGudang = "stockgudang";  //added by Tonny @20-Aug-2017
             ///
+
+            //UNTUK MENYIMPAN STOCKPOSISI DAN STOCKPOSISIRANDOM
             public String stockPosisi = "stockposisi";  //nomorgudang~namagudang~nomorbarang~namabarang~satuan~qty~m2 //added by Tonny @20-Aug-2017
         }
 

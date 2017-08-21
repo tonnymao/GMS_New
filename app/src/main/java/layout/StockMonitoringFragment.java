@@ -18,6 +18,8 @@ import android.widget.Button;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
+import static com.inspira.gms.IndexInternal.global;
+
 //import android.app.Fragment;
 
 public class StockMonitoringFragment extends Fragment implements View.OnClickListener{
@@ -79,11 +81,13 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
 
         if(id==R.id.btnPosisiStok)
         {
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockposition");
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FilterStockFragment());
         }
         else if(id==R.id.btnPosisiStokRandom)
         {
-
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockpositionrandom");
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FilterStockFragment());
         }
         else if(id==R.id.btnRandomPerBarang)
         {
