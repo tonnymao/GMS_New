@@ -246,7 +246,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
                 e.printStackTrace();
             }
 
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+            return LibInspira.executePost(getContext(), urls[0], jsonObject, 60000);
         }
         // onPostExecute displays the results of the AsyncTask.
         @Override

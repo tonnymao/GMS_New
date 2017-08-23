@@ -50,7 +50,7 @@ public class StockPosisiRandomFragment extends StockPosisiFragment implements Vi
     //untuk mapping UI pada fragment, jangan dilakukan pada OnCreate, tapi dilakukan pada onActivityCreated
     @Override
     public void onActivityCreated(Bundle bundle){
-        actionUrl = "Stock/getStockPosisiRandom";
+        actionUrl = "Stock/getStockPosisiRandom/";
         super.onActivityCreated(bundle);
     }
 

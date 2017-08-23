@@ -465,6 +465,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
                 LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockPosisiFragment());
             }else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockpositionrandom")){
                 LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockPosisiRandomFragment());
+            }else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang")){
+                LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockRandomPerBarangFragment());
             }
         }
         else if (id == R.id.tvFilterStockDate){

@@ -304,6 +304,8 @@ class Stock extends REST_Controller {
         }
     }
 
+    //--- Added by Tonny --- //
+    // --- POST stock posisi--- //
     function getStockPosisi_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
@@ -372,6 +374,8 @@ class Stock extends REST_Controller {
         }
     }
 
+    //--- Added by Tonny --- //
+    // --- POST stock posisi random--- //
     function getStockPosisiRandom_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
@@ -440,4 +444,77 @@ class Stock extends REST_Controller {
             //$this->response($query); // OK (200) being the HTTP response code
         }
     }
+
+    //--- Added by Tonny --- //
+    // --- POST stock random per barang--- //
+    function getStockRandomPerBarang_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $kodegudang = (isset($jsonObject["kodegudang"]) ? $this->clean($jsonObject["kodegudang"])     : "");
+        $nomorbarang = (isset($jsonObject["nomorbarang"]) ? $this->clean($jsonObject["nomorbarang"])     : "");
+        $kategori = (isset($jsonObject["kategori"]) ? $this->clean($jsonObject["kategori"])     : "");
+        $bentuk = (isset($jsonObject["bentuk"]) ? $this->clean($jsonObject["bentuk"])     : "");
+        $jenis = (isset($jsonObject["jenis"]) ? $this->clean($jsonObject["jenis"])     : "");
+        $grade = (isset($jsonObject["grade"]) ? $this->clean($jsonObject["grade"])     : "");
+        $surface = (isset($jsonObject["surface"]) ? $this->clean($jsonObject["surface"])     : "");
+        $ukuran = (isset($jsonObject["ukuran"]) ? $this->clean($jsonObject["ukuran"])     : "");
+        $tebal = (isset($jsonObject["tebal"]) ? $this->clean($jsonObject["tebal"])     : "");
+        $motif = (isset($jsonObject["motif"]) ? $this->clean($jsonObject["motif"])     : "");
+        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "");
+        $nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "");
+
+        $query = "SELECT d.kode kodegudang, d.nama namagudang, e.nama lokasi, b.kode kodebarang, b.nama namabarang,
+                  c.barcode, c.bundle, c.slab, c.blok, c.peti, a.jumlah as m2, f.coeff1, f.panjang, f.lebar, f.tebal, f.jumlah, '' as kodebarangpacking, '' as namabarangpacking, 0 qty, 0 as jumlahdetail, b.packing
+                  FROM (select nomorgudang, nomorbarang, nomorbarcode, nomorlokasi, sum(qty) qty, sum(jumlah) jumlah
+                   FROM thlaporanstok
+                   WHERE status<>0
+                   AND tanggal <= '$tanggal'
+                   GROUP BY nomorgudang, nomorbarang, nomorbarcode, nomorlokasi
+                   HAVING SUM(qty)<>0) a
+                    JOIN vwbarang b ON a.nomorbarang=b.nomor
+                    JOIN thbarcode c ON a.nomorbarcode=c.nomor
+                    JOIN thgudang d ON a.nomorgudang=d.nomor
+                    JOIN tlokasi e ON a.nomorlokasi=e.nomor
+                    JOIN tdbarcode f ON c.nomor=f.nomorheader
+                  WHERE b.random=1 AND b.packing=0
+                  AND d.kode LIKE '%$kodegudang%'
+                  AND b.kode LIKE '%$kodebarang%'
+                  AND b.kategori LIKE '%$kategori%'
+                  AND b.jenis LIKE '%$jenis%'
+                  AND b.grade LIKE '%$grade%'
+                  AND b.bentuk LIKE '%$bentuk%'
+                  AND b.ukuran LIKE '%$ukuran%'
+                  AND b.tebal LIKE '%$tebal%'
+                  AND b.motif LIKE '%$motif%'
+                  AND b.surface LIKE '%$surface%'";
+        $this->db->query($query);
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'kodegudang'			=> $r['kodegudang'],
+                                                'namagudang'			=> $r['namagudang'],
+                                                'kodebarang'			=> $r['kodebarang'],
+                                                'namabarang'			=> $r['namabarang'],
+                                                'satuan'                => $r['satuan'],
+                                                'qty' 					=> $r['qty'],
+                                                'm2' 					=> $r['m2']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+            //$this->response($query); // OK (200) being the HTTP response code
+        }
+    }
+
 }

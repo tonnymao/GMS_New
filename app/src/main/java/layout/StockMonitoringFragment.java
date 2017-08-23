@@ -91,7 +91,8 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
         }
         else if(id==R.id.btnRandomPerBarang)
         {
-
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockrandomperbarang");
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FilterStockFragment());
         }
         else if(id==R.id.btnRandomPerLokasi)
         {
