@@ -19,6 +19,7 @@ public class GlobalVar {
     public static SharedPreferences settingpreferences;  //added by Tonny @03-Aug-2017
     public static SharedPreferences salestargetpreferences;  //added by Tonny @07-Aug-2017
     public static SharedPreferences stockmonitoringpreferences;  //added by Tonny @18-Aug-2017
+    public static SharedPreferences omzetpreferences;  //added by Tonny @18-Aug-2017
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
@@ -27,6 +28,7 @@ public class GlobalVar {
     public static Settings settings;  //added by Tonny @03-Aug-2017
     public static Stock stock;  //added by Tonny @18-Aug-2017
     public static Temp temp; //added by ADI @20-Aug-2017
+    public static Omzet omzet;  //added by Tonny @23-Aug-2017
 
     public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
     public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
@@ -52,6 +54,7 @@ public class GlobalVar {
             settings = new Settings();  //added by Tonny @03-Aug-2017
             stock = new Stock();  //added by Tonny @18-Aug-2017
             temp = new Temp(); //added by ADI @20-Aug-2017
+            omzet = new Omzet();  //added by Tonny @23-Aug-2017
         }
 
         public static void clearDataUser()
@@ -148,7 +151,7 @@ public class GlobalVar {
             public String jam_akhir = "jam_akhir";
         }
 
-        //filter yang sudah terpilih
+        //untuk menampung value filter stock yang sudah dipilih
         public class Stock //added by Tonny @18-Aug-2017
         {
             public String kategori = "kategori";  //added by Tonny @18-Aug-2017
@@ -164,4 +167,13 @@ public class GlobalVar {
             public String motif = "motif";  //added by Tonny @20-Aug-2017
             public String tanggal = "tanggal"; //yyyy-MM-dd //added by Tonny @20-Aug-2017
         }
+
+        //untuk menampung value filter omzet yang sudah dipilih
+        public class Omzet //added by Tonny @23-Aug-2017
+        {
+            public String nomorsales  = "nomorsales";
+            public String enddate = "tanggal";
+            public String bulantahun = "bulantahun";
+        }
+
 }

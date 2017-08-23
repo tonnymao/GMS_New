@@ -313,7 +313,8 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
 //                    LibInspira.sendDataFragmentToActivity(getActivity(), IndexInternal.class, "namasales", itemadapter.getItem(position).toString());
                     LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
                     LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")){
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")
+                            || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("filter omzet")){
                         LibInspira.BackFragment(getFragmentManager()); //untuk kembali ke stack sebelumnya
                     }
                 }
