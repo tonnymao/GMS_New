@@ -46,7 +46,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 //import android.app.Fragment;
 
 public class SalesOmzetFragment extends Fragment implements View.OnClickListener{
-    private TextView tvInformation, tvNoData;
+    private TextView tvInformation, tvNoData, tvTotalOmzet;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -89,6 +89,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         //((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
+        tvTotalOmzet = (TextView) getView().findViewById(R.id.tvTotalOmzet);
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_stock, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
@@ -97,7 +98,11 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         refreshList();
 
         String actionUrl = "Sales/getSalesOmzet/";
-        new getData().execute( actionUrl );
+        new checkSalesOmzet().execute( actionUrl );
+
+        actionUrl = "Sales/getTotalOmzet/";
+        new checkTotalOmzet().execute( actionUrl );
+
     }
 
     @Override
@@ -156,11 +161,11 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private class getData extends AsyncTask<String, Void, String> {
+    private class checkSalesOmzet extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
             try {
+                jsonObject = new JSONObject();
                 jsonObject.put("nomorsales", LibInspira.getShared(global.omzetpreferences, global.omzet.nomorsales, ""));
                 jsonObject.put("enddate", LibInspira.getShared(global.omzetpreferences, global.omzet.enddate, ""));
                 jsonObject.put("bulantahun", LibInspira.getShared(global.omzetpreferences, global.omzet.bulantahun, ""));
@@ -221,12 +226,61 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    private class checkTotalOmzet extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("nomorsales", LibInspira.getShared(global.omzetpreferences, global.omzet.nomorsales, ""));
+                jsonObject.put("enddate", LibInspira.getShared(global.omzetpreferences, global.omzet.enddate, ""));
+                jsonObject.put("bulantahun", LibInspira.getShared(global.omzetpreferences, global.omzet.bulantahun, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try
+            {
+                String totalomzet = "";
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            totalomzet = (obj.getString("totalomzet"));
+
+                            if(totalomzet.equals("")) totalomzet = "null";
+                        }
+                    }
+                    tvTotalOmzet.setText("Rp. " + LibInspira.delimeter(totalomzet));
+                }
+                tvInformation.animate().translationYBy(-80);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                tvInformation.animate().translationYBy(-80);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            tvInformation.setVisibility(View.VISIBLE);
+        }
+    }
+
     public class ItemAdapter {
 
         private String nomor;
         private String nama;
         private String omzet;
         private String tanggal;
+        //private String totalOmzet;
 
         public ItemAdapter() {}
 
@@ -241,6 +295,9 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
 
         public String getTanggal() {return tanggal;}
         public void setTanggal(String _param) {this.tanggal = _param;}
+
+//        public String getTotalOmzet() {return totalOmzet;}
+//        public void setTotalOmzet(String _param) {this.totalOmzet = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -265,6 +322,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
             TextView tvNama;
             TextView tvOmzet;
             TextView tvTanggal;
+            TextView tvValue1;
         }
 
         @Override
@@ -281,8 +339,9 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
             holder = new Holder();
             holder.adapterItem = items.get(position);
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvOmzet = (TextView)row.findViewById(R.id.tvKeterangan);
-            holder.tvTanggal = (TextView)row.findViewById(R.id.tvKeterangan1);
+            holder.tvOmzet = (TextView)row.findViewById(R.id.tvValue);
+            holder.tvTanggal = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvValue1 = (TextView)row.findViewById(R.id.tvValue1);
 
             row.setTag(holder);
             setupItem(holder);
@@ -301,9 +360,10 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
             holder.tvOmzet.setVisibility(View.VISIBLE);
-            holder.tvOmzet.setText("Rp. " + holder.adapterItem.getOmzet());
+            holder.tvOmzet.setText("Rp. " + LibInspira.delimeter(holder.adapterItem.getOmzet()));
             holder.tvTanggal.setVisibility(View.VISIBLE);
             holder.tvTanggal.setText(holder.adapterItem.getTanggal());
+            holder.tvValue1.setVisibility(View.GONE);
         }
     }
 }

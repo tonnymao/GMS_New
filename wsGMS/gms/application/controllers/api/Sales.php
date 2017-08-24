@@ -145,56 +145,6 @@ class Sales extends REST_Controller {
 		} 
 		*/
 	}
-
-    // added by Tonny
-	// --- POST get salesman omzet pada bulan ini atau tahun ini--- //
-	function getSalesOmzet_post()
-	{
-        $data['data'] = array();
-        $value = file_get_contents('php://input');
-		$jsonObject = (json_decode($value , true));
-
-		$nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
-		$bulantahun = (isset($jsonObject["bulantahun"]) ? $this->clean($jsonObject["bulantahun"])     : "bulan");
-		$enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "");
-
-        $query = "	SELECT a.NomorSales nomorsales, b.nama namasales, a.TotalRp omzet, a.tanggal tanggal
-                    FROM thnotajual a
-                        LEFT JOIN thsales b
-                            ON a.nomorsales = b.nomor
-                    WHERE a.status <> 0
-                        AND a.jenis = 'fj'
-                        AND a.approve = 1
-                        AND YEAR(a.tanggal) = YEAR('$endddate')
-                        AND a.tanggal <= '$enddate'
-                        AND b.nomor = $nomorsales ";
-
-		if($bulantahun == 'bulan'){
-		    $query = $query + 'AND MONTH(a.tanggal) = MONTH('$endddate')';
-		}
-        $result = $this->db->query($query);
-		//$result = $this->db->query($query, array($user, $pass));
-
-        if( $result && $result->num_rows() > 0){
-            foreach ($result->result_array() as $r){
-                array_push($data['data'], array(
-												'nomorsales'			=> $r['nomorsales'],
-												'namasales'			    => $r['namasales'],
-												'omzet'					=> $r['omzet'],
-												'tanggal'			    => $r['tanggal']
-                								)
-               	);
-            }
-        }else{
-			//array_push($data['data'], array( 'query' => $this->error($query) ));
-			array_push($data['data'], array( 'success' => "false" ));
-		}
-
-        if ($data){
-            // Set the response and exit
-            $this->response($data['data']); // OK (200) being the HTTP response code
-        }
-    }
 	
 	// --- POST get target --- //
 	function getTarget_post()
@@ -480,4 +430,94 @@ class Sales extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
 	}
+
+    // added by Tonny
+    // --- POST get salesman omzet pada bulan ini atau tahun ini--- //
+    function getSalesOmzet_post() {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
+        $bulantahun = (isset($jsonObject["bulantahun"]) ? $this->clean($jsonObject["bulantahun"])     : "bulan");
+        $enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "");
+
+        $query = "	SELECT a.NomorSales nomorsales, b.nama namasales, a.TotalRp omzet, a.tanggal tanggal
+                    FROM thnotajual a
+                        LEFT JOIN thsales b
+                            ON a.nomorsales = b.nomor
+                    WHERE a.status <> 0
+                        AND a.jenis = 'fj'
+                        AND a.approve = 1
+                        AND YEAR(a.tanggal) = YEAR('$enddate')
+                        AND a.tanggal <= '$enddate' ";
+
+        if($nomorsales != ''){
+            $query = $query . " AND b.nomor = $nomorsales ";
+        }
+        if($bulantahun == 'bulan'){
+            $query = $query . " AND MONTH(a.tanggal) = MONTH('$enddate') ";
+        }
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomorsales'			=> $r['nomorsales'],
+                                                'namasales'			    => $r['namasales'],
+                                                'omzet'					=> $r['omzet'],
+                                                'tanggal'			    => $r['tanggal']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+            //array_push($data['data'], array( 'success' => "false" ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //untuk mendapatkan value dari total omzet
+    function getTotalOmzet_post() {
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
+        $bulantahun = (isset($jsonObject["bulantahun"]) ? $this->clean($jsonObject["bulantahun"])     : "bulan");
+        $enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "");
+
+        $querytotalomzet = "SELECT SUM(a.TotalRp) totalomzet
+                            FROM thnotajual a
+                                LEFT JOIN thsales c
+                                    ON a.nomorsales = c.nomor
+                                LEFT JOIN tcustomer b
+                                    ON a.nomorcustomer = b.nomor
+                            WHERE a.status <> 0
+                                AND a.jenis = 'fj'
+                                AND a.approve = 1
+                                AND YEAR(a.tanggal) = YEAR('$enddate') ";
+        if($nomorsales != ''){
+            $querytotalomzet = $querytotalomzet . " AND c.nomor = $nomorsales ";
+        }
+        if($bulantahun == 'bulan'){
+            $querytotalomzet = $querytotalomzet . " AND MONTH(a.tanggal) = MONTH('$enddate') ";
+        }
+        $totalomzet  = $this->db->query($querytotalomzet)->row()->totalomzet;
+
+        array_push($data['data'], array(
+                                        'totalomzet'		=> $totalomzet
+                                        )
+        );
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
 }
