@@ -46,6 +46,7 @@ public class GlobalVar {
             datapreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
             settingpreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);  //added by Tonny @03-Aug-2017
             stockmonitoringpreferences = context.getSharedPreferences("stock", Context.MODE_PRIVATE);  //added by Tonny @18-Aug-2017
+            omzetpreferences = context.getSharedPreferences("omzet", Context.MODE_PRIVATE);  //added by Tonny @25-Aug-2017
 
             data = new Data();
             user = new User();
@@ -134,6 +135,9 @@ public class GlobalVar {
 
             //UNTUK MENYIMPAN STOCKPOSISI DAN STOCKPOSISIRANDOM
             public String stockPosisi = "stockposisi";  //nomorgudang~namagudang~nomorbarang~namabarang~satuan~qty~m2 //added by Tonny @20-Aug-2017
+
+            //UNTUK MENYIMPAN DATA SALESMAN OMZET
+            public String salesmanomzet = "salesmanomzet";  //nomorsales~namasales~omzet~tanggal  //added by Tonny @25-Aug-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017
@@ -172,7 +176,7 @@ public class GlobalVar {
         public class Omzet //added by Tonny @23-Aug-2017
         {
             public String nomorsales  = "nomorsales";
-            public String enddate = "tanggal";
+            public String enddate = "enddate";
             public String bulantahun = "bulantahun";
         }
 
