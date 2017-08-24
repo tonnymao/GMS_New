@@ -47,6 +47,13 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
     private TextView tvFilterStockDate;
     private List<String> kodegudanglist;
 
+    private checkKategori checkkategori;
+    private checkBentuk checkbentuk;
+    private checkGrade checkgrade;
+    private checkGudang checkgudang;
+    private checkJenis checkjenis;
+    private checkSurface checksurface;
+
     public FilterStockFragment() {
         // Required empty public constructor
     }
@@ -115,22 +122,28 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
 
         getView().findViewById(R.id.btnFilterUpdate).setOnClickListener(this);
         String actionUrl = "Stock/getKategori/";
-        new checkKategori().execute( actionUrl );
+        checkkategori = new checkKategori();
+        checkkategori.execute( actionUrl );
 
         actionUrl = "Stock/getGudang/";
-        new checkGudang().execute( actionUrl );
+        checkgudang = new checkGudang();
+        checkgudang.execute( actionUrl );
 
         actionUrl = "Stock/getBentuk/";
-        new checkBentuk().execute( actionUrl );
+        checkbentuk = new checkBentuk();
+        checkbentuk.execute( actionUrl );
 
         actionUrl = "Stock/getSurface/";
-        new checkSurface().execute( actionUrl );
+        checksurface = new checkSurface();
+        checksurface.execute( actionUrl );
 
         actionUrl = "Stock/getJenis/";
-        new checkJenis().execute( actionUrl );
+        checkjenis = new checkJenis();
+        checkjenis.execute( actionUrl );
 
         actionUrl = "Stock/getGrade/";
-        new checkGrade().execute( actionUrl );
+        checkgrade = new checkGrade();
+        checkgrade.execute( actionUrl );
 
         refreshList("all");
 
@@ -213,6 +226,19 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             }
         }
     }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        checkkategori.cancel(true);
+        checkbentuk.cancel(true);
+        checkgrade.cancel(true);
+        checkgudang.cancel(true);
+        checkjenis.cancel(true);
+        checksurface.cancel(true);
+    }
+
 
     private class checkKategori extends AsyncTask<String, Void, String> {
         JSONObject jsonObject;

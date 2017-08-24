@@ -65,6 +65,7 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         getView().findViewById(R.id.btnPriceList).setOnClickListener(this);
         getView().findViewById(R.id.btnStockMonitoring).setOnClickListener(this);
         getView().findViewById(R.id.btnOmzet).setOnClickListener(this);
+        getView().findViewById(R.id.btnSalesOrder).setOnClickListener(this);
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
             @Override
@@ -120,7 +121,10 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }else if (id==R.id.btnOmzet){  //added by Tonny @23-Aug-2017
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @23-Aug-2017
         }
-
+        else if(id==R.id.btnSalesOrder) //added by ADI @24-Aug-2017
+        {
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+        }
 
     }
 }

@@ -33,6 +33,8 @@ import layout.ChangePasswordFragment;
 import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
+import layout.Form_ScheduleTaskFragment;
+import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
 import layout.SettingFragment;
 
@@ -242,7 +244,7 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_group) {
 
         } else if (id == R.id.nav_salesorder) {
-
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment()); //added by ADI @24-Aug-2017
         } else if (id == R.id.nav_stockreport) {
 
         } else if (id == R.id.nav_salestracking){
