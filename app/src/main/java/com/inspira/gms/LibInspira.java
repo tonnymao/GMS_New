@@ -41,7 +41,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -403,5 +405,25 @@ public class LibInspira {
                         _commandCancel.run();
             } });}
         alertDialog.show();
+    }
+
+    //added by Tonny @25-Aug-2017  untuk mendapatkan tanggal hari ini format default (yyyy/MM/dd)
+    public static String getCurrentDate(){
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => " + c.getTime());
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = df.format(c.getTime());
+        return formattedDate;
+    }
+
+    //added by Tonny @25-Aug-2017  untuk mendapatkan tanggal hari ini format custom
+    public static String getCurrentDate(String _dateFormat){
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => " + c.getTime());
+
+        SimpleDateFormat df = new SimpleDateFormat(_dateFormat);
+        String formattedDate = df.format(c.getTime());
+        return formattedDate;
     }
 }

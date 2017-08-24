@@ -60,7 +60,7 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_filter_sales_omzet, container, false);
-        getActivity().setTitle("Sample");
+        getActivity().setTitle("Filter Sales Omzet");
         return v;
     }
 
@@ -82,6 +82,7 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
         tvSalesman.setOnClickListener(this);
         tvEndDate = (TextView) getView().findViewById(R.id.tvEndDate);
         tvEndDate.setOnClickListener(this);
+        tvEndDate.setText(LibInspira.getCurrentDate());
         rbtnBulan = (RadioButton) getView().findViewById(R.id.rbtnBulan);
         rbtnTahun = (RadioButton) getView().findViewById(R.id.rbtnTahun);
         btnSearch = (Button) getView().findViewById(R.id.btnSearch);
