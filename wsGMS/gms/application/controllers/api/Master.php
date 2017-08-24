@@ -317,6 +317,83 @@ class Master extends REST_Controller {
         }
     }
 
+    // --- POST get valuta --- //
+    function getValuta_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.valuta AS `nama`,
+                        (SELECT b.kurs FROM tsettingkurs b WHERE b.nomorheader=a.nomor ORDER BY b.nomor DESC LIMIT 1) AS `kurs`
+                    FROM tvaluta a
+                    WHERE a.status = 1
+                    ORDER BY a.valuta;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama'],
+                                                'kurs'			        => $r['kurs']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- POST get broker --- //
+    function getBroker_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.nama AS `nama`
+                    FROM thbroker a
+                    WHERE a.aktif = 1
+                    ORDER BY a.nama;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama'],
+                                                'kurs'			        => $r['kurs']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
     //--- Added by Tonny --- //
     // --- POST get sales --- //
     function getSales_post()
