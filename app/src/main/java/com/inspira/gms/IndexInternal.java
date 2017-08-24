@@ -94,12 +94,6 @@ public class IndexInternal extends AppCompatActivity
         // check GPS status and ask to activate if GPS is disabled
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-            // AlarmManager for background service
-            Intent service = new Intent(getApplicationContext(), trackerBroadcastReciver.class);
-            final PendingIntent pIntent = PendingIntent.getBroadcast(this, 88088, service, PendingIntent.FLAG_UPDATE_CURRENT);
-            long firstMillis = System.currentTimeMillis();
-            AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
             startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
         } else {
             Runnable commandOk = new Runnable() {

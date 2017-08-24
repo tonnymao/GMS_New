@@ -416,4 +416,61 @@ class Sales extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
+    
+    function getTrackingData_post() {
+		$data['data'] = array();
+
+        $value = file_get_contents('php://input');
+		$jsonObject = (json_decode($value , true));
+		
+		$query = "SELECT ";
+		
+		$isUsers	= (isset($jsonObject["isUsers"])		? $jsonObject["isUsers"]		: "0");
+		
+		if ($isUsers == true) {
+			$query = $query . "user.nomortuser as nomoruser, user.userid as userid
+				FROM whrole_mobile role, whuser_mobile user
+				WHERE role.nama = 'SALES' and role.nomor = user.nomorrole;
+			";
+		} else {
+			$nomortuser		= (isset($jsonObject["nomortuser"])		? $jsonObject["nomortuser"]		: "0");
+			$startFilter	= (isset($jsonObject["startFilter"])	? $jsonObject["startFilter"]	: true);
+			$endFilter		= (isset($jsonObject["endFilter"])		? $jsonObject["endFilter"]		: true);
+			$query = $query . "latitude, longitude, trackingDate FROM whtracking_mobile WHERE nomortuser = $nomortuser";
+			if ($startFilter)
+				$query = $query . " and trackingDate >= str_to_date('$startFilter', '%d %M %Y')";
+			if ($endFilter)
+				$query = $query . " and trackingDate <= str_to_date('$endFilter', '%d %M %Y')";
+		}
+					
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+			if ($isUsers == true) {
+				foreach ($result->result_array() as $r){
+					array_push($data['data'], array(
+													'nomoruser'	=> $r['nomoruser'],
+													'userid' 	=> $r['userid']
+													)
+					);
+				}
+			} else {
+				foreach ($result->result_array() as $r){
+					array_push($data['data'], array(
+													'latitude' 		=> $r['latitude'],
+													'longitude' 	=> $r['longitude'],
+													'trackingDate' 	=> $r['trackingDate']
+													)
+					);
+				}
+            }
+        }else{		
+			array_push($data['data'], array( 'query' => $this->error($query) ));
+		}  
+	
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
 }
