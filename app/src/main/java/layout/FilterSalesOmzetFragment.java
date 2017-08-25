@@ -82,7 +82,11 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
         tvSalesman.setOnClickListener(this);
         tvEndDate = (TextView) getView().findViewById(R.id.tvEndDate);
         tvEndDate.setOnClickListener(this);
-        tvEndDate.setText(LibInspira.getCurrentDate());
+        if (LibInspira.getShared(global.omzetpreferences, global.omzet.enddate, "").equals("")){
+            tvEndDate.setText(LibInspira.getCurrentDate());
+        }else{
+            tvEndDate.setText(LibInspira.getShared(global.omzetpreferences, global.omzet.enddate, ""));
+        }
         rbtnBulan = (RadioButton) getView().findViewById(R.id.rbtnBulan);
         rbtnTahun = (RadioButton) getView().findViewById(R.id.rbtnTahun);
         btnSearch = (Button) getView().findViewById(R.id.btnSearch);
@@ -133,6 +137,7 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
             }else{
                 LibInspira.setShared(global.omzetpreferences, global.omzet.bulantahun, "tahun");
             }
+            LibInspira.setShared(global.datapreferences, global.data.salesmanomzet, "");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOmzetFragment());
         }else if (id == R.id.ibtnClearSales){
             LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, "");
