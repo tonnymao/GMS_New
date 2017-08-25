@@ -27,16 +27,16 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Interval"
                         android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -45,9 +45,9 @@
 
                     <EditText
                         android:id="@+id/edtInterval"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="4"
                         android:inputType="number"
 
                         android:maxLines="1"
@@ -55,9 +55,9 @@
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:text="minute"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
@@ -70,16 +70,16 @@
                     android:layout_marginTop="20dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Radius"
                         android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -88,9 +88,9 @@
 
                     <EditText
                         android:id="@+id/edtRadius"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="4"
                         android:hint=""
                         android:inputType="number"
                         android:maxLines="1"
@@ -98,9 +98,9 @@
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="meter"
                         android:textColor="@color/colorPrimaryDark" />
@@ -113,9 +113,9 @@
                     android:layout_marginTop="20dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="3"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Tracking Mode"
                         android:textColor="@color/colorPrimaryDark"
@@ -123,7 +123,7 @@
                         android:layout_gravity="center_vertical" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -133,23 +133,23 @@
 
                     <Spinner
                         android:id="@+id/spTracking"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="2"
+                        android:layout_weight="5"
                         android:entries="@array/list_tracking"
                         android:spinnerMode="dialog"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_margin="10dp"
+                        android:layout_weight="2"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text=""
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_gravity="center_vertical" />
+
                 </TableRow>
 
                 <TableRow
@@ -159,16 +159,16 @@
                     android:layout_marginTop="20dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Start Tracking"
                         android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -178,19 +178,19 @@
                     <TextView
                         android:id="@+id/tvStartTracking"
                         style="@android:style/Widget.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_gravity="center_vertical" />
                 </TableRow>
 
                 <TableRow
@@ -200,16 +200,16 @@
                     android:layout_marginTop="20dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="End Tracking"
                         android:gravity="right"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -219,19 +219,20 @@
                     <TextView
                         android:id="@+id/tvEndTracking"
                         style="@android:style/Widget.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_gravity="center_vertical" />
+
                 </TableRow>
 
             </TableLayout>

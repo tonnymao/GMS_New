@@ -33,8 +33,10 @@ import layout.ChangePasswordFragment;
 import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
+import layout.FilterSalesOmzetFragment;
 import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
+import layout.SalesOmzetFragment;
 import layout.SettingFragment;
 
 
@@ -242,6 +244,8 @@ public class IndexInternal extends AppCompatActivity
 
         } else if (id == R.id.nav_salestracking){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
+        } else if (id == R.id.nav_omzet){
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

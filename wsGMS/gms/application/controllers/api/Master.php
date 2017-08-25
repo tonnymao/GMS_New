@@ -226,7 +226,7 @@ class Master extends REST_Controller {
                                                 'nama'      		   	=> $r['nama'], 
                 								'namajual' 				=> $r['namajual'],
                 								'satuan' 				=> $r['satuan'],
-                								'hargajual' 			=> $r['namajual'],
+                								'hargajual' 			=> $r['hargajual'],
                 								)
                	);
             }

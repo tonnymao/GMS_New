@@ -42,7 +42,7 @@
             <item
                 android:id="@+id/nav_omzet"
                 android:icon="@drawable/omzet"
-                android:title="Private Message" />
+                android:title="Omzet" />
             <item
                 android:id="@+id/nav_target"
                 android:icon="@drawable/target"
