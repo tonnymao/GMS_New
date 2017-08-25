@@ -36,7 +36,7 @@ import static com.inspira.gms.IndexInternal.global;
 
 //import android.app.Fragment;
 
-public class Form_ScheduleTaskFragment extends Fragment implements View.OnClickListener{
+public class FormScheduleTaskFragment extends Fragment implements View.OnClickListener{
     private DatePickerDialog dp;
     private TimePickerDialog tp;
     private TextView tvDate, tvTime;
@@ -44,7 +44,7 @@ public class Form_ScheduleTaskFragment extends Fragment implements View.OnClickL
     private Spinner spType;
     private EditText edtReminder, edtDescription;
 
-    public Form_ScheduleTaskFragment() {
+    public FormScheduleTaskFragment() {
         // Required empty public constructor
     }
 

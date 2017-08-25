@@ -208,8 +208,11 @@ class Master extends REST_Controller {
 						a.nomor AS `nomor`,
 						a.kode AS `kode`,
 						a.nama AS `nama`,
-						a.NamaJual AS `namajual`
+						a.NamaJual AS `namajual`,
+						b.satuan AS `satuan`,
+						a.HargaJualIDR AS `hargajual`
 					FROM tbarang a
+					JOIN vwbarang b ON a.nomor = b.nomor
 					WHERE a.aktif = 1
 					ORDER BY a.nama DESC;";
         $result = $this->db->query($query);
@@ -221,7 +224,9 @@ class Master extends REST_Controller {
                 								'nomor'					=> $r['nomor'],
 												'kode' 					=> $r['kode'],
                                                 'nama'      		   	=> $r['nama'], 
-                								'namajual' 				=> $r['namajual']
+                								'namajual' 				=> $r['namajual'],
+                								'satuan' 				=> $r['satuan'],
+                								'hargajual' 			=> $r['namajual'],
                 								)
                	);
             }

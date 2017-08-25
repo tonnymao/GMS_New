@@ -10,16 +10,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -34,14 +39,16 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class ScheduleTaskFragment extends Fragment implements View.OnClickListener{
-    private FloatingActionButton fab;
+public class ChooseBrokerFragment extends Fragment implements View.OnClickListener{
+    private EditText etSearch;
+    private ImageButton ibtnSearch;
+
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ScheduleTaskFragment() {
+    public ChooseBrokerFragment() {
         // Required empty public constructor
     }
 
@@ -56,7 +63,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Schedule Task");
+        getActivity().setTitle("Broker");
         return v;
     }
 
@@ -76,22 +83,37 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
+        ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
+        etSearch = (EditText) getView().findViewById(R.id.etSearch);
 
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
-        fab = (FloatingActionButton) getView().findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
-        fab.setOnClickListener(this);
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                search();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         refreshList();
 
-//        String actionUrl = "Master/getBarang/";
-//        new getData().execute( actionUrl );
+        String actionUrl = "Master/getBroker/";
+        new getData().execute( actionUrl );
     }
 
     @Override
@@ -102,9 +124,31 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if(id==R.id.fab)
+
+        if(id==R.id.ibtnSearch)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormScheduleTaskFragment());
+            search();
+        }
+    }
+
+    private void search()
+    {
+        itemadapter.clear();
+        for(int ctr=0;ctr<list.size();ctr++)
+        {
+            if(etSearch.getText().equals(""))
+            {
+                itemadapter.add(list.get(ctr));
+                itemadapter.notifyDataSetChanged();
+            }
+            else
+            {
+                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                {
+                    itemadapter.add(list.get(ctr));
+                    itemadapter.notifyDataSetChanged();
+                }
+            }
         }
     }
 
@@ -113,9 +157,9 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.schedule, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.broker, "");
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1)
+        if(pieces.length==1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }
@@ -129,18 +173,15 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
                     String nomor = parts[0];
                     String nama = parts[1];
-                    String namajual = parts[2];
-                    String kode = parts[3];
+                    String kode = parts[2];
 
                     if(nomor.equals("null")) nomor = "";
                     if(nama.equals("null")) nama = "";
-                    if(namajual.equals("null")) namajual = "";
                     if(kode.equals("null")) kode = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
-                    dataItem.setNamajual(namajual);
                     dataItem.setKode(kode);
                     list.add(dataItem);
 
@@ -171,22 +212,20 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
-                            String namajual = (obj.getString("namajual"));
                             String kode = (obj.getString("kode"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
-                            if(namajual.equals("")) namajual = "null";
                             if(kode.equals("")) kode = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + nama + "~" + kode + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.broker, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.barang,
+                                global.data.broker,
                                 tempData
                         );
                         refreshList();
@@ -212,7 +251,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         private String nomor;
         private String nama;
-        private String namajual;
+        private String nomorpropinsi;
         private String kode;
 
         public ItemAdapter() {}
@@ -222,9 +261,6 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
-
-        public String getNamajual() {return namajual;}
-        public void setNamajual(String _param) {this.namajual = _param;}
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
@@ -271,10 +307,17 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
             row.setTag(holder);
             setupItem(holder);
 
+            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
+                    view.startAnimation(GlobalVar.listeffect);
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nama, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
                 }
             });
 

@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.inspira.gms.GlobalVar;
 import com.inspira.gms.IndexInternal;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
@@ -306,16 +307,19 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //LibInspira.ShowLongToast(context, "coba");
-                    //LibInspira.ShowShortToast(context, itemadapter.getItem(position).getNomor());
-                    // untuk mengirim data yang dipilih ke activity
-//                    LibInspira.sendDataFragmentToActivity(getActivity(), IndexInternal.class, "nomorsales", itemadapter.getItem(position).toString());
-//                    LibInspira.sendDataFragmentToActivity(getActivity(), IndexInternal.class, "namasales", itemadapter.getItem(position).toString());
-                    LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
-                    LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
+                    view.startAnimation(GlobalVar.listeffect);
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")
-                            || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("filter omzet")){
+                            || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("filter omzet"))
+                    {
+                        LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
+                        LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
                         LibInspira.BackFragment(getFragmentManager()); //untuk kembali ke stack sebelumnya
+                    }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_sales_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_sales_nama, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }
             });

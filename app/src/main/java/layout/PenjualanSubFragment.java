@@ -75,11 +75,11 @@ public class PenjualanSubFragment extends Fragment implements View.OnClickListen
         view.startAnimation(GlobalVar.buttoneffect);
         if(id==R.id.btnSalesOrder)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new Form_ScheduleTaskFragment());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderHeaderFragment());
         }
         else if(id==R.id.btnDeliveryOrder)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new Form_ScheduleTaskFragment());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormScheduleTaskFragment());
         }
     }
 }

@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -327,10 +328,17 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
             row.setTag(holder);
             setupItem(holder);
 
+            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
+                    view.startAnimation(GlobalVar.listeffect);
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
                 }
             });
 

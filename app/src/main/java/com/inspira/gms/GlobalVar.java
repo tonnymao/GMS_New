@@ -84,6 +84,22 @@ public class GlobalVar {
             public String scheduletask_reminder = "scheduletask_reminder";
             public String scheduletask_description = "scheduletask_description";
             public String scheduletask_type = "scheduletask_type";
+
+            public String salesorder_customer_nomor = "salesorder_customer_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_customer_nama = "salesorder_customer_nama"; //added by ADI @24-Aug-2017
+            public String salesorder_sales_nomor = "salesorder_sales_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_sales_nama = "salesorder_sales_nama"; //added by ADI @24-Aug-2017
+            public String salesorder_broker_nomor = "salesorder_broker_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_broker_nama = "salesorder_broker_nama"; //added by ADI @24-Aug-2017
+            public String salesorder_valuta_nomor = "salesorder_valuta_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_valuta_nama = "salesorder_valuta_nama"; //added by ADI @24-Aug-2017
+            public String salesorder_valuta_kurs = "salesorder_valuta_kurs"; //added by ADI @24-Aug-2017
+
+            public String salesorder_item_nomor = "salesorder_item_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_item_nama = "salesorder_item_nama"; //added by ADI @24-Aug-2017
+            public String salesorder_item_kode = "salesorder_item_kode"; //added by ADI @24-Aug-2017
+            public String salesorder_item_satuan = "salesorder_item_satuan"; //added by ADI @24-Aug-2017
+            public String salesorder_item_price = "salesorder_item_price"; //added by ADI @24-Aug-2017
         }
 
         public class User
@@ -116,6 +132,8 @@ public class GlobalVar {
             public String barang = "barang"; // nomor~nama~namajual~kode
             public String schedule = "schedule";
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
+            public String broker = "broker"; // nomor~nama~kode
+            public String valuta = "valuta"; // nomor~nama~kurs~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
             public String periode = "periode"; // bulan~tahun
             public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017

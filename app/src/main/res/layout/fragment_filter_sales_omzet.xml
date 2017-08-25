@@ -57,7 +57,7 @@
                     android:src="@drawable/clearbutton"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:scaleType="fitXY" />
+                    android:scaleType="centerCrop" />
             </TableRow>
 
             <TableRow

@@ -170,7 +170,8 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         {
             tvNoData.setVisibility(View.GONE);
             for(int i=0 ; i < pieces.length ; i++){
-                if(!pieces[i].equals("") && pieces[0].equals(""))
+                Log.d("item", pieces[i] + "a");
+                if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
@@ -178,17 +179,23 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                     String nama = parts[1];
                     String namajual = parts[2];
                     String kode = parts[3];
+                    String satuan = parts[4];
+                    String hargajual = parts[5];
 
                     if(nomor.equals("null")) nomor = "";
                     if(nama.equals("null")) nama = "";
                     if(namajual.equals("null")) namajual = "";
                     if(kode.equals("null")) kode = "";
+                    if(satuan.equals("null")) satuan = "";
+                    if(hargajual.equals("null")) hargajual = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
                     dataItem.setNamajual(namajual);
                     dataItem.setKode(kode);
+                    dataItem.setSatuan(satuan);
+                    dataItem.setHargajual(hargajual);
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -220,13 +227,17 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                             String nama = (obj.getString("nama"));
                             String namajual = (obj.getString("namajual"));
                             String kode = (obj.getString("kode"));
+                            String satuan = (obj.getString("satuan"));
+                            String hargajual = (obj.getString("hargajual"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
                             if(namajual.equals("")) namajual = "null";
                             if(kode.equals("")) kode = "null";
+                            if(satuan.equals("")) satuan = "null";
+                            if(hargajual.equals("")) hargajual = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "~" + satuan + "~" + hargajual + "|";
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
@@ -261,6 +272,8 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         private String nama;
         private String namajual;
         private String kode;
+        private String satuan;
+        private String hargajual;
 
         public ItemAdapter() {}
 
@@ -275,6 +288,12 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
+
+        public String getSatuan() {return satuan;}
+        public void setSatuan(String _param) {this.satuan = _param;}
+
+        public String getHargajual() {return hargajual;}
+        public void setHargajual(String _param) {this.hargajual = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -297,6 +316,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
+            TextView tvKeterangan;
         }
 
         @Override
@@ -314,14 +334,24 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
 
             row.setTag(holder);
             setupItem(holder);
 
+            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, finalHolder.adapterItem.getNama());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, finalHolder.adapterItem.getKode());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, finalHolder.adapterItem.getSatuan());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, finalHolder.adapterItem.getHargajual());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
                 }
             });
 
@@ -330,6 +360,8 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvKeterangan.setVisibility(View.VISIBLE);
+            holder.tvKeterangan.setText("Kode: " + holder.adapterItem.getKode().toUpperCase());
         }
     }
 }
