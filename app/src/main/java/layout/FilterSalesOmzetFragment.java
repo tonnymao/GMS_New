@@ -124,7 +124,13 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.tvSalesman){
+        if (id == R.id.ibtnClearSales){
+            LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, "");
+            LibInspira.setShared(global.sharedpreferences, global.shared.namasales, "");
+            LibInspira.setShared(global.omzetpreferences, global.omzet.nomorsales, "");
+            nomorsales = "";
+            tvSalesman.setText("");
+        }else if(id == R.id.tvSalesman){
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "filter omzet");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
         }else if(id == R.id.tvEndDate){
@@ -139,10 +145,6 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
             }
             LibInspira.setShared(global.datapreferences, global.data.salesmanomzet, "");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOmzetFragment());
-        }else if (id == R.id.ibtnClearSales){
-            LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, "");
-            LibInspira.setShared(global.sharedpreferences, global.shared.namasales, "");
-            tvSalesman.setText("");
         }
     }
 }
