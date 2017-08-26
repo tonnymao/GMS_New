@@ -110,7 +110,13 @@
                 </TableRow>
             </TableLayout>
         </RelativeLayout>
-
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swiperefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/liSummary"
+            android:layout_above="@+id/rlFooter">
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -118,10 +124,9 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="5dp"
-            android:layout_below="@+id/liSummary"
-            android:layout_above="@+id/rlFooter"
             android:layout_alignParentRight="true"
             android:layout_alignParentLeft="true" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <TextView
             android:layout_width="match_parent"

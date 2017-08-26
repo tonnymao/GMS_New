@@ -10,7 +10,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -50,6 +52,9 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    private CheckSalesOmzet checkSalesOmzet;
+    private CheckTotalOmzet checkTotalOmzet;
+
 
     public SalesOmzetFragment() {
         // Required empty public constructor
@@ -88,20 +93,37 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
 
         //((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
+        tvInformation.setVisibility(View.VISIBLE);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
         tvTotalOmzet = (TextView) getView().findViewById(R.id.tvTotalOmzet);
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_stock, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener(){
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                refreshPage();
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+            }
+        });
 
         refreshList();
 
         String actionUrl = "Sales/getSalesOmzet/";
-        new checkSalesOmzet().execute( actionUrl );
+        checkSalesOmzet = new CheckSalesOmzet();
+        checkSalesOmzet.execute( actionUrl );
 
         actionUrl = "Sales/getTotalOmzet/";
-        new checkTotalOmzet().execute( actionUrl );
+        checkTotalOmzet = new CheckTotalOmzet();
+        checkTotalOmzet.execute( actionUrl );
 
     }
 
@@ -113,6 +135,20 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         //int id = view.getId();
+    }
+
+    private void refreshPage(){
+        refreshList();
+        checkTotalOmzet.cancel(true);
+        checkSalesOmzet.cancel(true);
+
+        String actionUrl = "Sales/getSalesOmzet/";
+        checkSalesOmzet = new CheckSalesOmzet();
+        checkSalesOmzet.execute( actionUrl );
+
+        actionUrl = "Sales/getTotalOmzet/";
+        checkTotalOmzet = new CheckTotalOmzet();
+        checkTotalOmzet.execute( actionUrl );
     }
 
     private void refreshList()
@@ -138,6 +174,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                     String namasales = parts[1];
                     String omzet = parts[2];
                     String tanggal = parts[3];
+                    String namacustomer = parts[4];
 
                     if(nomorsales.equals("null")) nomorsales = "";
                     if(namasales.equals("null")) namasales = "";
@@ -145,13 +182,14 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                     if(tanggal.equals("null")) tanggal = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomorsales);
-                    dataItem.setNama(namasales);
+                    dataItem.setNomorSales(nomorsales);
+                    dataItem.setNamaSales(namasales);
                     dataItem.setOmzet(omzet);
                     dataItem.setTanggal(tanggal);
+                    dataItem.setNamaCust(namacustomer);
                     list.add(dataItem);
 
-                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!dataItem.getNomorSales().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
                     {
                         itemadapter.add(dataItem);
                         itemadapter.notifyDataSetChanged();
@@ -161,7 +199,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private class checkSalesOmzet extends AsyncTask<String, Void, String> {
+    private class CheckSalesOmzet extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -190,13 +228,15 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                             String namasales = (obj.getString("namasales"));
                             String omzet = (obj.getString("omzet"));
                             String tanggal = (obj.getString("tanggal"));
+                            String namacustomer = (obj.getString("namacustomer"));
 
                             if(nomorsales.equals("")) nomorsales = "null";
                             if(namasales.equals("")) namasales = "null";
                             if(omzet.equals("")) omzet = "null";
                             if(tanggal.equals("")) tanggal = "null";
+                            if(namacustomer.equals("")) namacustomer = "null";
 
-                            tempData = tempData + nomorsales + "~" + namasales + "~" + omzet + "~" + tanggal + "|";
+                            tempData = tempData + nomorsales + "~" + namasales + "~" + omzet + "~" + tanggal + "~" + namacustomer + "|";
                         }
                     }
 
@@ -226,7 +266,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private class checkTotalOmzet extends AsyncTask<String, Void, String> {
+    private class CheckTotalOmzet extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -258,12 +298,12 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                     }
                     tvTotalOmzet.setText("Rp. " + LibInspira.delimeter(totalomzet));
                 }
-                tvInformation.animate().translationYBy(-80);
+                //tvInformation.animate().translationYBy(-80);
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                tvInformation.animate().translationYBy(-80);
+                //tvInformation.animate().translationYBy(-80);
             }
         }
 
@@ -276,19 +316,27 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
 
     public class ItemAdapter {
 
-        private String nomor;
-        private String nama;
+        private String nomorsales;
+        private String namasales;
+        private String nomorcust;
+        private String namacust;
         private String omzet;
         private String tanggal;
         //private String totalOmzet;
 
         public ItemAdapter() {}
 
-        public String getNomor() {return nomor;}
-        public void setNomor(String _param) {this.nomor = _param;}
+        public String getNomorSales() {return nomorsales;}
+        public void setNomorSales(String _param) {this.nomorsales = _param;}
 
-        public String getNama() {return nama;}
-        public void setNama(String _param) {this.nama = _param;}
+        public String getNamaSales() {return namasales;}
+        public void setNamaSales(String _param) {this.namasales = _param;}
+
+        public String getNomorCust() {return nomorcust;}
+        public void setNomorCust(String _param) {this.nomorcust = _param;}
+
+        public String getNamaCust() {return namacust;}
+        public void setNamaCust(String _param) {this.namacust = _param;}
 
         public String getOmzet() {return omzet;}
         public void setOmzet(String _param) {this.omzet = _param;}
@@ -322,7 +370,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
             TextView tvNama;
             TextView tvOmzet;
             TextView tvTanggal;
-            TextView tvValue1;
+            TextView tvCust;
         }
 
         @Override
@@ -339,9 +387,9 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
             holder = new Holder();
             holder.adapterItem = items.get(position);
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvOmzet = (TextView)row.findViewById(R.id.tvValue);
             holder.tvTanggal = (TextView)row.findViewById(R.id.tvKeterangan);
-            holder.tvValue1 = (TextView)row.findViewById(R.id.tvValue1);
+            holder.tvCust = (TextView)row.findViewById(R.id.tvValue);
+            holder.tvOmzet = (TextView)row.findViewById(R.id.tvValue1);
 
             row.setTag(holder);
             setupItem(holder);
@@ -358,12 +406,20 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvNama.setText(holder.adapterItem.getNamaSales().toUpperCase());
+            holder.tvCust.setVisibility(View.VISIBLE);
+            holder.tvCust.setText(holder.adapterItem.getNamaCust());
             holder.tvOmzet.setVisibility(View.VISIBLE);
             holder.tvOmzet.setText("Rp. " + LibInspira.delimeter(holder.adapterItem.getOmzet()));
             holder.tvTanggal.setVisibility(View.VISIBLE);
-            holder.tvTanggal.setText(holder.adapterItem.getTanggal());
-            holder.tvValue1.setVisibility(View.GONE);
+            holder.tvTanggal.setText(LibInspira.FormatDate(holder.adapterItem.getTanggal().toString(), "dd/MMM/yyyy"));
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        checkSalesOmzet.cancel(true);
+        checkTotalOmzet.cancel(true);
     }
 }

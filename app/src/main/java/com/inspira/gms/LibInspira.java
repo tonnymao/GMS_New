@@ -41,9 +41,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormatSymbols;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,6 +55,7 @@ import java.util.List;
 public class LibInspira {
     private static ProgressDialog loadingDialog;
     private static String hostUrl;
+    private static String inspiraDateFormat = "yyyy-MM-dd hh:mm:ss";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
 
     public static void GoToActivity(String _activityName){
 
@@ -425,5 +428,24 @@ public class LibInspira {
         SimpleDateFormat df = new SimpleDateFormat(_dateFormat);
         String formattedDate = df.format(c.getTime());
         return formattedDate;
+    }
+
+    //added by Tonny @26-Aug-2017
+    //untuk melakukan format datetime
+    public static String FormatDate(String _strDate, String _newFormat){
+        SimpleDateFormat currentFormat = new SimpleDateFormat(inspiraDateFormat);
+        Date date = null;
+        try {
+            date = currentFormat.parse(_strDate);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        if(date == null){
+            return "";
+        }
+        SimpleDateFormat newFormat = new SimpleDateFormat(_newFormat);
+        String strDate = newFormat.format(date);
+        return strDate;
     }
 }

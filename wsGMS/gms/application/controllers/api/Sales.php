@@ -442,10 +442,12 @@ class Sales extends REST_Controller {
         $bulantahun = (isset($jsonObject["bulantahun"]) ? $this->clean($jsonObject["bulantahun"])     : "bulan");
         $enddate = (isset($jsonObject["enddate"]) ? $this->clean($jsonObject["enddate"])     : "");
 
-        $query = "	SELECT a.NomorSales nomorsales, b.nama namasales, a.TotalRp omzet, a.tanggal tanggal
+        $query = "	SELECT a.NomorSales nomorsales, b.nama namacustomer, c.nama namasales, a.TotalRp omzet, a.tanggal tanggal
                     FROM thnotajual a
-                        LEFT JOIN thsales b
-                            ON a.nomorsales = b.nomor
+                        LEFT JOIN tcustomer b
+                            ON a.nomorcustomer = b.nomor
+                        LEFT JOIN thsales c
+                            ON a.nomorsales = c.nomor
                     WHERE a.status <> 0
                         AND a.jenis = 'fj'
                         AND a.approve = 1
@@ -453,7 +455,7 @@ class Sales extends REST_Controller {
                         AND a.tanggal <= '$enddate' ";
 
         if($nomorsales != ''){
-            $query = $query . " AND b.nomor = $nomorsales ";
+            $query = $query . " AND c.nomor = $nomorsales ";
         }
         if($bulantahun == 'bulan'){
             $query = $query . " AND MONTH(a.tanggal) = MONTH('$enddate') ";
@@ -466,7 +468,8 @@ class Sales extends REST_Controller {
                                                 'nomorsales'			=> $r['nomorsales'],
                                                 'namasales'			    => $r['namasales'],
                                                 'omzet'					=> $r['omzet'],
-                                                'tanggal'			    => $r['tanggal']
+                                                'tanggal'			    => $r['tanggal'],
+                                                'namacustomer'			=> $r['namacustomer']
                                                 )
                 );
             }
