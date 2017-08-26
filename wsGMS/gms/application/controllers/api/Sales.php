@@ -503,7 +503,8 @@ class Sales extends REST_Controller {
                             WHERE a.status <> 0
                                 AND a.jenis = 'fj'
                                 AND a.approve = 1
-                                AND YEAR(a.tanggal) = YEAR('$enddate') ";
+                                AND YEAR(a.tanggal) = YEAR('$enddate')
+                                AND a.tanggal <= '$enddate' ";
         if($nomorsales != ''){
             $querytotalomzet = $querytotalomzet . " AND c.nomor = $nomorsales ";
         }

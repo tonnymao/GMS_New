@@ -40,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.inspira.gms.IndexInternal.global;
@@ -48,7 +49,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 //import android.app.Fragment;
 
 public class SalesOmzetFragment extends Fragment implements View.OnClickListener{
-    private TextView tvInformation, tvNoData, tvTotalOmzet;
+    private TextView tvInformation, tvNoData, tvTotalOmzet, tvPeriode;
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
@@ -90,10 +91,20 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
-
-        //((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvInformation.setVisibility(View.VISIBLE);
+        tvPeriode = (TextView) getView().findViewById(R.id.tvPeriode);
+        String filterDate = LibInspira.getShared(global.omzetpreferences, global.omzet.enddate, "");
+        if(LibInspira.getShared(global.omzetpreferences, global.omzet.bulantahun, "").equals("bulan")){
+            tvPeriode.setText(LibInspira.getFirstDateInSpecificMonth(filterDate, "dd/MMM/yyyy"));
+        }else{
+            tvPeriode.setText(LibInspira.getFirstDateInSpecificYear(filterDate, "dd/MMM/yyyy"));
+        }
+        if (LibInspira.FormatDateBasedOnInspiraDateFormat(filterDate, "dd/MMM/yyyy").equals(tvPeriode.getText())){
+            tvPeriode.setText(LibInspira.FormatDateBasedOnInspiraDateFormat(filterDate, "dd/MMM/yyyy"));
+        }else{
+            tvPeriode.setText(tvPeriode.getText() + " - " + LibInspira.FormatDateBasedOnInspiraDateFormat(filterDate, "dd/MMM/yyyy"));
+        }
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
         tvTotalOmzet = (TextView) getView().findViewById(R.id.tvTotalOmzet);
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_stock, new ArrayList<ItemAdapter>());
@@ -412,7 +423,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
             holder.tvOmzet.setVisibility(View.VISIBLE);
             holder.tvOmzet.setText("Rp. " + LibInspira.delimeter(holder.adapterItem.getOmzet()));
             holder.tvTanggal.setVisibility(View.VISIBLE);
-            holder.tvTanggal.setText(LibInspira.FormatDate(holder.adapterItem.getTanggal().toString(), "dd/MMM/yyyy"));
+            holder.tvTanggal.setText(LibInspira.FormatDateBasedOnInspiraDateFormat(holder.adapterItem.getTanggal().toString(), "dd/MMM/yyyy"));
         }
     }
 

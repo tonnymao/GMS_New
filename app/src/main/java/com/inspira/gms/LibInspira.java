@@ -55,7 +55,9 @@ import java.util.List;
 public class LibInspira {
     private static ProgressDialog loadingDialog;
     private static String hostUrl;
-    private static String inspiraDateFormat = "yyyy-MM-dd hh:mm:ss";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
+    private static String inspiraDateTimeFormat = "yyyy-MM-dd hh:mm:ss";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
+    private static String inspiraDateFormat = "yyyy-MM-dd";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
+
 
     public static void GoToActivity(String _activityName){
 
@@ -430,15 +432,56 @@ public class LibInspira {
         return formattedDate;
     }
 
+    //added by Tonny @26-Aug-2017 untuk mendapatkan tanggal pertama pada bulan ini dengan format tertentu
+    public static String getFirstDateInSpecificMonth(String _strDate, String _newFormat){
+        SimpleDateFormat sdf = new SimpleDateFormat(inspiraDateFormat);
+        String newDate = "";
+        try {
+            Date date = sdf.parse(_strDate);
+            String strDate = "01";
+            String month = new SimpleDateFormat("MM").format(date);
+            String year = new SimpleDateFormat("yyyy").format(date);
+            newDate = year  + "-" + month + "-" + strDate;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        newDate = FormatDateBasedOnInspiraDateFormat(newDate, _newFormat);
+        return newDate;
+    }
+
+    public static String getFirstDateInSpecificYear(String _strDate, String _newFormat){
+//        Calendar c = Calendar.getInstance();   // this takes current date
+//        c.set(Calendar.DAY_OF_YEAR, 1);
+//        SimpleDateFormat df = new SimpleDateFormat(_newFormat);
+//        String formattedDate = df.format(c.getTime());
+//        return formattedDate;
+        SimpleDateFormat sdf = new SimpleDateFormat(inspiraDateFormat);
+        String newDate = "";
+        try {
+            Date date = sdf.parse(_strDate);
+            String strDate = "01";
+            String month = "01";
+            String year = new SimpleDateFormat("yyyy").format(date);
+            newDate = year  + "-" + month + "-" + strDate;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        newDate = FormatDateBasedOnInspiraDateFormat(newDate, _newFormat);
+        return newDate;
+    }
+
     //added by Tonny @26-Aug-2017
-    //untuk melakukan format datetime
-    public static String FormatDate(String _strDate, String _newFormat){
+    //untuk melakukan format datetime berdasarkan format db inspira
+
+    public static String FormatDateBasedOnInspiraDateFormat(String _strDate, String _newFormat){
         SimpleDateFormat currentFormat = new SimpleDateFormat(inspiraDateFormat);
+        if (_strDate.length() > 10){ //jika _strDate berformat yyyy/MM/dd hh:mm:ss, maka gunakan inspiraDateTimeFormat
+            currentFormat = new SimpleDateFormat(inspiraDateTimeFormat);
+        }
         Date date = null;
         try {
             date = currentFormat.parse(_strDate);
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         if(date == null){
@@ -448,4 +491,5 @@ public class LibInspira {
         String strDate = newFormat.format(date);
         return strDate;
     }
+
 }
