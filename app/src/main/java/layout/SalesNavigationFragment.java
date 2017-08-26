@@ -168,15 +168,6 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-//        LatLng sydney = new LatLng(-33.852, 151.211);
-//        googleMap.addMarker(new MarkerOptions().position(sydney)
-//                .title("Marker in Sydney"));
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(sydney, 16);
-//        googleMap.animateCamera(cameraUpdate);
-//        googleMap.moveCamera(cameraUpdate);
         this.googleMap = googleMap;
         if (dateLocation != null) {
             for (int i = 0; i < dateLocation.size(); i++) {
@@ -222,7 +213,7 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
                     }
                 });
             }
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude.get(0), longitude.get(0)), 16);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude.get(dateLocation.size() - 1), longitude.get(dateLocation.size() - 1)), 16);
             googleMap.animateCamera(cameraUpdate);
             googleMap.moveCamera(cameraUpdate);
             Log.i("SalesNavigationFragment", "map updated");
