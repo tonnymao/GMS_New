@@ -13,25 +13,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.inspira.gms.GlobalVar;
-import com.inspira.gms.IndexInternal;
-import com.inspira.gms.ItemAdapter;
-import com.inspira.gms.ItemListAdapter;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -40,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.inspira.gms.IndexInternal.global;
