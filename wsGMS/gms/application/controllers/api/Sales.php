@@ -391,13 +391,15 @@ class Sales extends REST_Controller {
 			";
 		} else {
 			$nomortuser		= (isset($jsonObject["nomortuser"])		? $jsonObject["nomortuser"]		: "0");
-			$startFilter	= (isset($jsonObject["startFilter"])	? $jsonObject["startFilter"]	: true);
-			$endFilter		= (isset($jsonObject["endFilter"])		? $jsonObject["endFilter"]		: true);
+			$startFilter	= (isset($jsonObject["startFilter"])	? $jsonObject["startFilter"]	: "");
+			$endFilter		= (isset($jsonObject["endFilter"])		? $jsonObject["endFilter"]		: "");
 			$query = $query . "latitude, longitude, trackingDate FROM whtracking_mobile WHERE nomortuser = $nomortuser";
-			if ($startFilter)
+			if ($startFilter != "") {
 				$query = $query . " and trackingDate >= str_to_date('$startFilter', '%d %M %Y')";
-			if ($endFilter)
 				$query = $query . " and trackingDate <= str_to_date('$endFilter', '%d %M %Y')";
+			} else {
+				$query = $query . " order by nomor desc limit 1";
+			}
 		}
 					
         $result = $this->db->query($query);

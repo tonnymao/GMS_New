@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.inspira.gms.ItemListAdapter;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -33,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import static com.inspira.gms.IndexInternal.global;

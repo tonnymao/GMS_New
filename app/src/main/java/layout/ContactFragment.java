@@ -24,17 +24,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.inspira.gms.GlobalVar;
-import com.inspira.gms.IndexInternal;
-import com.inspira.gms.ItemAdapter;
-import com.inspira.gms.ItemListAdapter;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

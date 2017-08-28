@@ -2,15 +2,12 @@ package layout;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-//import android.app.Fragment;
-//import android.app.FragmentManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,13 +31,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.inspira.gms.GMSbackgroundTask;
 import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
@@ -49,22 +43,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
-import static android.R.attr.contextClickable;
-import static android.R.attr.fragment;
+import static com.inspira.gms.IndexInternal.global;
 
 public class SalesNavigationFragment extends Fragment implements OnMapReadyCallback, android.location.LocationListener {
-    private GoogleMap map;
-    private MapView mapView;
     private Spinner spinner;
-    private List<String> listUserNumber;
+    private static List<String> listUserNumber;
     private Calendar calendar;
     private String actionUrl;
     private EditText txtEndDate;
@@ -75,6 +66,11 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
     private GoogleMap googleMap;
     protected String formatDate;
     protected SimpleDateFormat sdf;
+    private LiveLocation liveLocation;
+    private Geocoder geocoder;
+    private List<String> addresses;
+    private List<String> datetime;
+    private ArrayAdapter<String> adapter;
 
     public SalesNavigationFragment() {
         // Required empty public constructor
@@ -85,23 +81,25 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         listUserNumber = new ArrayList<>();
         actionUrl = "Sales/getTrackingData/";
-        new getDataTracking(true, 0, null, null).execute(actionUrl);
+        new getDataTracking(true, -1, null, null).execute(actionUrl);
         formatDate = "dd MMMM yyyy";
         sdf = new SimpleDateFormat(formatDate, Locale.US);
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sales_navigation, container, false);
+        getActivity().setTitle("Tracker");
         return v;
     }
 
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
-//        mapView = (MapView) getView().findViewById(R.id.Mapfragment);
-//        mapView.onCreate(bundle);
-//        mapView.getMapAsync(this);
+        if (spinner != null)
+            if (spinner.getChildCount() == 1)
+                new getDataTracking(true, -1, null, null).execute(actionUrl);
         FragmentManager fm = getChildFragmentManager();
         SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.Mapfragment);
         if (fragment == null) {
@@ -116,6 +114,12 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
                 setupQuery();
             }
         });
+        ((Button) getView().findViewById(R.id.btnLive)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                liveLocation = new LiveLocation(Long.valueOf(LibInspira.getShared(global.settingpreferences, global.settings.interval, "")));
+            }
+        });
         ((FloatingActionButton) getView().findViewById(R.id.showSearchFilter)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,6 +132,15 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
                     fm.beginTransaction().replace(R.id.Mapfragment, fragment).commit();
                     fragment.getMapAsync(SalesNavigationFragment.this);
                 }
+            }
+        });
+        ((FloatingActionButton) getView().findViewById(R.id.showLocationList)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.startAnimation(GlobalVar.listeffect);
+                AddressesFragment addressesFragment = new AddressesFragment();
+                addressesFragment.setDataFragment(addresses.toArray(new String[0]), datetime.toArray(new String[0]));
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, addressesFragment);
             }
         });
         calendarProcessor();
@@ -169,6 +182,9 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        addresses = new ArrayList<>();
+        datetime = new ArrayList<>();
+        googleMap.clear();
         if (dateLocation != null) {
             for (int i = 0; i < dateLocation.size(); i++) {
                 String[] dateTime = dateLocation.get(i).split(" ");
@@ -185,6 +201,13 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
                 ).snippet(
                         "Tracking\nTanggal: " + dateTime[0] + "\nJam: " + dateTime[1]
                 ));
+                try {
+                    List<android.location.Address> address = geocoder.getFromLocation(latitude.get(i), longitude.get(i), 1);
+                    addresses.add(address.get(0).getAddressLine(0));
+                    datetime.add(dateTime[0] + " " + dateTime[1]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                     @Override
                     public View getInfoWindow(Marker marker) {
@@ -226,6 +249,29 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
         new getDataTracking(false, spinner.getSelectedItemPosition(), txtStartDate.getText().toString(), txtEndDate.getText().toString()).execute(actionUrl);
     }
 
+    private class LiveLocation {
+        Thread thread;
+
+        LiveLocation(final Long delay) {
+            ((RelativeLayout) getView().findViewById(R.id.formLayout)).setVisibility(View.GONE);
+            ((RelativeLayout) getView().findViewById(R.id.Mapfragment)).setVisibility(View.VISIBLE);
+            thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (!Thread.currentThread().isInterrupted()) {
+                        try {
+                            new getDataTracking(false, spinner.getSelectedItemPosition(), null, null).execute(actionUrl);
+                            Thread.sleep(delay);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            thread.start();
+        }
+    }
+
     private class getDataTracking extends AsyncTask<String, Void, String> {
         private JSONObject jsonObject;
         private boolean isUsers;
@@ -244,8 +290,9 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("isUsers", isUsers);
-                if (!isUsers) {
+                if (indexOfUser != -1)
                     jsonObject.put("nomortuser", listUserNumber.get(indexOfUser));
+                if (!isUsers) {
                     jsonObject.put("startFilter", startDate);
                     jsonObject.put("endFilter", endDate);
                 }
@@ -268,10 +315,12 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
                         List<String> list = new ArrayList<>();
                         for (int i = 0; i < jsonarray.length(); i++) {
                             JSONObject obj = jsonarray.getJSONObject(i);
-                            listUserNumber.add(obj.getString("nomoruser"));
-                            list.add(obj.getString("userid"));
+                            if (!obj.getString("nomoruser").equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))) {
+                                listUserNumber.add(obj.getString("nomoruser"));
+                                list.add(obj.getString("userid"));
+                            }
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, list);
+                        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, list);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinner.setAdapter(adapter);
                     } else {
@@ -337,4 +386,6 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
             }
         });
     }
+
+
 }
