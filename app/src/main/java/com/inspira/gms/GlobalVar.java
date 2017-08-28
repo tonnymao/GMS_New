@@ -132,6 +132,7 @@ public class GlobalVar {
             public String barang = "barang"; // nomor~nama~namajual~kode
             public String schedule = "schedule";
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
+            public String customerprospecting = "customerprospecting"; // nomor~nama~alamat~telpon
             public String broker = "broker"; // nomor~nama~kode
             public String valuta = "valuta"; // nomor~nama~kurs~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode

@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
+import layout.ChooseCustomerProspectingFragment;
 import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
@@ -246,6 +247,8 @@ public class IndexInternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
         } else if (id == R.id.nav_omzet){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
+        } else if (id == R.id.nav_customer_prospecting){
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
