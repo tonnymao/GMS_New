@@ -122,7 +122,7 @@ class Login extends REST_Controller {
 		$data['data'] = array();
 		
 		// START SEND NOTIFICATION
-        $vcGCMId = $this->getGCMId(3);
+        $vcGCMId = 'fS4WhyXLT2M:APA91bEKMcCVsHknYDrEnKXqDw6q_g7cRWsoJbTxRb-l3jMHzn2UD9RV1MiSAYhnYsWljt1ygiHlNvDb6toom35JUG9RJP8eTC-jOYQDaiD6lkCQ7M-V5LWJDDtXeVbAiDlX0sc_dqnc';
 		
         $this->send_gcm($vcGCMId, $this->ellipsis('$new_message'),'New Message(s) From ','PrivateMessage','0','0');
         
@@ -166,6 +166,7 @@ class Login extends REST_Controller {
 
         $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "a");
         $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a"));
+        $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
 
         $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
         $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
@@ -174,7 +175,8 @@ class Login extends REST_Controller {
         $jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
 		
 		$query = "	UPDATE whuser_mobile a 
-					SET hash = UUID()
+					SET hash = UUID(),
+					token = '$token'
 					WHERE a.status_aktif > 0 
 					AND a.userid = ? 
 					AND BINARY a.password = ?";

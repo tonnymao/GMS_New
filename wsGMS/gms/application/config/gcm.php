@@ -12,7 +12,7 @@
 |--------------------------------------------------------------------------
 | Get API Key: https://code.google.com/apis/console/
 */
-$config['gcm_api_key'] = 'AIzaSyDEh7xJZCmoqC-lhymRPjIGuaaxKYJD15E';
+$config['gcm_api_key'] = 'AIzaSyBjzNKWv_hbsYbXw73A2ilvviPl-7UU0uc';
 
 
 /*
@@ -21,4 +21,4 @@ $config['gcm_api_key'] = 'AIzaSyDEh7xJZCmoqC-lhymRPjIGuaaxKYJD15E';
 |--------------------------------------------------------------------------
 |
 */
-$config['gcm_api_send_address'] = 'https://android.googleapis.com/gcm/send';
+$config['gcm_api_send_address'] = 'https://fcm.googleapis.com/fcm/send';

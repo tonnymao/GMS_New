@@ -9,6 +9,8 @@ package layout;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,11 +23,17 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.inspira.gms.GlobalVar;
 import com.inspira.gms.IndexInternal;
 import com.inspira.gms.LibInspira;
+import com.inspira.gms.Login;
 import com.inspira.gms.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -181,24 +189,45 @@ public class FormScheduleTaskFragment extends Fragment implements View.OnClickLi
             }
             else
             {
-                LibInspira.clearShared(global.temppreferences);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_date, date);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_time, time);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_reminder, reminder);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_type, type);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_description, description);
-
-                LibInspira.setShared(global.sharedpreferences, global.shared.position, "scheduletask");
-
-                if(type.toLowerCase().equals("group meeting"))
-                {
-
-                }
-                else
-                {
-                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
-                }
+                String actionUrl = "Chat/test/";
+                new fcm_notif().execute( actionUrl );
+//                LibInspira.clearShared(global.temppreferences);
+//                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_date, date);
+//                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_time, time);
+//                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_reminder, reminder);
+//                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_type, type);
+//                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_description, description);
+//
+//                LibInspira.setShared(global.sharedpreferences, global.shared.position, "scheduletask");
+//
+//                if(type.toLowerCase().equals("group meeting"))
+//                {
+//
+//                }
+//                else
+//                {
+//                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
+//                }
             }
+        }
+    }
+
+    private class fcm_notif extends AsyncTask<String, Void, String> {
+        String user_nomor = edtReminder.getText().toString();
+        String message = edtDescription.getText().toString();
+
+        JSONObject jsonObject;
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("user_nomor", user_nomor);
+                jsonObject.put("message", message);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
     }
 }

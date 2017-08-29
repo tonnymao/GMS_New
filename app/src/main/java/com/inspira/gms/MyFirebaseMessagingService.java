@@ -19,42 +19,23 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static final String TAG = "MyFirebaseMsgService";
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            createNotification(remoteMessage.getNotification().getBody());
-        }
-    }
+        String massage = remoteMessage.getData().get("message");
 
-
-    /******************************************************************************
-     Procedure : createNotification
-     Author    : Shodiq
-     Date      : 26-Jul-2017
-     Function  : membuat notifikasi untuk message yang masuk
-     ******************************************************************************/
-    private void createNotification(String messageBody) {
-        Intent intent = new Intent(this, IndexInternal.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent resultIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-        Uri notificationSoundURI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder mNotificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(android.R.drawable.stat_notify_chat)
-                .setContentTitle("Someone chatted you!")
-                .setContentText(messageBody)
-                .setAutoCancel(true)
-                .setSound(notificationSoundURI)
-                .setContentIntent(resultIntent);
-
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
+        notificationBuilder.setContentTitle("GMS");
+        notificationBuilder.setContentText(massage);
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setSmallIcon(R.mipmap.gms_launcher);
+        notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0,notificationBuilder.build());
 
-        notificationManager.notify(0, mNotificationBuilder.build());
+        super.onMessageReceived(remoteMessage);
     }
 }

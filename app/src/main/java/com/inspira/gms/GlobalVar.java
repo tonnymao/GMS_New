@@ -112,6 +112,7 @@ public class GlobalVar {
             public String tipe = "tipe";
             public String role = "role";
             public String hash = "hash";
+            public String token = "token";
             public String cabang = "cabang"; //added by ADI @07-Aug-2017
             public String role_isowner = "role_isowner"; //role untuk mengetahui user termasuk owner atau tidak (0/1)
             public String role_issales = "role_issales"; //role untuk mengetahui user termasuk sales atau tidak (0/1)
