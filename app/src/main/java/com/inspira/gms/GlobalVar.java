@@ -100,6 +100,9 @@ public class GlobalVar {
             public String salesorder_item_kode = "salesorder_item_kode"; //added by ADI @24-Aug-2017
             public String salesorder_item_satuan = "salesorder_item_satuan"; //added by ADI @24-Aug-2017
             public String salesorder_item_price = "salesorder_item_price"; //added by ADI @24-Aug-2017
+            public String salesorder_item_qty = "salesorder_item_qty"; //added by ADI @24-Aug-2017
+            public String salesorder_item_fee = "salesorder_item_fee"; //added by ADI @24-Aug-2017
+            public String salesorder_item_disc = "salesorder_item_disc"; //added by ADI @24-Aug-2017
         }
 
         public class User
@@ -130,7 +133,7 @@ public class GlobalVar {
         public class Data
         {
             public String user = "user"; // nomor~nama~location~hp
-            public String barang = "barang"; // nomor~nama~namajual~kode
+            public String barang = "barang"; // nomor~nama~namajual~kode~satuan~hargajual
             public String schedule = "schedule";
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
             public String customerprospecting = "customerprospecting"; // nomor~nama~alamat~telpon
