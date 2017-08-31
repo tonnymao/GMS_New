@@ -399,6 +399,232 @@ class Master extends REST_Controller {
         }
     }
 
+    // --- POST get kategori --- //
+    function getKategori_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.kategori AS `nama`
+                    FROM tkategoribarang a
+                    WHERE a.status = 1
+                    ORDER BY a.kategori;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- POST get gudang --- //
+    function getGudang_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.nama AS `nama`,
+                        a.alamat AS `alamat`,
+                        a.kota AS `kota`
+                    FROM thgudang a
+                    WHERE a.status = 1
+                    ORDER BY a.nama;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama'],
+                                                'alamat'				=> $r['alamat'],
+                                                'kota' 					=> $r['kota'],
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- POST get bentuk --- //
+    function getBentuk_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.bentuk AS `nama`
+                    FROM tbentukbarang a
+                    WHERE a.status = 1
+                    ORDER BY a.bentuk;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- POST get surface --- //
+    function getSurface_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.surface AS `nama`
+                    FROM tsurfacebarang a
+                    WHERE a.status = 1
+                    ORDER BY a.surface;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- POST get jenis --- //
+    function getJenis_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.jenis AS `nama`
+                    FROM tjenisbarang a
+                    WHERE a.status = 1
+                    ORDER BY a.jenis;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // --- POST get grade --- //
+    function getGrade_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.grade AS `nama`
+                    FROM tgradebarang a
+                    WHERE a.status = 1
+                    ORDER BY a.grade;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
     //--- Added by Tonny --- //
     // --- POST get sales --- //
     function getSales_post()
