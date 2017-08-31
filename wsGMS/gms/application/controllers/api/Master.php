@@ -436,8 +436,8 @@ class Master extends REST_Controller {
         }
     }
 
-    // --- POST get kategori --- //
-    function getKategori_post()
+    // --- POST get gudang --- //
+    function getGudang_post()
     {
         $data['data'] = array();
 
