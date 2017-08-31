@@ -1,7 +1,5 @@
 package com.inspira.gms;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,7 +35,6 @@ import layout.DashboardInternalFragment;
 import layout.FilterSalesOmzetFragment;
 import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
-import layout.SalesOmzetFragment;
 import layout.SettingFragment;
 
 
@@ -119,12 +116,12 @@ public class IndexInternal extends AppCompatActivity
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
+        tvSales = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         //modified by Tonny @03-Aug-2017 function untuk get omzet dan target dijadikan satu
         String actionUrl = "Sales/getOmzetTarget/";
         new checkOmzetTarget().execute( actionUrl );
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
+        tvSales = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));

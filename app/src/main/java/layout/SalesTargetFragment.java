@@ -3,7 +3,6 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -32,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.inspira.gms.GlobalVar.data;
-import static com.inspira.gms.GlobalVar.salestargetpreferences;
 import static com.inspira.gms.IndexInternal.global;
 
 
@@ -67,7 +63,7 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
         spBulan = (Spinner) getView().findViewById(R.id.spBulan);
         spTahun = (Spinner) getView().findViewById(R.id.spTahun);
         edtTarget = (EditText) getView().findViewById(R.id.edtTarget);
-        tvSales = (TextView) getView().findViewById(R.id.tvSales);
+        tvSales = (TextView) getView().findViewById(R.id.tvTarget);
         btnAdd = (Button) getView().findViewById(R.id.btnAdd);
         btnSet = (Button) getView().findViewById(R.id.btnSet);
         lvGridSales = (ListView) getView().findViewById(R.id.lvGridSales);
@@ -107,7 +103,7 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         int id = v.getId();
         LibInspira.setShared(global.sharedpreferences, global.shared.position, "sales target");
-        if(id == R.id.tvSales){
+        if(id == R.id.tvTarget){
             //tampilkan browse sales
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
         }else if (id == R.id.btnAdd){
