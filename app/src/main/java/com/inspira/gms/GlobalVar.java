@@ -141,21 +141,20 @@ public class GlobalVar {
             public String broker = "broker"; // nomor~nama~kode
             public String valuta = "valuta"; // nomor~nama~kurs~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
+
+            public String kategori = "kategori"; // nomor~nama~kode
+            public String gudang = "gudang"; // nomor~nama~kode~alamat~kota
+            public String bentuk = "bentuk"; // nomor~nama~kode
+            public String surface = "surface"; // nomor~nama~kode
+            public String jenis = "jenis"; // nomor~nama~kode
+            public String grade = "grade"; // nomor~nama~kode
+
             public String periode = "periode"; // bulan~tahun
             public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017
             public String salesmanmonthly = "salesmanmonthly";  // nomorsales-nama-target  //added by Tonny @07-Aug-2017
             public String cabang = "cabang";  // nomorcabang~namacabang //added by Tonny @08-Aug-2017
             public String price = "price"; //nomor~kode~nama~harga
             public String pricehpp = "pricehpp"; //nomor~kode~nama~harga~hpp
-
-            //mendapatkan value untuk diisi ke dalam spinner
-            public String stockKategori = "stockkategori";  //added by Tonny @18-Aug-2017
-            public String stockBentuk = "stockbentuk";  //added by Tonny @19-Aug-2017
-            public String stockJenis = "stockjenis";  //added by Tonny @19-Aug-2017
-            public String stockGrade = "stockgrade";  //added by Tonny @19-Aug-2017
-            public String stockSurface = "stocksurface";  //added by Tonny @19-Aug-2017
-            public String stockGudang = "stockgudang";  //added by Tonny @20-Aug-2017
-            ///
 
             //UNTUK MENYIMPAN STOCKPOSISI DAN STOCKPOSISIRANDOM
             public String stockPosisi = "stockposisi";  //nomorgudang~namagudang~nomorbarang~namabarang~satuan~qty~m2 //added by Tonny @20-Aug-2017
