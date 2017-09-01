@@ -85,6 +85,7 @@ public class GlobalVar {
             public String scheduletask_description = "scheduletask_description";
             public String scheduletask_type = "scheduletask_type";
 
+            public String salesorder_date = "salesorder_date"; //added by Tonny @30-Aug-2017
             public String salesorder_customer_nomor = "salesorder_customer_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_customer_nama = "salesorder_customer_nama"; //added by ADI @24-Aug-2017
             public String salesorder_sales_nomor = "salesorder_sales_nomor"; //added by ADI @24-Aug-2017
