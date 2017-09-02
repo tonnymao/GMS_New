@@ -49,22 +49,8 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    private String date;
-    private String time;
-    private String type;
-    private String reminder;
-    private String description;
-
     public ChooseSalesmanFragment() {
         // Required empty public constructor
-    }
-
-    public void setDataSchedule(String date, String time, String type, String reminder, String description) {
-        this.date = date;
-        this.time = time;
-        this.type = type;
-        this.reminder = reminder;
-        this.description = description;
     }
 
     @Override
@@ -321,28 +307,20 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(getContext(), finalHolder.adapterItem.getNama());
                     view.startAnimation(GlobalVar.listeffect);
-                    SummaryScheduleFragment summaryScheduleFragment = new SummaryScheduleFragment();
-                    summaryScheduleFragment.setDataSchedule(
-                            finalHolder.adapterItem.getNama(),
-                            finalHolder.adapterItem.getNomor(),
-                            date, time, type, reminder, description
-                    );
-                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, summaryScheduleFragment);
-//                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")
-//                            || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("filter omzet"))
-//                    {
-//                        LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
-//                        LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
-//                        LibInspira.BackFragment(getFragmentManager()); //untuk kembali ke stack sebelumnya
-//                    }
-//                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
-//                    {
-//                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_sales_nomor, finalHolder.adapterItem.getNomor());
-//                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_sales_nama, finalHolder.adapterItem.getNama());
-//                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
-//                    }
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")
+                            || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("filter omzet"))
+                    {
+                        LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
+                        LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
+                        LibInspira.BackFragment(getFragmentManager()); //untuk kembali ke stack sebelumnya
+                    }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_sales_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_sales_nama, finalHolder.adapterItem.getNama());
+                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                    }
                 }
             });
 
