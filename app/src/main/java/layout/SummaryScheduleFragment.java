@@ -1,9 +1,11 @@
 package layout;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,20 +27,32 @@ import static com.inspira.gms.IndexInternal.global;
 public class SummaryScheduleFragment extends Fragment {
     private String target;
     private String targetID;
+    private String customer;
+    private String customerID;
+    private String customerProspecting;
+    private String customerProspectingID;
+    private String group;
+    private String groupID;
     private String date;
     private String time;
     private String type;
     private String reminder;
     private String description;
 
-    public void setDataSchedule(String target, String targetID, String date, String time, String type, String reminder, String description) {
-        this.target = target;
-        this.targetID = targetID;
-        this.date = date;
-        this.time = time;
-        this.type = type;
-        this.reminder = reminder;
-        this.description = description;
+    public SummaryScheduleFragment() {
+        target = LibInspira.getShared(global.schedulepreferences, global.schedule.targetsch, "Target");
+        targetID = LibInspira.getShared(global.schedulepreferences, global.schedule.targetIDsch, "");
+        customer = LibInspira.getShared(global.schedulepreferences, global.schedule.customersch, "Customer");
+        customerID = LibInspira.getShared(global.schedulepreferences, global.schedule.customerIDsch, "");
+        group = LibInspira.getShared(global.schedulepreferences, global.schedule.groupsch, "Group");
+        groupID = LibInspira.getShared(global.schedulepreferences, global.schedule.groupIDsch, "");
+        customerProspecting = LibInspira.getShared(global.schedulepreferences, global.schedule.customerProspectingsch, "");
+        customerProspectingID = LibInspira.getShared(global.schedulepreferences, global.schedule.customerProspectingIDsch, "");
+        date = LibInspira.getShared(global.schedulepreferences, global.schedule.datesch, "");
+        time = LibInspira.getShared(global.schedulepreferences, global.schedule.timesch, "");
+        type = LibInspira.getShared(global.schedulepreferences, global.schedule.typesch, "");
+        reminder = LibInspira.getShared(global.schedulepreferences, global.schedule.remindersch, "");
+        description = LibInspira.getShared(global.schedulepreferences, global.schedule.descriptionsch, "");
     }
 
     @Nullable
@@ -49,20 +63,40 @@ public class SummaryScheduleFragment extends Fragment {
         return view;
     }
 
+    /*****************************************************************************/
+    //OnAttach dijalankan pada saat fragment ini terpasang pada Activity penampungnya
+    /*****************************************************************************/
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((TextView) getView().findViewById(R.id.txvTarget)).setText(targetID);
+        ((TextView) getView().findViewById(R.id.txvTarget)).setText(target);
+        if (type.equals("Group Meeting")) {
+            ((TextView) getView().findViewById(R.id.tvTarget)).setText("Target Group");
+            ((TextView) getView().findViewById(R.id.txvTarget)).setText(groupID + " " + group);
+        }
+        else if (type.contains("Customer")) {
+            ((TextView) getView().findViewById(R.id.tvCustomerSch)).setVisibility(View.VISIBLE);
+            ((TextView) getView().findViewById(R.id.txvColon2)).setVisibility(View.VISIBLE);
+            ((TextView) getView().findViewById(R.id.txvCustomer)).setVisibility(View.VISIBLE);
+            ((TextView) getView().findViewById(R.id.txvCustomer)).setText(customer);
+            if (type.equals("Prospecting Customer"))
+                ((TextView) getView().findViewById(R.id.txvCustomer)).setText(customerProspecting);
+        }
         ((TextView) getView().findViewById(R.id.txvType)).setText(type);
         ((TextView) getView().findViewById(R.id.txvDate)).setText(date);
         ((TextView) getView().findViewById(R.id.txvTime)).setText(time);
-        ((TextView) getView().findViewById(R.id.txvMinute)).setText(reminder);
+        ((TextView) getView().findViewById(R.id.txvMinute)).setText(reminder + " Minutes");
         ((TextView) getView().findViewById(R.id.txvDescription)).setText(description);
         ((Button) getView().findViewById(R.id.btnSave)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String actionUrl = "Master/getBarang/";
-//                new setSchedule().execute(actionUrl);
+                String actionUrl = "Master/setSchedule/";
+                new setSchedule().execute(actionUrl);
             }
         });
     }
@@ -83,11 +117,15 @@ public class SummaryScheduleFragment extends Fragment {
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
             try {
-                jsonObject.put("target", target);
+                jsonObject.put("creator", creator);
+                jsonObject.put("target", targetID);
+                jsonObject.put("customer", customerID);
+                jsonObject.put("prospecting", customerProspectingID);
+                jsonObject.put("group", groupID);
                 jsonObject.put("type", type);
+                jsonObject.put("reminder", reminder);
                 jsonObject.put("date", date);
                 jsonObject.put("time", time);
-                jsonObject.put("reminder", reminder);
                 jsonObject.put("description", description);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -96,9 +134,13 @@ public class SummaryScheduleFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.d("resultQuery", result);
             LibInspira.ShowLongToast(getContext(), "Schedule Created");
+            LibInspira.clearShared(global.schedulepreferences);
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
+
         }
     }
 }

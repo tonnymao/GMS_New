@@ -399,10 +399,16 @@ public class ChooseCustomerProspectingFragment extends Fragment implements View.
             row.setTag(holder);
             setupItem(holder);
 
+            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    view.startAnimation(GlobalVar.listeffect);
+                    view.startAnimation(GlobalVar.listeffect);
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("schedule")) {
+                        LibInspira.setShared(global.schedulepreferences, global.schedule.customerProspectingIDsch, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.schedulepreferences, global.schedule.customerProspectingsch, finalHolder.adapterItem.getNama());
+                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SummaryScheduleFragment());
+                    }
 //                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
                 }
             });

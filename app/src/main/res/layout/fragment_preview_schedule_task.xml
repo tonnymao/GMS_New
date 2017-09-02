@@ -80,14 +80,15 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/tvType"
+                android:id="@+id/tvCustomerSch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvTarget"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:text="Type" />
+                android:text="Customer"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/txvColon2"
@@ -97,14 +98,46 @@
                 android:layout_below="@id/txvColon1"
                 android:layout_marginTop="20dp"
                 android:text=":"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/txvCustomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/txvTarget"
+                android:layout_below="@id/txvTarget"
+                android:layout_marginTop="20dp"
+                android:text="Nama Customer Panjangnya Minta Ampun"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txvCustomer"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:text="Type" />
+
+            <TextView
+                android:id="@+id/txvColon3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/txvColon2"
+                android:layout_below="@id/txvCustomer"
+                android:layout_marginTop="20dp"
+                android:text=":"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/txvType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/txvTarget"
-                android:layout_below="@id/txvTarget"
+                android:layout_alignLeft="@id/txvCustomer"
+                android:layout_below="@id/txvCustomer"
                 android:layout_marginTop="20dp"
                 android:text="Type"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -120,11 +153,11 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/txvColon3"
+                android:id="@+id/txvColon4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/txvColon2"
-                android:layout_below="@id/txvColon2"
+                android:layout_alignLeft="@id/txvColon3"
+                android:layout_below="@id/txvColon3"
                 android:layout_marginTop="20dp"
                 android:text=":"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -150,11 +183,11 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/txvColon4"
+                android:id="@+id/txvColon5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/txvColon3"
-                android:layout_below="@id/txvColon3"
+                android:layout_alignLeft="@id/txvColon4"
+                android:layout_below="@id/txvColon4"
                 android:layout_marginTop="20dp"
                 android:text=":"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -173,18 +206,18 @@
                 android:id="@+id/tvMinute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_below="@id/tvWaktu"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
-                android:layout_below="@id/tvWaktu"
-                android:text="Minute" />
+                android:text="Reminder"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:id="@+id/txvColon5"
+                android:id="@+id/txvColon6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/txvColon4"
-                android:layout_below="@id/txvColon4"
+                android:layout_alignLeft="@id/txvColon5"
+                android:layout_below="@id/txvColon5"
                 android:layout_marginTop="20dp"
                 android:text=":"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -196,7 +229,7 @@
                 android:layout_alignLeft="@id/txvTime"
                 android:layout_below="@id/txvTime"
                 android:layout_marginTop="20dp"
-                android:text="00"
+                android:text="00 Minutes"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -210,11 +243,11 @@
                 android:text="Description" />
 
             <TextView
-                android:id="@+id/txvColon6"
+                android:id="@+id/txvColon7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/txvColon5"
-                android:layout_below="@id/txvColon5"
+                android:layout_alignLeft="@id/txvColon6"
+                android:layout_below="@id/txvColon6"
                 android:layout_marginTop="20dp"
                 android:text=":"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -225,7 +258,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/txvMinute"
                 android:layout_below="@id/txvMinute"
-                android:lines="10"
+                android:lines="8"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="5dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"

@@ -9,11 +9,9 @@ package layout;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +21,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.inspira.gms.GlobalVar;
-import com.inspira.gms.IndexInternal;
 import com.inspira.gms.LibInspira;
-import com.inspira.gms.Login;
 import com.inspira.gms.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -149,12 +143,10 @@ public class FormScheduleTaskFragment extends Fragment implements View.OnClickLi
             }
         }, newTime.get(Calendar.HOUR_OF_DAY), newTime.get(Calendar.MINUTE), true);
 
-        tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_date, "[Date]"));
-        tvTime.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_time, "[Time]"));
-        edtReminder.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_reminder, "30"));
-        edtDescription.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_description, ""));
-
-        tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.scheduletask_date, "[Date]"));
+        tvDate.setText(LibInspira.getShared(global.schedulepreferences, global.schedule.datesch, "[Date]"));
+        tvTime.setText(LibInspira.getShared(global.schedulepreferences, global.schedule.timesch, "[Time]"));
+        edtReminder.setText(LibInspira.getShared(global.schedulepreferences, global.schedule.remindersch, "30"));
+        edtDescription.setText(LibInspira.getShared(global.schedulepreferences, global.schedule.descriptionsch, ""));
     }
 
     @Override
@@ -186,27 +178,39 @@ public class FormScheduleTaskFragment extends Fragment implements View.OnClickLi
             if(date.equals("[Date]") || time.equals("[Time]") || reminder.equals("") || description.equals(""))
             {
                 LibInspira.ShowShortToast(getContext(), "Please fill in all fields");
-            }
-            else
-            {
-                LibInspira.clearShared(global.temppreferences);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_date, date);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_time, time);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_reminder, reminder);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_type, type);
-                LibInspira.setShared(global.temppreferences, global.temp.scheduletask_description, description);
+            } else {
+                LibInspira.clearShared(global.schedulepreferences);
+                LibInspira.setShared(global.schedulepreferences, global.schedule.datesch, date);
+                LibInspira.setShared(global.schedulepreferences, global.schedule.timesch, time);
+                LibInspira.setShared(global.schedulepreferences, global.schedule.remindersch, reminder);
+                LibInspira.setShared(global.schedulepreferences, global.schedule.typesch, type);
+                LibInspira.setShared(global.schedulepreferences, global.schedule.descriptionsch, description);
+                LibInspira.setShared(global.sharedpreferences, global.shared.position, "schedule");
 
-                LibInspira.setShared(global.sharedpreferences, global.shared.position, "scheduletask");
-
-                if(type.toLowerCase().equals("group meeting"))
-                {
-
-                }
+                if (type.equals("Group Meeting"))
+                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());
                 else
-                {
-                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
-                }
+                    LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
             }
+        }
+    }
+
+    private class fcm_notif extends AsyncTask<String, Void, String> {
+        String user_nomor = edtReminder.getText().toString();
+        String message = edtDescription.getText().toString();
+
+        JSONObject jsonObject;
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                jsonObject = new JSONObject();
+                jsonObject.put("user_nomor", user_nomor);
+                jsonObject.put("message", message);
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
     }
 }

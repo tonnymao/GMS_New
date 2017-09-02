@@ -636,7 +636,7 @@ class Master extends REST_Controller {
 
         $query = "SELECT DISTINCT
                     #a.nomor AS `nomor`,
-                    #a.nomortuser AS `nomorTUser`,
+                    #a.nomortuser AS `nomortuser`,
                     a.nomorthsales AS `nomorsales`,
                     b.kode AS `nama`
                  FROM whuser_mobile a
@@ -652,7 +652,7 @@ class Master extends REST_Controller {
 
                 array_push($data['data'], array(
                                                 //'nomor'					=> $r['nomor'],
-                                                //'nomorTUser' 			=> $r['nomorTUser'],
+                                                //'nomortuser' 			=> $r['nomortuser'],
                                                 'nomorsales'         	=> $r['nomorsales'],
                                                 'nama' 					=> $r['nama']
                                                 )
@@ -786,4 +786,131 @@ class Master extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
+    
+    //--- Added by Shodiq ---//
+    function getUsers_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "SELECT nomortuser, userid as nama FROM gms.whuser_mobile order by nama desc";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomortuser'         	=> $r['nomortuser'],
+                                                'nama' 					=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+    
+    //--- Added by Shodiq ---//
+    function getGroups_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "SELECT nomor, nama FROM gms.whgroup_mobile order by nama desc";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'         	=> $r['nomor'],
+                                                'nama' 				=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+    
+    //--- Added by Shodiq ---//
+    function setSchedule_post()
+    {
+		$data['data'] = array();
+		
+		$value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        
+        $creator = (isset($jsonObject["creator"]) 			? $jsonObject["creator"]      	: "");
+        $target = (isset($jsonObject["target"]) 			? $jsonObject["target"]    	  	: "");
+        $customer = (isset($jsonObject["customer"]) 		? $jsonObject["customer"]     	: "");
+        $prospecting = (isset($jsonObject["prospecting"]) 	? $jsonObject["prospecting"]    : "");
+        $group = (isset($jsonObject["group"]) 				? $jsonObject["group"]     		: "");
+        $type = (isset($jsonObject["type"]) 				? $jsonObject["type"]        	: "");
+        $reminder = (isset($jsonObject["reminder"]) 		? $jsonObject["reminder"]     	: "");
+        $date = (isset($jsonObject["date"]) 				? $jsonObject["date"]         	: "");
+        $time = (isset($jsonObject["time"]) 				? $jsonObject["time"]         	: "");
+        $description = (isset($jsonObject["description"]) ? $this->clean($jsonObject["description"])     : "");
+        
+        $this->db->trans_begin();
+        
+        $query = "INSERT INTO `gms`.`whschedule_mobile`
+			(`nomorwhuser_creator`, ";
+		if ($target != "")
+			$query = $query . "`nomorwhuser_tujuan`, ";
+		if ($customer != "")
+			$query = $query . "`nomortcustomer`, ";
+		if ($prospecting != "")
+			$query = $query . "`nomortcustomerprospecting`, ";
+		if ($group != "")
+			$query = $query . "`nomorwhgroup`, ";
+			
+		$query = $query . "`tipejadwal`, `reminder`, `tanggal`, `jam`, `keterangan`, `status_selesai`, `status_aktif`, `tgl_buat`)
+        VALUES(
+			$creator,";
+		
+		if ($target != "")
+			$query = $query . " $target,";
+		if ($customer != "")
+			$query = $query . " $customer,";
+		if ($prospecting != "")
+			$query = $query . " $prospecting,";
+		if ($group != "")
+			$query = $query . " $group,";
+			
+			$query = $query . " '$type', $reminder, '$date', '$time', '$description', false, true, NOW()
+        )";
+        
+        $this->db->query($query);
+        
+        if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			array_push($data['data'], array( 'query' => $this->error($query) ));	
+		}
+		else
+		{
+			$this->db->trans_commit();
+			array_push($data['data'], array( 'success' => 'true' ));
+		}
+		
+		if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
 }
