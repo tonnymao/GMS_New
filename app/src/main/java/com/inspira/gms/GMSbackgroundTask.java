@@ -41,6 +41,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     private String GPSprovider;
     private String Networkprovider;
     private Location oldLocation;
+    private GlobalVar globalVar;
     private static Double oldLatitude;
     private static Double oldLongitude;
     private static int startState;
@@ -49,9 +50,11 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     private static long trackingInterval;
     private static String TAG;
     private static boolean GpsStopped;
+    private static String trackingType;
 
     @Override
     public void onCreate() {
+        globalVar = new GlobalVar(this);
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
@@ -68,14 +71,15 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         Networkprovider = LocationManager.NETWORK_PROVIDER;
         GPSprovider = LocationManager.GPS_PROVIDER;
 
-        String[] stateTime = LibInspira.getShared(global.settingpreferences, global.settings.jam_awal, "").split(":");
+        trackingType = globalVar.settingpreferences.getString("tracking", "");
+        String[] stateTime = globalVar.settingpreferences.getString("jam_awal", "").split(":");
         String stateTimeValue = stateTime[0] + stateTime[1];
         startState = Integer.valueOf(stateTimeValue);
-        stateTime = LibInspira.getShared(global.settingpreferences, global.settings.jam_akhir, "").split(":");
+        stateTime = globalVar.settingpreferences.getString("jam_akhir", "").split(":");
         stateTimeValue = stateTime[0] + stateTime [1];
         endState = Integer.valueOf(stateTimeValue);
-        trackingRadius = Double.valueOf(LibInspira.getShared(global.settingpreferences, global.settings.radius, ""));
-        trackingInterval = Long.valueOf(LibInspira.getShared(global.settingpreferences, global.settings.interval, ""));
+        trackingRadius = Double.valueOf(globalVar.settingpreferences.getString("radius", ""));
+        trackingInterval = Long.valueOf(globalVar.settingpreferences.getString("interval", ""));
 
         if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -83,7 +87,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             if (location != null) {
                 oldLocation = location;
             }
-            else if (LibInspira.getShared(global.settingpreferences, global.settings.tracking, "").equals("GPS and Network")) {
+            else if (trackingType.equals("GPS and Network")) {
                 location = locationManager.getLastKnownLocation(Networkprovider);
                 oldLocation = location;
             }
@@ -120,7 +124,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 //            if (GpsStopped)
 //                requestPassivelocation();
                 requestGPSlocation();
-                if (LibInspira.getShared(global.settingpreferences, global.settings.tracking, "").equals("GPS and Network"))
+                if (trackingType.equals("GPS and Network"))
                     requestNetworklocation();
 //                LibInspira.ShowLongToast(getApplicationContext(), "location requested");
             }
@@ -248,7 +252,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
                 oldLatitude = location.getLatitude();
                 oldLongitude = location.getLongitude();
                 String actionUrl = "Sales/pushTrackingData/";
-                new pushTrackingGPStoDB(LibInspira.getShared(global.userpreferences, global.user.nomor, ""), LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""), location).execute(actionUrl);
+                new pushTrackingGPStoDB(globalVar.userpreferences.getString("user_nomor", ""), globalVar.userpreferences.getString("nomor_sales", ""), location).execute(actionUrl);
                 Log.d("GMSbackgroundTask", "Location on radius");
             }
         }

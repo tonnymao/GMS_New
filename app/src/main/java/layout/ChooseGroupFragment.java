@@ -1,9 +1,3 @@
-/******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
-    History          :
-
-******************************************************************************/
 package layout;
 
 import android.app.Activity;
@@ -37,9 +31,11 @@ import java.util.List;
 import static com.inspira.gms.IndexInternal.global;
 import static com.inspira.gms.IndexInternal.jsonObject;
 
-//import android.app.Fragment;
+/**
+ * Created by shoma on 02/09/17.
+ */
 
-public class ChooseCustomerFragment extends Fragment implements View.OnClickListener{
+public class ChooseGroupFragment extends Fragment implements View.OnClickListener {
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
@@ -48,7 +44,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ChooseCustomerFragment() {
+    public ChooseGroupFragment() {
         // Required empty public constructor
     }
 
@@ -63,7 +59,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Customer");
+        getActivity().setTitle("Browse Groups");
         return v;
     }
 
@@ -112,7 +108,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
 
         refreshList();
 
-        String actionUrl = "Master/getCustomer/";
+        String actionUrl = "Master/getGroups/";
         new getData().execute( actionUrl );
     }
 
@@ -157,7 +153,8 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.customer, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.salesman, "");
+
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1 && pieces[0].equals(""))
         {
@@ -171,24 +168,15 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomor = parts[0];
+                    String nomorsales = parts[0];
                     String nama = parts[1];
-                    String alamat = parts[2];
-                    String telepon = parts[3];
-                    String kode = parts[4];
 
-                    if(nomor.equals("null")) nomor = "";
+                    if(nomorsales.equals("null")) nomorsales = "";
                     if(nama.equals("null")) nama = "";
-                    if(alamat.equals("null")) alamat = "-";
-                    if(telepon.equals("null")) telepon = "-";
-                    if(kode.equals("null")) kode = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomor);
+                    dataItem.setNomor(nomorsales);
                     dataItem.setNama(nama);
-                    dataItem.setAlamat(alamat);
-                    dataItem.setTelepon(telepon);
-                    dataItem.setKode(kode);
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -213,29 +201,28 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
+                    Log.d("jsonarray length: ", Integer.toString(jsonarray.length()));
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("query")){
-                            String nomor = (obj.getString("nomor"));
+                        if (!obj.has("query")) {
+                            String nomorsales = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
-                            String alamat = (obj.getString("alamat"));
-                            String telepon = (obj.getString("telepon"));
-                            String kode = (obj.getString("kode"));
 
-                            if(nomor.equals("")) nomor = "null";
-                            if(nama.equals("")) nama = "null";
-                            if(alamat.equals("")) alamat = "null";
-                            if(alamat.equals("")) telepon = "null";
-                            if(kode.equals("")) kode = "null";
+                            if (nomorsales.equals("")) nomorsales = "null";
+                            if (nama.equals("")) nama = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + alamat + "~" + telepon + "~" + kode + "|";
+                            tempData = tempData + nomorsales + "~" + nama + "|";
+                        } else {
+                            Log.d("FAILED: ", obj.getString("query"));
                         }
+
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.customer, "")))
+                    Log.d("tempData: ", tempData);
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.salesman, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.customer,
+                                global.data.salesman,
                                 tempData
                         );
                         refreshList();
@@ -259,28 +246,16 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
 
     public class ItemAdapter {
 
-        private String nomor;
+        private String nomortuser;
         private String nama;
-        private String alamat;
-        private String telepon;
-        private String kode;
 
         public ItemAdapter() {}
 
-        public String getNomor() {return nomor;}
-        public void setNomor(String _param) {this.nomor = _param;}
+        public String getNomor() {return nomortuser;}
+        public void setNomor(String _param) {this.nomortuser = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
-
-        public String getAlamat() {return alamat;}
-        public void setAlamat(String _param) {this.alamat = _param;}
-
-        public String getTelepon() {return telepon;}
-        public void setTelepon(String _param) {this.telepon = _param;}
-
-        public String getKode() {return kode;}
-        public void setKode(String _param) {this.kode = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -303,12 +278,10 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
-            TextView tvKeterangan;
-            TextView tvKeterangan1;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View row = convertView;
             Holder holder = null;
 
@@ -322,8 +295,6 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
-            holder.tvKeterangan1 = (TextView)row.findViewById(R.id.tvKeterangan1);
 
             row.setTag(holder);
             setupItem(holder);
@@ -333,17 +304,11 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                 @Override
                 public void onClick(View view) {
                     view.startAnimation(GlobalVar.listeffect);
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
-                    {
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nomor, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, finalHolder.adapterItem.getNama());
-                        LibInspira.BackFragment(getActivity().getSupportFragmentManager());
-                    }
-                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("schedule")) {
-                        LibInspira.setShared(global.schedulepreferences, global.schedule.customerIDsch, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.schedulepreferences, global.schedule.customersch, finalHolder.adapterItem.getNama());
-                        SummaryScheduleFragment summaryScheduleFragment = new SummaryScheduleFragment();
-                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, summaryScheduleFragment);
+
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("schedule")) {
+                        LibInspira.setShared(global.schedulepreferences, global.schedule.groupIDsch, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.schedulepreferences, global.schedule.groupsch, finalHolder.adapterItem.getNama());
+                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SummaryScheduleFragment());
                     }
                 }
             });
@@ -351,12 +316,8 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
             return row;
         }
 
-        private void setupItem(final Holder holder) {
+        private void setupItem(final ChooseGroupFragment.ItemListAdapter.Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
-            holder.tvKeterangan.setVisibility(View.VISIBLE);
-            holder.tvKeterangan1.setVisibility(View.VISIBLE);
-            holder.tvKeterangan.setText("Alamat: " + holder.adapterItem.getAlamat());
-            holder.tvKeterangan1.setText("Telpon: " + holder.adapterItem.getTelepon());
         }
     }
 }

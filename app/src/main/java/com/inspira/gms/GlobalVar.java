@@ -20,6 +20,7 @@ public class GlobalVar {
     public static SharedPreferences salestargetpreferences;  //added by Tonny @07-Aug-2017
     public static SharedPreferences stockmonitoringpreferences;  //added by Tonny @18-Aug-2017
     public static SharedPreferences omzetpreferences;  //added by Tonny @18-Aug-2017
+    public static SharedPreferences schedulepreferences;
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
@@ -29,6 +30,7 @@ public class GlobalVar {
     public static Stock stock;  //added by Tonny @18-Aug-2017
     public static Temp temp; //added by ADI @20-Aug-2017
     public static Omzet omzet;  //added by Tonny @23-Aug-2017
+    public static Schedule schedule; //added by shodiq @1-sep-2017
 
     public static AlphaAnimation buttoneffect = new AlphaAnimation(1F, 0.8F);
     public static AlphaAnimation listeffect = new AlphaAnimation(1F, 0.5F);
@@ -47,6 +49,7 @@ public class GlobalVar {
             settingpreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);  //added by Tonny @03-Aug-2017
             stockmonitoringpreferences = context.getSharedPreferences("stock", Context.MODE_PRIVATE);  //added by Tonny @18-Aug-2017
             omzetpreferences = context.getSharedPreferences("omzet", Context.MODE_PRIVATE);  //added by Tonny @25-Aug-2017
+            schedulepreferences = context.getSharedPreferences("schedule", Context.MODE_PRIVATE); //added by shodiq @1-sep-2017
 
             data = new Data();
             user = new User();
@@ -56,6 +59,7 @@ public class GlobalVar {
             stock = new Stock();  //added by Tonny @18-Aug-2017
             temp = new Temp(); //added by ADI @20-Aug-2017
             omzet = new Omzet();  //added by Tonny @23-Aug-2017
+            schedule = new Schedule(); //added by shodiq @1-sep-2017
         }
 
         public static void clearDataUser()
@@ -220,6 +224,23 @@ public class GlobalVar {
             public String nomorsales  = "nomorsales";
             public String enddate = "enddate";
             public String bulantahun = "bulantahun";
+        }
+
+        public class Schedule
+        {
+            public String targetsch = "target"; //view only
+            public String targetIDsch = "targetID";
+            public String customersch = "customer"; //view only
+            public String customerIDsch = "customerID";
+            public String customerProspectingsch = "customerProspectingsch"; //view only
+            public String customerProspectingIDsch = "customerProspectingIDsch";
+            public String groupsch = "group";
+            public String groupIDsch = "groupID";
+            public String datesch = "date";
+            public String timesch = "time";
+            public String typesch = "type";
+            public String remindersch = "reminder";
+            public String descriptionsch = "description";
         }
 
 }

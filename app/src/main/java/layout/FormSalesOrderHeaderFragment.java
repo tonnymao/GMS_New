@@ -18,7 +18,6 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.inspira.gms.GlobalVar;
-import com.inspira.gms.IndexInternal;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -71,7 +70,7 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         super.onActivityCreated(bundle);
 
         tvCustomer = (TextView) getView().findViewById(R.id.tvCustomer);
-        tvSales = (TextView) getView().findViewById(R.id.tvSales);
+        tvSales = (TextView) getView().findViewById(R.id.tvTarget);
         tvBroker = (TextView) getView().findViewById(R.id.tvBroker);
         tvValuta = (TextView) getView().findViewById(R.id.tvValuta);
         tvDate = (TextView) getView().findViewById(R.id.tvDate); //added by Tonny @30-Aug-2017
@@ -131,7 +130,7 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerFragment());
         }
-        else if(id==R.id.tvSales)
+        else if(id==R.id.tvTarget)
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
         }
