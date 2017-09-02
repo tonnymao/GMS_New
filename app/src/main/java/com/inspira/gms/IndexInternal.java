@@ -38,6 +38,7 @@ import layout.FilterSalesOmzetFragment;
 import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
 import layout.SalesOmzetFragment;
+import layout.SalesOrderListFragment;
 import layout.SettingFragment;
 
 
@@ -249,6 +250,8 @@ public class IndexInternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
         } else if (id == R.id.nav_customer_prospecting){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
+        } else if (id == R.id.nav_salesorder){
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

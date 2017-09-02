@@ -1,6 +1,6 @@
 /******************************************************************************
     Author           : ADI
-    Description      : dashboard untuk internal
+    Description      : untuk menampilkan detail item dalam bentuk list
     History          :
 
 ******************************************************************************/
@@ -8,34 +8,21 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
@@ -43,8 +30,9 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
-
+    private Button btnBack, btnNext;
     private FloatingActionButton fab;
+    protected String strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
 
     public FormSalesOrderDetailItemListFragment() {
         // Required empty public constructor
@@ -61,7 +49,7 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sales_order_detail_item_list, container, false);
-        getActivity().setTitle("Sales Order");
+        getActivity().setTitle("Sales Order - List Item");
         return v;
     }
 
@@ -84,10 +72,15 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item_salesorder, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
+
+        btnBack = (Button) getView().findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(this);
+        btnNext = (Button) getView().findViewById(R.id.btnNext);
+        btnNext.setOnClickListener(this);
 
         refreshList();
     }
@@ -109,45 +102,68 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemFragment());
         }
+        else if(id==R.id.btnBack)
+        {
+            LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+        }
+        else if(id==R.id.btnNext)
+        {
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
+        }
     }
 
-    private void refreshList()
+    protected void refreshList()
     {
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.kota, "");
+        String data = strData;
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1 && pieces[0].equals(""))
+        if((pieces.length==1 && pieces[0].equals("")))
         {
-
+            //do nothing
         }
         else
         {
             for(int i=0 ; i < pieces.length ; i++){
                 if(!pieces[i].equals(""))
                 {
-//                    String[] parts = pieces[i].trim().split("\\~");
-//
-//                    String nomor = parts[0];
-//                    String nama = parts[1];
-//                    String nomorpropinsi = parts[2];
-//                    String kode = parts[3];
-//
-//                    if(nomor.equals("null")) nomor = "";
-//                    if(nama.equals("null")) nama = "";
-//                    if(nomorpropinsi.equals("null")) nomorpropinsi = "";
-//                    if(kode.equals("null")) kode = "";
-//
-//                    ItemAdapter dataItem = new ItemAdapter();
-//                    dataItem.setNomor(nomor);
-//                    dataItem.setNama(nama);
-//                    dataItem.setNomorpropinsi(nomorpropinsi);
-//                    dataItem.setKode(kode);
-//                    list.add(dataItem);
-//
-//                    itemadapter.add(dataItem);
-//                    itemadapter.notifyDataSetChanged();
+                    String[] parts = pieces[i].trim().split("\\~");
+
+                    //String nomor = parts[0];
+                    String kode = parts[1];
+                    String nama = parts[2];
+                    String satuan = parts[3];
+                    String price = parts[4];
+                    String qty = parts[5];
+                    String fee = parts[6];
+                    String disc = parts[7];
+                    String notes = parts[8];
+
+                    //if(nomor.equals("null")) nomor = "";
+                    if(kode.equals("null")) kode = "";
+                    if(nama.equals("null")) nama = "-";
+                    if(satuan.equals("null")) satuan = "";
+                    if(price.equals("null")) price = "";
+                    if(qty.equals("null")) qty = "";
+                    if(fee.equals("null")) fee = "";
+                    if(disc.equals("null")) disc = "";
+                    if(notes.equals("null")) notes = "";
+
+                    ItemAdapter dataItem = new ItemAdapter();
+                    dataItem.setNama(nama);
+                    dataItem.setKode(kode);
+                    dataItem.setSatuan(satuan);
+                    dataItem.setPrice(price);
+                    dataItem.setQty(qty);
+                    dataItem.setFee(fee);
+                    dataItem.setDisc(disc);
+                    dataItem.setNotes(notes);
+
+                    list.add(dataItem);
+
+                    itemadapter.add(dataItem);
+                    itemadapter.notifyDataSetChanged();
                 }
             }
         }
@@ -155,17 +171,16 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
 
     public class ItemAdapter {
 
-        private String nomor;
         private String nama;
         private String kode;
-        private String jumlah;
         private String satuan;
-        private String subtotal;
+        private String price;
+        private String qty;
+        private String fee;
+        private String disc;
+        private String notes;
 
         public ItemAdapter() {}
-
-        public String getNomor() {return nomor;}
-        public void setNomor(String _param) {this.nomor = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
@@ -173,14 +188,23 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
 
-        public String getJumlah() {return jumlah;}
-        public void setJumlah(String _param) {this.jumlah = _param;}
-
         public String getSatuan() {return satuan;}
         public void setSatuan(String _param) {this.satuan = _param;}
 
-        public String getSubtotal() {return subtotal;}
-        public void setSubtotal(String _param) {this.subtotal = _param;}
+        public String getPrice() {return price;}
+        public void setPrice(String _param) {this.price = _param;}
+
+        public String getQty() {return qty;}
+        public void setQty(String _param) {this.qty = _param;}
+
+        public String getFee() {return fee;}
+        public void setFee(String _param) {this.fee = _param;}
+
+        public String getDisc() {return disc;}
+        public void setDisc(String _param) {this.disc = _param;}
+
+        public String getNotes() {return notes;}
+        public void setNotes(String _param) {this.notes = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -202,7 +226,7 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
 
         public class Holder {
             ItemAdapter adapterItem;
-            TextView tvNama;
+            TextView tvKode, tvNama, tvSatuan, tvPrice, tvQty, tvFee, tvDisc, tvNotes;
         }
 
         @Override
@@ -219,7 +243,14 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
             holder = new Holder();
             holder.adapterItem = items.get(position);
 
-            holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvNama = (TextView)row.findViewById(R.id.tvNama);
+            holder.tvKode = (TextView)row.findViewById(R.id.tvKode);
+            holder.tvSatuan = (TextView)row.findViewById(R.id.tvSatuan);
+            holder.tvPrice = (TextView)row.findViewById(R.id.tvPrice);
+            holder.tvQty = (TextView)row.findViewById(R.id.tvQty);
+            holder.tvFee = (TextView)row.findViewById(R.id.tvFee);
+            holder.tvDisc = (TextView)row.findViewById(R.id.tvDisc);
+            holder.tvNotes = (TextView)row.findViewById(R.id.tvNotes);
 
             row.setTag(holder);
             setupItem(holder);
@@ -227,7 +258,7 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
+//                    LibInspira.ShowLongToast(context, "coba");
                 }
             });
 
@@ -236,6 +267,13 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvKode.setText(holder.adapterItem.getKode().toUpperCase());
+            holder.tvSatuan.setText(holder.adapterItem.getSatuan().toUpperCase());
+            holder.tvPrice.setText(holder.adapterItem.getPrice().toUpperCase());
+            holder.tvQty.setText(holder.adapterItem.getQty().toUpperCase());
+            holder.tvFee.setText(holder.adapterItem.getFee().toUpperCase());
+            holder.tvDisc.setText(holder.adapterItem.getDisc().toUpperCase());
+            holder.tvNotes.setText(holder.adapterItem.getNotes());
         }
     }
 }

@@ -123,7 +123,9 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }
         else if(id==R.id.btnSalesOrder) //added by ADI @24-Aug-2017
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+            //remarked by Tonny @01-Sep-2017
+            //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());
         }
 
     }

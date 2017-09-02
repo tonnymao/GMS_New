@@ -51,7 +51,7 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sales_order_header, container, false);
-        getActivity().setTitle("Filter Sales Order");
+        getActivity().setTitle("Header Sales Order");
         return v;
     }
 

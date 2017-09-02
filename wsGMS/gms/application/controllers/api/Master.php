@@ -240,6 +240,54 @@ class Master extends REST_Controller {
         }
 
     }
+
+    //  added by Tonny
+    // --- POST get pekerjaan / jasa --- //
+    function getPekerjaan_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.nama AS `nama`,
+                        a.kodesatuan,
+                        b.satuan AS `satuan`,
+                        a.hargacustomer,
+                        a.hargamandor
+                    FROM tpekerjaan a
+                    JOIN vwpekerjaan b ON a.nomor = b.nomor
+                    WHERE a.aktif = 1
+                    ORDER BY a.nama DESC;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama'],
+                                                'kodesatuan' 			=> $r['kodesatuan'],
+                                                'satuan' 				=> $r['satuan'],
+                                                'hargacustomer'			=> $r['hargacustomer'],
+                                                'hargamandor'			=> $r['hargamandor']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+
+    }
 	
 	// --- POST get customer --- //
 	function getCustomer_post()

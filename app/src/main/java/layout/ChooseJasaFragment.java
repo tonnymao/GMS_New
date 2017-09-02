@@ -1,6 +1,6 @@
 /******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
+    Author           : Tonny
+    Description      : untuk browse pekerjaan / jasa
     History          :
 
 ******************************************************************************/
@@ -24,7 +24,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -39,7 +38,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class ChooseValutaFragment extends Fragment implements View.OnClickListener{
+public class ChooseJasaFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
@@ -48,7 +47,7 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ChooseValutaFragment() {
+    public ChooseJasaFragment() {
         // Required empty public constructor
     }
 
@@ -63,7 +62,7 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Valuta");
+        getActivity().setTitle("Choose Pekerjaan");
         return v;
     }
 
@@ -112,7 +111,7 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
 
         refreshList();
 
-        String actionUrl = "Master/getValuta/";
+        String actionUrl = "Master/getPekerjaan/";
         new getData().execute( actionUrl );
     }
 
@@ -157,9 +156,10 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.valuta, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.pekerjaan, "");
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1 && pieces[0].equals(""))
+
+        if(pieces.length==1)
         {
             tvNoData.setVisibility(View.VISIBLE);
         }
@@ -167,25 +167,35 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
         {
             tvNoData.setVisibility(View.GONE);
             for(int i=0 ; i < pieces.length ; i++){
+                Log.d("item", pieces[i] + "a");
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
                     String nomor = parts[0];
-                    String nama = parts[1];
-                    String kurs = parts[2];
-                    String kode = parts[3];
+                    String kode = parts[1];
+                    String nama = parts[2];
+                    String kodesatuan = parts[3];
+                    String satuan = parts[4];
+                    String hargacustomer = parts[5];
+                    String hargamandor = parts[6];
 
                     if(nomor.equals("null")) nomor = "";
-                    if(nama.equals("null")) nama = "";
-                    if(kurs.equals("null")) kurs = "";
                     if(kode.equals("null")) kode = "";
+                    if(nama.equals("null")) nama = "";
+                    if(kodesatuan.equals("null")) kodesatuan = "";
+                    if(satuan.equals("null")) satuan = "";
+                    if(hargacustomer.equals("null")) hargacustomer = "";
+                    if(hargamandor.equals("null")) hargamandor = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
-                    dataItem.setNama(nama);
-                    dataItem.setKurs(kurs);
                     dataItem.setKode(kode);
+                    dataItem.setNama(nama);
+                    dataItem.setKodeSatuan(kodesatuan);
+                    dataItem.setSatuan(satuan);
+                    dataItem.setHargaCustomer(hargacustomer);
+                    dataItem.setHargaMandor(hargamandor);
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -214,23 +224,29 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
-                            String nama = (obj.getString("nama"));
-                            String kurs = (obj.getString("kurs"));
                             String kode = (obj.getString("kode"));
+                            String nama = (obj.getString("nama"));
+                            String kodesatuan = (obj.getString("kodesatuan"));
+                            String satuan = (obj.getString("satuan"));
+                            String hargacustomer = (obj.getString("hargacustomer"));
+                            String hargamandor = (obj.getString("hargamandor"));
 
                             if(nomor.equals("")) nomor = "null";
-                            if(nama.equals("")) nama = "null";
-                            if(kurs.equals("")) kurs = "null";
                             if(kode.equals("")) kode = "null";
+                            if(nama.equals("")) nama = "null";
+                            if(kodesatuan.equals("")) kodesatuan = "null";
+                            if(satuan.equals("")) satuan = "null";
+                            if(hargacustomer.equals("")) hargacustomer = "null";
+                            if(hargamandor.equals("")) hargamandor = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + kurs + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + nama + "~" + kodesatuan + "~" + satuan + "~" + hargacustomer + "~" + hargamandor + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.valuta, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.pekerjaan, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.valuta,
+                                global.data.pekerjaan,
                                 tempData
                         );
                         refreshList();
@@ -255,9 +271,12 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
     public class ItemAdapter {
 
         private String nomor;
-        private String nama;
-        private String kurs;
         private String kode;
+        private String nama;
+        private String kodesatuan;
+        private String satuan;
+        private String hargacustomer;
+        private String hargamandor;
 
         public ItemAdapter() {}
 
@@ -267,11 +286,20 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
 
-        public String getKurs() {return kurs;}
-        public void setKurs(String _param) {this.kurs = _param;}
+        public String getKodeSatuan() {return kodesatuan;}
+        public void setKodeSatuan(String _param) {this.kodesatuan = _param;}
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
+
+        public String getSatuan() {return satuan;}
+        public void setSatuan(String _param) {this.satuan = _param;}
+
+        public String getHargaCustomer() {return hargacustomer;}
+        public void setHargaCustomer(String _param) {this.hargacustomer = _param;}
+
+        public String getHargaMandor() {return hargamandor;}
+        public void setHargaMandor(String _param) {this.hargamandor = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -294,7 +322,7 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
-            TextView tvketerangan;
+            TextView tvKeterangan;
         }
 
         @Override
@@ -312,7 +340,7 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvketerangan = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
 
             row.setTag(holder);
             setupItem(holder);
@@ -321,12 +349,16 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    view.startAnimation(GlobalVar.listeffect);
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
                     {
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_valuta_nomor, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_valuta_nama, finalHolder.adapterItem.getNama());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_valuta_kurs, finalHolder.adapterItem.getKurs());  //added by Tonny @02-Sep-2017
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_nama, finalHolder.adapterItem.getNama());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_kode, finalHolder.adapterItem.getKode());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_satuan, finalHolder.adapterItem.getSatuan());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, finalHolder.adapterItem.getHargaCustomer());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_qty, "0");
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_disc, "0");
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_fee, "0");
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }
@@ -337,8 +369,8 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
-            holder.tvketerangan.setText("Kurs: " + LibInspira.delimeter(holder.adapterItem.getKurs(), true));
-            holder.tvketerangan.setVisibility(View.VISIBLE);
+            holder.tvKeterangan.setVisibility(View.VISIBLE);
+            holder.tvKeterangan.setText("Kode: " + holder.adapterItem.getKode().toUpperCase());
         }
     }
 }
