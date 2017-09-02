@@ -1,11 +1,12 @@
 /******************************************************************************
     Author           : ADI
-    Description      : dashboard untuk internal
+    Description      : untuk mengisi header sales order
     History          :
 
 ******************************************************************************/
 package layout;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.inspira.gms.IndexInternal.global;
 
@@ -27,6 +33,7 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
 
     private TextView tvDate, tvCustomer, tvSales, tvBroker, tvValuta;
     private Button btnNext;
+    private DatePickerDialog dp;
 
     public FormSalesOrderHeaderFragment() {
         // Required empty public constructor
@@ -43,7 +50,7 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sales_order_header, container, false);
-        getActivity().setTitle("Sales Order");
+        getActivity().setTitle("Header Sales Order");
         return v;
     }
 
@@ -66,19 +73,45 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         tvSales = (TextView) getView().findViewById(R.id.tvTarget);
         tvBroker = (TextView) getView().findViewById(R.id.tvBroker);
         tvValuta = (TextView) getView().findViewById(R.id.tvValuta);
-
+        tvDate = (TextView) getView().findViewById(R.id.tvDate); //added by Tonny @30-Aug-2017
         btnNext = (Button) getView().findViewById(R.id.btnNext);
 
         tvCustomer.setOnClickListener(this);
         tvSales.setOnClickListener(this);
         tvBroker.setOnClickListener(this);
         tvValuta.setOnClickListener(this);
+        tvDate.setOnClickListener(this);  //added by Tonny @30-Aug-2017
         btnNext.setOnClickListener(this);
 
         tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, "").toUpperCase());
         tvSales.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_sales_nama, "").toUpperCase());
         tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, "").toUpperCase());
         tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, "").toUpperCase());
+
+
+        if (!LibInspira.getShared(global.temppreferences, global.temp.salesorder_date, "").equals("")){
+            tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_date, ""));
+        }
+        // Declare DatePicker
+        Calendar newCalendar = Calendar.getInstance();
+        dp = new DatePickerDialog(getActivity(), R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                try {
+                    String date = year + "-" + (monthOfYear+1) + "-" + dayOfMonth;
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date newdate = sdf.parse(date);
+                    date = sdf.format(newdate);
+
+                    tvDate.setText(date);
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_date, tvDate.getText().toString());
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
     @Override
@@ -108,6 +141,9 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         else if(id==R.id.tvValuta)
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseValutaFragment());
+        }
+        else if(id==R.id.tvDate) {  //added by Tonny @30-Aug-2017
+            dp.show();
         }
         else if(id==R.id.btnNext)
         {

@@ -89,6 +89,7 @@ public class GlobalVar {
             public String scheduletask_description = "scheduletask_description";
             public String scheduletask_type = "scheduletask_type";
 
+            public String salesorder_date = "salesorder_date"; //added by Tonny @30-Aug-2017
             public String salesorder_customer_nomor = "salesorder_customer_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_customer_nama = "salesorder_customer_nama"; //added by ADI @24-Aug-2017
             public String salesorder_sales_nomor = "salesorder_sales_nomor"; //added by ADI @24-Aug-2017
@@ -99,11 +100,27 @@ public class GlobalVar {
             public String salesorder_valuta_nama = "salesorder_valuta_nama"; //added by ADI @24-Aug-2017
             public String salesorder_valuta_kurs = "salesorder_valuta_kurs"; //added by ADI @24-Aug-2017
 
+            public String salesorder_pekerjaan = "salesorder_pekerjaan"; //added by Tonny @02-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~notes
+            public String salesorder_pekerjaan_nomor = "salesorder_pekerjaan_nomor"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_nama = "salesorder_pekerjaan_nama"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_kode = "salesorder_pekerjaan_kode"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_satuan = "salesorder_pekerjaan_satuan"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_price = "salesorder_pekerjaan_price"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_qty = "salesorder_pekerjaan_qty"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_fee = "salesorder_pekerjaan_fee"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_disc = "salesorder_pekerjaan_disc"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_notes = "salesorder_pekerjaan_notes"; //added by Tonny @02-Sep-2017
+
+            public String salesorder_item = "salesorder_item"; //added by Tonny @01-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~notes
             public String salesorder_item_nomor = "salesorder_item_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_item_nama = "salesorder_item_nama"; //added by ADI @24-Aug-2017
             public String salesorder_item_kode = "salesorder_item_kode"; //added by ADI @24-Aug-2017
             public String salesorder_item_satuan = "salesorder_item_satuan"; //added by ADI @24-Aug-2017
             public String salesorder_item_price = "salesorder_item_price"; //added by ADI @24-Aug-2017
+            public String salesorder_item_qty = "salesorder_item_qty"; //added by ADI @24-Aug-2017
+            public String salesorder_item_fee = "salesorder_item_fee"; //added by ADI @24-Aug-2017
+            public String salesorder_item_disc = "salesorder_item_disc"; //added by ADI @24-Aug-2017
+            public String salesorder_item_notes = "salesorder_item_notes"; //added by Tonny @01-Sep-2017
         }
 
         public class User
@@ -134,13 +151,22 @@ public class GlobalVar {
         public class Data
         {
             public String user = "user"; // nomor~nama~location~hp
-            public String barang = "barang"; // nomor~nama~namajual~kode
+            public String barang = "barang"; // nomor~nama~namajual~kode~satuan~hargajual
+            public String pekerjaan = "pekerjaan";  // nomor~kode~nama~kodesatuan~satuan~hargacustomer~hargamandor  //added by Tonny @02-Sep-2017
             public String schedule = "schedule";
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
             public String customerprospecting = "customerprospecting"; // nomor~nama~alamat~telpon
             public String broker = "broker"; // nomor~nama~kode
             public String valuta = "valuta"; // nomor~nama~kurs~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
+
+            public String kategori = "kategori"; // nomor~nama~kode
+            public String gudang = "gudang"; // nomor~nama~kode~alamat~kota
+            public String bentuk = "bentuk"; // nomor~nama~kode
+            public String surface = "surface"; // nomor~nama~kode
+            public String jenis = "jenis"; // nomor~nama~kode
+            public String grade = "grade"; // nomor~nama~kode
+
             public String periode = "periode"; // bulan~tahun
             public String salesman = "salesman"; // nomorsales~nama   //added by Tonny @05-Aug-2017
             public String salesmanmonthly = "salesmanmonthly";  // nomorsales-nama-target  //added by Tonny @07-Aug-2017
@@ -148,20 +174,16 @@ public class GlobalVar {
             public String price = "price"; //nomor~kode~nama~harga
             public String pricehpp = "pricehpp"; //nomor~kode~nama~harga~hpp
 
-            //mendapatkan value untuk diisi ke dalam spinner
-            public String stockKategori = "stockkategori";  //added by Tonny @18-Aug-2017
-            public String stockBentuk = "stockbentuk";  //added by Tonny @19-Aug-2017
-            public String stockJenis = "stockjenis";  //added by Tonny @19-Aug-2017
-            public String stockGrade = "stockgrade";  //added by Tonny @19-Aug-2017
-            public String stockSurface = "stocksurface";  //added by Tonny @19-Aug-2017
-            public String stockGudang = "stockgudang";  //added by Tonny @20-Aug-2017
-            ///
-
             //UNTUK MENYIMPAN STOCKPOSISI DAN STOCKPOSISIRANDOM
             public String stockPosisi = "stockposisi";  //nomorgudang~namagudang~nomorbarang~namabarang~satuan~qty~m2 //added by Tonny @20-Aug-2017
 
             //UNTUK MENYIMPAN DATA SALESMAN OMZET
             public String salesmanomzet = "salesmanomzet";  //nomorsales~namasales~omzet~tanggal  //added by Tonny @25-Aug-2017
+
+            //UNTUK MENYIMPAN DATA SALES ORDER HEADER
+
+            //UNTUK MENYIMPAN DATA SALES ORDER LIST ITEM
+            public String salesorder_list_item = "salesorder_list_item";  //kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @01-Sep-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

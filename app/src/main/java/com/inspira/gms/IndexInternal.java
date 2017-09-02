@@ -35,6 +35,8 @@ import layout.DashboardInternalFragment;
 import layout.FilterSalesOmzetFragment;
 import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
+import layout.SalesOmzetFragment;
+import layout.SalesOrderListFragment;
 import layout.SettingFragment;
 
 
@@ -116,12 +118,12 @@ public class IndexInternal extends AppCompatActivity
         View navigationHeader = navigationView.getHeaderView(0);
         tvUsername = (TextView) navigationHeader.findViewById(R.id.tvUsername);
         tvUsername.setText(LibInspira.getShared(global.userpreferences, global.user.nama, "User").toUpperCase());
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvTarget);
+        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         //modified by Tonny @03-Aug-2017 function untuk get omzet dan target dijadikan satu
         String actionUrl = "Sales/getOmzetTarget/";
         new checkOmzetTarget().execute( actionUrl );
-        tvSales = (TextView) navigationHeader.findViewById(R.id.tvTarget);
+        tvSales = (TextView) navigationHeader.findViewById(R.id.tvSales);
         tvSales.setText("Omzet: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.omzet, "0"), true));
         tvTarget = (TextView) navigationHeader.findViewById(R.id.tvTarget);
         tvTarget.setText("Target: " + LibInspira.delimeter(LibInspira.getShared(global.salespreferences, global.sales.target, "0"), true));
@@ -246,6 +248,8 @@ public class IndexInternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
         } else if (id == R.id.nav_customer_prospecting){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
+        } else if (id == R.id.nav_salesorder){
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

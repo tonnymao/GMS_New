@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -39,18 +40,11 @@ import static com.inspira.gms.IndexInternal.global;
 //import android.app.Fragment;
 
 public class FilterStockFragment extends Fragment implements View.OnClickListener{
-    private Spinner spGudang, spKategori, spBentuk, spSurface, spJenis, spGrade;
+    private TextView tvGudang, tvKategori, tvBentuk, tvSurface, tvJenis, tvGrade;
+    private ImageButton iBtnGudang, iBtnKategori, iBtnBentuk, iBtnSurface, iBtnJenis, iBtnGrade;
     private EditText edtBarang, edtUkuran1, edtUkuran2, edtTebal, edtMotif;
     private DatePickerDialog dp;
     private TextView tvFilterStockDate;
-    private List<String> kodegudanglist;
-
-    private checkKategori checkkategori;
-    private checkBentuk checkbentuk;
-    private checkGrade checkgrade;
-    private checkGudang checkgudang;
-    private checkJenis checkjenis;
-    private checkSurface checksurface;
 
     public FilterStockFragment() {
         // Required empty public constructor
@@ -84,12 +78,18 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        spKategori = (Spinner) getView().findViewById(R.id.spKategori);
-        spBentuk = (Spinner) getView().findViewById(R.id.spBentuk);
-        spSurface = (Spinner) getView().findViewById(R.id.spSurface);
-        spJenis = (Spinner) getView().findViewById(R.id.spJenis);
-        spGrade = (Spinner) getView().findViewById(R.id.spGrade);
-        spGudang = (Spinner) getView().findViewById(R.id.spGudang);
+        tvKategori = (TextView) getView().findViewById(R.id.tvKategori);
+        tvBentuk = (TextView) getView().findViewById(R.id.tvBentuk);
+        tvSurface = (TextView) getView().findViewById(R.id.tvSurface);
+        tvJenis = (TextView) getView().findViewById(R.id.tvJenis);
+        tvGrade = (TextView) getView().findViewById(R.id.tvGrade);
+        tvGudang = (TextView) getView().findViewById(R.id.tvGudang);
+        iBtnKategori = (ImageButton) getView().findViewById(R.id.ibtnClearKategori);
+        iBtnBentuk = (ImageButton) getView().findViewById(R.id.ibtnClearBentuk);
+        iBtnSurface = (ImageButton) getView().findViewById(R.id.ibtnClearSurface);
+        iBtnJenis = (ImageButton) getView().findViewById(R.id.ibtnClearJenis);
+        iBtnGrade = (ImageButton) getView().findViewById(R.id.ibtnClearGrade);
+        iBtnGudang = (ImageButton) getView().findViewById(R.id.ibtnClearGudang);
         edtBarang = (EditText) getView().findViewById(R.id.edtBarang);
         edtTebal = (EditText) getView().findViewById(R.id.edtTebal);
         edtMotif = (EditText) getView().findViewById(R.id.edtMotif);
@@ -97,6 +97,27 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         edtUkuran2 = (EditText) getView().findViewById(R.id.edtUkuran2);
         tvFilterStockDate = (TextView) getView().findViewById(R.id.tvFilterStockDate);
         tvFilterStockDate.setOnClickListener(this);
+
+        tvKategori.setOnClickListener(this);
+        tvBentuk.setOnClickListener(this);
+        tvSurface.setOnClickListener(this);
+        tvJenis.setOnClickListener(this);
+        tvGrade.setOnClickListener(this);
+        tvGudang.setOnClickListener(this);
+
+        iBtnKategori.setOnClickListener(this);
+        iBtnGudang.setOnClickListener(this);
+        iBtnGrade.setOnClickListener(this);
+        iBtnJenis.setOnClickListener(this);
+        iBtnSurface.setOnClickListener(this);
+        iBtnBentuk.setOnClickListener(this);
+
+        tvKategori.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kategori, ""));
+        tvBentuk.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.bentuk, ""));
+        tvSurface.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.surface, ""));
+        tvJenis.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.jenis, ""));
+        tvGrade.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.grade, ""));
+        tvGudang.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, ""));
 
         // Define DatePicker
         Calendar newCalendar = Calendar.getInstance();
@@ -119,45 +140,6 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
         getView().findViewById(R.id.btnFilterUpdate).setOnClickListener(this);
-        String actionUrl = "Stock/getKategori/";
-        checkkategori = new checkKategori();
-        checkkategori.execute( actionUrl );
-
-        actionUrl = "Stock/getGudang/";
-        checkgudang = new checkGudang();
-        checkgudang.execute( actionUrl );
-
-        actionUrl = "Stock/getBentuk/";
-        checkbentuk = new checkBentuk();
-        checkbentuk.execute( actionUrl );
-
-        actionUrl = "Stock/getSurface/";
-        checksurface = new checkSurface();
-        checksurface.execute( actionUrl );
-
-        actionUrl = "Stock/getJenis/";
-        checkjenis = new checkJenis();
-        checkjenis.execute( actionUrl );
-
-        actionUrl = "Stock/getGrade/";
-        checkgrade = new checkGrade();
-        checkgrade.execute( actionUrl );
-
-        refreshList("all");
-
-        spGudang.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodegudang, kodegudanglist.get(position));
-                Log.d("kodegudang", LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, ""));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodegudang, kodegudanglist.get(0));
-                Log.d("kodegudang", LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, ""));
-            }
-        });
 
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -165,297 +147,10 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvFilterStockDate.setText(formattedDate);
     }
 
-    private void refreshList(String _param)
-    {
-        String data = "";
-        Spinner spinner = spKategori;
-        if(_param.equals("all")){
-            refreshList("kategori");
-            refreshList("bentuk");
-            refreshList("jenis");
-            refreshList("grade");
-            refreshList("surface");
-            refreshList("gudang");
-        }else {
-            if (_param.equals("kategori")) {
-                data = LibInspira.getShared(global.datapreferences, global.data.stockKategori, "");
-                Log.d("data ", data);
-                spinner = spKategori;
-            } else if (_param.equals("bentuk")) {
-                data = LibInspira.getShared(global.datapreferences, global.data.stockBentuk, "");
-                spinner = spBentuk;
-            } else if (_param.equals("jenis")) {
-                data = LibInspira.getShared(global.datapreferences, global.data.stockJenis, "");
-                spinner = spJenis;
-            } else if (_param.equals("grade")) {
-                data = LibInspira.getShared(global.datapreferences, global.data.stockGrade, "");
-                spinner = spGrade;
-            } else if (_param.equals("surface")) {
-                data = LibInspira.getShared(global.datapreferences, global.data.stockSurface, "");
-                spinner = spSurface;
-            } else if (_param.equals("gudang")) {
-                data = LibInspira.getShared(global.datapreferences, global.data.stockGudang, "");
-                spinner = spGudang;
-            }
-
-            String[] pieces = data.trim().split("\\|");
-
-            if (pieces.length == 1 && pieces[0].equals("")) {
-            } else {
-                ArrayAdapter<String> adapter;
-                List<String> list;
-                list = new ArrayList<>();
-                kodegudanglist = new ArrayList<>();
-                for (int i = 0; i < pieces.length; i++) {
-                    if (!pieces[i].equals("")) {
-                        if(_param.equals("gudang")){
-                            String[] parts = pieces[i].split("\\~");
-                            kodegudanglist.add(parts[0]);
-                            list.add(parts[1]);
-                        }else {
-                            list.add(pieces[i]);
-                        }
-                    }
-                }
-                adapter = new ArrayAdapter<>(getContext(),
-                        android.R.layout.simple_spinner_item, list);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
-            }
-        }
-    }
-
     @Override
     public void onDestroy()
     {
         super.onDestroy();
-        checkkategori.cancel(true);
-        checkbentuk.cancel(true);
-        checkgrade.cancel(true);
-        checkgudang.cancel(true);
-        checkjenis.cancel(true);
-        checksurface.cancel(true);
-    }
-
-
-    private class checkKategori extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("filter stok", result);
-            try {
-                String tempData = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            Log.d("status", "UPDATING");
-                            tempData = tempData + obj.getString("kategori") + "|";
-                        }else{
-                            LibInspira.ShowShortToast(getContext(), "Failed getting kategori");
-                        }
-                    }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockKategori, "")))
-                    {
-                        LibInspira.setShared(global.datapreferences, global.data.stockKategori, tempData);
-                        refreshList("kategori");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class checkGudang extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                String tempData = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            tempData = tempData + obj.getString("kodegudang") + "~" + obj.getString("namagudang") + "|";
-                        }else{
-                            LibInspira.ShowShortToast(getContext(), "Failed getting kategori");
-                        }
-                    }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockGudang, "")))
-                    {
-                        LibInspira.setShared(global.datapreferences, global.data.stockGudang, tempData);
-                        refreshList("gudang");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class checkBentuk extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                String tempData = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            Log.d("status", "UPDATING");
-                            tempData = tempData + obj.getString("bentuk") + "|";
-                        }else{
-                            LibInspira.ShowShortToast(getContext(), "Failed getting bentuk");
-                        }
-                    }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockBentuk, "")))
-                    {
-                        LibInspira.setShared(global.datapreferences, global.data.stockBentuk, tempData);
-                        refreshList("bentuk");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class checkSurface extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                String tempData = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            tempData = tempData + obj.getString("surface") + "|";
-                        }else{
-                            LibInspira.ShowShortToast(getContext(), "Failed getting surface");
-                        }
-                    }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockSurface, "")))
-                    {
-                        LibInspira.setShared(global.datapreferences, global.data.stockSurface, tempData);
-                        refreshList("surface");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class checkJenis extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                String tempData = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            tempData = tempData + obj.getString("jenis") + "|";
-                        }else{
-                            LibInspira.ShowShortToast(getContext(), "Failed getting jenis");
-                        }
-                    }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockJenis, "")))
-                    {
-                        LibInspira.setShared(global.datapreferences, global.data.stockJenis, tempData);
-                        refreshList("jenis");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class checkGrade extends AsyncTask<String, Void, String> {
-        JSONObject jsonObject;
-
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                String tempData = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if (jsonarray.length() > 0) {
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if (!obj.has("query")) {
-                            Log.d("status", "UPDATING");
-                            tempData = tempData + obj.getString("grade") + "|";
-                        }else{
-                            LibInspira.ShowShortToast(getContext(), "Failed getting grade");
-                        }
-                    }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.stockGrade, "")))
-                    {
-                        LibInspira.setShared(global.datapreferences, global.data.stockGrade, tempData);
-                        refreshList("grade");
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -469,20 +164,15 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         if (id == R.id.btnFilterUpdate){
             //menyimpan filter
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorbarang, edtBarang.getText().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kategori, spKategori.getSelectedItem().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.jenis, spJenis.getSelectedItem().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.grade, spGrade.getSelectedItem().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.bentuk, spBentuk.getSelectedItem().toString());
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvFilterStockDate.getText().toString());
             if(edtUkuran1.getText().toString().equals("") && edtUkuran2.getText().toString().equals("")){
                 LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
             }else {
                 LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, edtUkuran1.getText().toString() + "x" + edtUkuran2.getText().toString());
             }
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.surface, spSurface.getSelectedItem().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvFilterStockDate.getText().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namagudang, spGudang.getSelectedItem().toString());
+
 
             LibInspira.setShared(global.datapreferences, global.data.stockPosisi, "");  //added by Tonny @21-Aug-2017  clear data stockposisi
             if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition")){
@@ -495,6 +185,49 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         }
         else if (id == R.id.tvFilterStockDate){
             dp.show();
+        }
+        else if (id == R.id.tvKategori){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKategoriFragment());
+        }
+        else if (id == R.id.tvGudang){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseGudangFragment());
+        }
+        else if (id == R.id.tvBentuk){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBentukFragment());
+        }
+        else if (id == R.id.tvJenis){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseJenisFragment());
+        }
+        else if (id == R.id.tvGrade){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseGradeFragment());
+        }
+        else if (id == R.id.tvSurface){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseSurfaceFragment());
+        }
+        else if (id == R.id.ibtnClearKategori){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kategori, "");
+            tvKategori.setText("");
+        }
+        else if (id == R.id.ibtnClearGudang){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namagudang, "");
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodegudang, "");
+            tvGudang.setText("");
+        }
+        else if (id == R.id.ibtnClearBentuk){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.bentuk, "");
+            tvBentuk.setText("");
+        }
+        else if (id == R.id.ibtnClearGrade){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.grade, "");
+            tvGrade.setText("");
+        }
+        else if (id == R.id.ibtnClearJenis){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.jenis, "");
+            tvJenis.setText("");
+        }
+        else if (id == R.id.ibtnClearSurface){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.surface, "");
+            tvSurface.setText("");
         }
     }
 }
