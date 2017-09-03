@@ -350,6 +350,9 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, finalHolder.adapterItem.getKode());
                         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, finalHolder.adapterItem.getSatuan());
                         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, finalHolder.adapterItem.getHargajual());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "0");
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "0");
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "0");
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }

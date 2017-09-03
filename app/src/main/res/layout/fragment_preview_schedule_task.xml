@@ -88,7 +88,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Customer"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txvColon2"
@@ -99,7 +99,7 @@
                 android:layout_marginTop="20dp"
                 android:text=":"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txvCustomer"
@@ -110,7 +110,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Nama Customer Panjangnya Minta Ampun"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvType"
