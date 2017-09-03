@@ -8,15 +8,18 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,9 +27,13 @@ import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.inspira.gms.IndexInternal.global;
@@ -90,8 +97,8 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         refreshList();
 
-//        String actionUrl = "Master/getBarang/";
-//        new getData().execute( actionUrl );
+        String actionUrl = "Master/getSchedules/";
+        new getData().execute( actionUrl );
     }
 
     @Override
@@ -128,20 +135,35 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                     String[] parts = pieces[i].trim().split("\\~");
 
                     String nomor = parts[0];
-                    String nama = parts[1];
-                    String namajual = parts[2];
-                    String kode = parts[3];
+                    String creator = parts[1];
+                    String target = parts[2];
+                    String customer = parts[3];
+                    String prospecting = parts[4];
+                    String group = parts[5];
+                    String type = parts[6];
+                    String date = parts[7];
+                    String time = parts[8];
 
-                    if(nomor.equals("null")) nomor = "";
-                    if(nama.equals("null")) nama = "";
-                    if(namajual.equals("null")) namajual = "";
-                    if(kode.equals("null")) kode = "";
+                    if(nomor.equals("")) nomor = "null";
+                    if(creator.equals("")) creator = "null";
+                    if(target.equals("")) target = "null";
+                    if(customer.equals("")) customer = "null";
+                    if(prospecting.equals("")) prospecting = "null";
+                    if(group.equals("")) group = "null";
+                    if(type.equals("")) type = "null";
+                    if(date.equals("")) date = "null";
+                    if(time.equals("")) time = "null";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
-                    dataItem.setNama(nama);
-                    dataItem.setNamajual(namajual);
-                    dataItem.setKode(kode);
+                    dataItem.setCreator(creator);
+                    dataItem.setTarget(target);
+                    dataItem.setCustomer(customer);
+                    dataItem.setProspecting(prospecting);
+                    dataItem.setGroup(group);
+                    dataItem.setType(type);
+                    dataItem.setDate(date);
+                    dataItem.setTime(time);
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -151,10 +173,42 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private class getData extends AsyncTask<String, Void, String> {
+    private class cancelSchedule extends AsyncTask<String, Void, String> {
+        String nomor;
+
+        cancelSchedule(String nomor) {
+            this.nomor = nomor;
+        }
+
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            try {
+                jsonObject.put("nomor", nomor);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            LibInspira.ShowLongToast(getContext(), "Schedule Canceled");
+        }
+    }
+
+    private class getData extends AsyncTask<String, Void, String> {
+        String user;
+
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            try {
+                jsonObject.put("user", user);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -170,23 +224,33 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
-                            String nama = (obj.getString("nama"));
-                            String namajual = (obj.getString("namajual"));
-                            String kode = (obj.getString("kode"));
+                            String creator = (obj.getString("creator"));
+                            String target = (obj.getString("target"));
+                            String customer = (obj.getString("customer"));
+                            String prospecting = (obj.getString("prospecting"));
+                            String group = obj.getString("group");
+                            String type = obj.getString("type");
+                            String date = obj.getString("date");
+                            String time = obj.getString("time");
 
                             if(nomor.equals("")) nomor = "null";
-                            if(nama.equals("")) nama = "null";
-                            if(namajual.equals("")) namajual = "null";
-                            if(kode.equals("")) kode = "null";
+                            if(creator.equals("")) creator = "null";
+                            if(target.equals("")) target = "null";
+                            if(customer.equals("")) customer = "null";
+                            if(prospecting.equals("")) prospecting = "null";
+                            if(group.equals("")) group = "null";
+                            if(type.equals("")) type = "null";
+                            if(date.equals("")) date = "null";
+                            if(time.equals("")) time = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + creator + "~" + target + "~" + customer + "~" + prospecting + "~" + group + "~" + type + "~" + date + "~" + time + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.schedule, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.barang,
+                                global.data.schedule,
                                 tempData
                         );
                         refreshList();
@@ -205,29 +269,50 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         protected void onPreExecute() {
             super.onPreExecute();
             tvInformation.setVisibility(View.VISIBLE);
+            user = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
         }
     }
 
-    public class ItemAdapter {
+    private class ItemAdapter {
 
         private String nomor;
-        private String nama;
-        private String namajual;
-        private String kode;
+        private String creator;
+        private String target;
+        private String customer;
+        private String prospecting;
+        private String group;
+        private String type;
+        private String date;
+        private String time;
 
         public ItemAdapter() {}
 
         public String getNomor() {return nomor;}
         public void setNomor(String _param) {this.nomor = _param;}
 
-        public String getNama() {return nama;}
-        public void setNama(String _param) {this.nama = _param;}
+        public String getCreator() {return creator;}
+        public void setCreator(String _param) {this.creator = _param;}
 
-        public String getNamajual() {return namajual;}
-        public void setNamajual(String _param) {this.namajual = _param;}
+        public String getTarget() {return target;}
+        public void setTarget(String _param) {this.target = _param;}
 
-        public String getKode() {return kode;}
-        public void setKode(String _param) {this.kode = _param;}
+        public String getType() {return type;}
+        public void setType(String _param) {this.type = _param;}
+
+        public String getCustomer() {return customer;}
+        public void setCustomer(String _param) {this.customer = _param;}
+
+        public String getProspecting() {return prospecting;}
+        public void setProspecting(String _param) {this.prospecting = _param;}
+
+        public String getGroup() {return group;}
+        public void setGroup(String _param) {this.group = _param;}
+
+        public String getDate() {return date;}
+        public void setDate(String _param) {this.date = _param;}
+
+        public String getTime() {return time;}
+        public void setTime(String _param) {this.time = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -250,6 +335,9 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
+            TextView tvDatetime;
+            TextView tvKeterangan;
+            TextView tvKeterangan1;
         }
 
         @Override
@@ -267,22 +355,79 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvDatetime = (TextView)row.findViewById(R.id.tvBigNote);
+            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvKeterangan1 = (TextView)row.findViewById(R.id.tvKeterangan1);
 
             row.setTag(holder);
             setupItem(holder);
 
-            row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    LibInspira.ShowLongToast(context, "coba");
-                }
-            });
+            final Holder finalholder = holder;
+            if (holder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))) {
+                row.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        DialogInterface.OnClickListener dialog = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                switch (i) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                            String actionUrl = "Master/cancelSchedule/";
+                                            new cancelSchedule(finalholder.adapterItem.getNomor()).execute( actionUrl );
+                                            actionUrl = "Master/getSchedules/";
+                                            new getData().execute( actionUrl );
+                                        break;
+                                }
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage("Do You Want to Cancel This Schedule?").setPositiveButton("Yes", dialog)
+                                .setNegativeButton("No", dialog).show();
+                        return true;
+                    }
+                });
+            }
 
             return row;
         }
 
         private void setupItem(final Holder holder) {
-            holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvNama.setText(holder.adapterItem.getType().toUpperCase() + " Schedule");
+            holder.tvDatetime.setVisibility(View.VISIBLE);
+            holder.tvKeterangan.setVisibility(View.VISIBLE);
+            holder.tvKeterangan1.setVisibility(View.VISIBLE);
+//            holder.tvKeterangan1.
+            SimpleDateFormat input = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat output = new SimpleDateFormat("HH:mm");
+            try {
+                String dateTimeTemp = "";
+                Date temp = input.parse(holder.adapterItem.getTime());
+                dateTimeTemp = output.format(temp);
+                input = new SimpleDateFormat("yyyy-MM-dd");
+                output = new SimpleDateFormat("dd MMMM yyyy");
+                temp = input.parse(holder.adapterItem.getDate());
+                dateTimeTemp += " " + output.format(temp);
+                holder.tvDatetime.setText(dateTimeTemp);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (!holder.adapterItem.getCustomer().equals("null"))
+                holder.tvKeterangan.setText("Customer: " + holder.adapterItem.getCustomer());
+            else if (!holder.adapterItem.getProspecting().equals("null"))
+                holder.tvKeterangan.setText("Customer: " + holder.adapterItem.getProspecting());
+            else if (!holder.adapterItem.getGroup().equals("null"))
+                holder.tvKeterangan.setText("Group: " + holder.adapterItem.getGroup());
+            else
+                holder.tvKeterangan.setVisibility(View.GONE);
+
+            if (holder.adapterItem.getTarget().equals("null"))
+                holder.tvKeterangan1.setVisibility(View.GONE);
+            else if (holder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                holder.tvKeterangan1.setText("Salesman: " + holder.adapterItem.getTarget());
+            else
+                holder.tvKeterangan1.setText("Made By: " + holder.adapterItem.getCreator());
         }
     }
 }

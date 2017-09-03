@@ -23,7 +23,9 @@ import android.support.v4.app.Fragment; // is the Fragment class for compatibili
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -155,6 +157,43 @@ public class LibInspira {
         return result;
     }
 
+    //function digunakan pada addtextchangedlistener untuk melakukan format angka ketika menulis
+    //added by ADI @26-Aug-2017
+    public static void formatNumberEditText(EditText tv, TextWatcher tw, Boolean allowZero, Boolean withCommas)
+    {
+        String value = tv.getText().toString();
+        try
+        {
+            tv.removeTextChangedListener(tw);
+
+            if (value != null && !value.equals(""))
+            {
+
+                if(value.startsWith(",")){
+                    tv.setText("0,");
+                }
+                if(!allowZero)
+                {
+                    if(value.startsWith("0") && !value.startsWith("0,")){
+                        tv.setText("");
+                    }
+                }
+
+
+                String str = tv.getText().toString();
+                if (!value.equals(""))
+                    tv.setText(delimeter(str.replace(",", ""), withCommas));
+                tv.setSelection(tv.getText().toString().length());
+            }
+            tv.addTextChangedListener(tw);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            tv.addTextChangedListener(tw);
+        }
+    }
+
     //added by ADI @26-Jul-2017
     public static boolean isNetworkAvaliable(Context _context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -272,7 +311,7 @@ public class LibInspira {
                 result = "Did not work!";
 
         } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+//            Log.d("InputStream", e.getLocalizedMessage());
         }
 
         // 11. return result

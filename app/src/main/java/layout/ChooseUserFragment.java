@@ -153,7 +153,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.salesman, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.users, "");
 
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1 && pieces[0].equals(""))
@@ -168,14 +168,14 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomorsales = parts[0];
+                    String nomor = parts[0];
                     String nama = parts[1];
 
-                    if(nomorsales.equals("null")) nomorsales = "";
+                    if(nomor.equals("null")) nomor = "";
                     if(nama.equals("null")) nama = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomorsales);
+                    dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
                     list.add(dataItem);
 
@@ -205,24 +205,24 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            String nomorsales = (obj.getString("nomortuser"));
+                            String nomor = (obj.getString("nomortuser"));
                             String nama = (obj.getString("nama"));
 
-                            if (nomorsales.equals("")) nomorsales = "null";
+                            if (nomor.equals("")) nomor = "null";
                             if (nama.equals("")) nama = "null";
 
-                            tempData = tempData + nomorsales + "~" + nama + "|";
+                            tempData = tempData + nomor + "~" + nama + "|";
                         } else {
                             Log.d("FAILED: ", obj.getString("query"));
                         }
 
                     }
                     Log.d("tempData: ", tempData);
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.salesman, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.users, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.salesman,
+                                global.data.users,
                                 tempData
                         );
                         refreshList();
@@ -246,13 +246,13 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
     public class ItemAdapter {
 
-        private String nomortuser;
+        private String nomor;
         private String nama;
 
         public ItemAdapter() {}
 
-        public String getNomor() {return nomortuser;}
-        public void setNomor(String _param) {this.nomortuser = _param;}
+        public String getNomor() {return nomor;}
+        public void setNomor(String _param) {this.nomor = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}

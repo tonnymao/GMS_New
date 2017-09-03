@@ -153,6 +153,8 @@ public class GlobalVar {
             public String user = "user"; // nomor~nama~location~hp
             public String barang = "barang"; // nomor~nama~namajual~kode~satuan~hargajual
             public String pekerjaan = "pekerjaan";  // nomor~kode~nama~kodesatuan~satuan~hargacustomer~hargamandor  //added by Tonny @02-Sep-2017
+            public String users = "users"; // nomor~nama //added by Shodiq @3-Sep-2017
+            public String groups = "groups"; // nomor~nama //added by Shodiq @3-Sep-2017
             public String schedule = "schedule";
             public String customer = "customer"; // nomor~nama~alamat~telpon~kode
             public String customerprospecting = "customerprospecting"; // nomor~nama~alamat~telpon

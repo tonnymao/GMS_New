@@ -865,6 +865,89 @@ class Master extends REST_Controller {
         }
     }
     
+    function cancelSchedule_post()
+    {
+		$data['data'] = array();
+		
+		$value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        
+        $this->db->trans_begin();
+        
+        $nomor = (isset($jsonObject["nomor"]) 			? $jsonObject["nomor"]      	: "");
+        
+        $query = "UPDATE gms.whschedule_mobile set status_aktif = false where nomor = $nomor";
+        
+        $this->db->query($query);
+        
+        if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			array_push($data['data'], array( 'query' => $this->error($query) ));	
+		}
+		else
+		{
+			$this->db->trans_commit();
+			array_push($data['data'], array( 'success' => 'true' ));
+		}
+		
+		if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
+    
+    function getSchedules_post()
+    {
+		$data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        
+        $user = (isset($jsonObject["user"]) 			? $jsonObject["user"]      	: "");
+
+        $query = "SELECT s.nomor, 
+				s.nomorwhuser_creator as creator, 
+				u.userid as target, 
+				c.nama as customer,
+				p.nama as prospecting,
+				g.nama as groupsch,
+				s.tipejadwal,
+				s.tanggal, s.jam FROM gms.whschedule_mobile s
+				left JOIN whuser_mobile u on u.nomortuser = s.nomorwhuser_tujuan
+				left JOIN whgroup_mobile g on g.nomor = s.nomorwhgroup
+				left JOIN tcustomer c on c.nomor = s.nomortcustomer
+				left JOIN tcustomerprospecting p on p.nomor = s.nomortcustomerprospecting
+				where (s.nomorwhuser_creator = $user or s.nomorwhuser_tujuan = $user) and s.status_aktif = true
+				order by s.tgl_buat";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'         	=> $r['nomor'],
+                                                'creator' 			=> $r['creator'],
+                                                'target' 			=> $r['target'],
+                                                'customer'			=> $r['customer'],
+                                                'prospecting' 		=> $r['prospecting'],
+                                                'group' 			=> $r['groupsch'],
+                                                'type' 				=> $r['tipejadwal'],
+                                                'date' 				=> $r['tanggal'],
+                                                'time' 				=> $r['jam']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
+    
     //--- Added by Shodiq ---//
     function getGroups_post()
     {
