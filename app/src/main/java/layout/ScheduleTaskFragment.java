@@ -122,7 +122,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         String data = LibInspira.getShared(global.datapreferences, global.data.schedule, "");
         String[] pieces = data.trim().split("\\|");
-        if(pieces.length==1)
+        if(pieces.length==1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }
@@ -363,19 +363,19 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
             setupItem(holder);
 
             final Holder finalholder = holder;
-            if (holder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))) {
-                row.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
+            row.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (finalholder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))) {
                         DialogInterface.OnClickListener dialog = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 switch (i) {
                                     case DialogInterface.BUTTON_POSITIVE:
-                                            String actionUrl = "Master/cancelSchedule/";
-                                            new cancelSchedule(finalholder.adapterItem.getNomor()).execute( actionUrl );
-                                            actionUrl = "Master/getSchedules/";
-                                            new getData().execute( actionUrl );
+                                        String actionUrl = "Master/cancelSchedule/";
+                                        new cancelSchedule(finalholder.adapterItem.getNomor()).execute(actionUrl);
+                                        actionUrl = "Master/getSchedules/";
+                                        new getData().execute(actionUrl);
                                         break;
                                 }
                             }
@@ -384,10 +384,10 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setMessage("Do You Want to Cancel This Schedule?").setPositiveButton("Yes", dialog)
                                 .setNegativeButton("No", dialog).show();
-                        return true;
                     }
-                });
-            }
+                    return true;
+                }
+            });
 
             return row;
         }
@@ -424,10 +424,10 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
             if (holder.adapterItem.getTarget().equals("null"))
                 holder.tvKeterangan1.setVisibility(View.GONE);
-            else if (holder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
-                holder.tvKeterangan1.setText("Salesman: " + holder.adapterItem.getTarget());
+            if (holder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                holder.tvKeterangan1.setText("Target: " + holder.adapterItem.getTarget());
             else
-                holder.tvKeterangan1.setText("Made By: " + holder.adapterItem.getCreator());
+                holder.tvKeterangan1.setText("Creator: " + holder.adapterItem.getCreator());
         }
     }
 }
