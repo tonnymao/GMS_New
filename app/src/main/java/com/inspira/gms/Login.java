@@ -84,6 +84,46 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         }
     }
 
+    private void setdatauser(JSONObject obj)
+    {
+        try
+        {
+            LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
+            LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
+            LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
+            LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
+            LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
+            LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
+            LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
+            LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
+            LibInspira.setShared(global.userpreferences, global.user.cabang, obj.getString("user_cabang"));
+
+            LibInspira.setShared(global.userpreferences, global.user.role_isowner, obj.getString("role_isowner"));
+            LibInspira.setShared(global.userpreferences, global.user.role_issales, obj.getString("role_issales"));
+            LibInspira.setShared(global.userpreferences, global.user.role_setting, obj.getString("role_setting"));
+            LibInspira.setShared(global.userpreferences, global.user.role_settingtarget, obj.getString("role_settingtarget"));
+            LibInspira.setShared(global.userpreferences, global.user.role_salesorder, obj.getString("role_salesorder"));
+            LibInspira.setShared(global.userpreferences, global.user.role_stockmonitoring, obj.getString("role_stockmonitoring"));
+            LibInspira.setShared(global.userpreferences, global.user.role_pricelist, obj.getString("role_pricelist"));
+            LibInspira.setShared(global.userpreferences, global.user.role_addscheduletask, obj.getString("role_addscheduletask"));
+            LibInspira.setShared(global.userpreferences, global.user.role_salestracking, obj.getString("role_salestracking"));
+            LibInspira.setShared(global.userpreferences, global.user.role_hpp, obj.getString("role_hpp"));
+            LibInspira.setShared(global.userpreferences, global.user.role_crossbranch, obj.getString("role_crossbranch"));
+            LibInspira.setShared(global.userpreferences, global.user.role_creategroup, obj.getString("role_creategroup"));
+
+            LibInspira.setShared(global.settingpreferences, global.settings.interval, obj.getString("setting_interval"));
+            LibInspira.setShared(global.settingpreferences, global.settings.radius, obj.getString("setting_radius"));
+            LibInspira.setShared(global.settingpreferences, global.settings.tracking, obj.getString("setting_tracking"));
+            LibInspira.setShared(global.settingpreferences, global.settings.jam_awal, obj.getString("setting_jamawal"));
+            LibInspira.setShared(global.settingpreferences, global.settings.jam_akhir, obj.getString("setting_jamakhir"));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Toast.makeText(Login.this, "Login Failed", Toast.LENGTH_LONG).show();
+        }
+    }
+
     /******************************************************************************
         Procedure : loginUser
         Author    : Tonny
@@ -118,33 +158,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
-                            LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
-                            LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
-                            LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
-                            LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
-                            LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
-                            LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
-                            LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
-                            LibInspira.setShared(global.userpreferences, global.user.cabang, obj.getString("user_cabang"));
-
-                            LibInspira.setShared(global.userpreferences, global.user.role_isowner, obj.getString("role_isowner"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_issales, obj.getString("role_issales"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_setting, obj.getString("role_setting"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_settingtarget, obj.getString("role_settingtarget"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_salesorder, obj.getString("role_salesorder"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_stockmonitoring, obj.getString("role_stockmonitoring"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_pricelist, obj.getString("role_pricelist"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_addscheduletask, obj.getString("role_addscheduletask"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_salestracking, obj.getString("role_salestracking"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_hpp, obj.getString("role_hpp"));
-                            LibInspira.setShared(global.userpreferences, global.user.role_crossbranch, obj.getString("role_crossbranch"));
-
-                            LibInspira.setShared(global.settingpreferences, global.settings.interval, obj.getString("setting_interval"));
-                            LibInspira.setShared(global.settingpreferences, global.settings.radius, obj.getString("setting_radius"));
-                            LibInspira.setShared(global.settingpreferences, global.settings.tracking, obj.getString("setting_tracking"));
-                            LibInspira.setShared(global.settingpreferences, global.settings.jam_awal, obj.getString("setting_jamawal"));
-                            LibInspira.setShared(global.settingpreferences, global.settings.jam_akhir, obj.getString("setting_jamakhir"));
+                            setdatauser(obj);
 
                             LibInspira.hideLoading();
 
@@ -208,33 +222,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             LibInspira.hideLoading();
                             String success = obj.getString("success");
                             if(success.equals("true")){
-                                LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
-                                LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
-                                LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
-                                LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
-                                LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
-                                LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
-                                LibInspira.setShared(global.userpreferences, global.user.role, obj.getString("user_role"));
-                                LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
-                                LibInspira.setShared(global.userpreferences, global.user.cabang, obj.getString("user_cabang"));
-
-                                LibInspira.setShared(global.userpreferences, global.user.role_isowner, obj.getString("role_isowner"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_issales, obj.getString("role_issales"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_setting, obj.getString("role_setting"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_settingtarget, obj.getString("role_settingtarget"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_salesorder, obj.getString("role_salesorder"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_stockmonitoring, obj.getString("role_stockmonitoring"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_pricelist, obj.getString("role_pricelist"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_addscheduletask, obj.getString("role_addscheduletask"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_salestracking, obj.getString("role_salestracking"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_hpp, obj.getString("role_hpp"));
-                                LibInspira.setShared(global.userpreferences, global.user.role_crossbranch, obj.getString("role_crossbranch"));
-
-                                LibInspira.setShared(global.settingpreferences, global.settings.interval, obj.getString("setting_interval"));
-                                LibInspira.setShared(global.settingpreferences, global.settings.radius, obj.getString("setting_radius"));
-                                LibInspira.setShared(global.settingpreferences, global.settings.tracking, obj.getString("setting_tracking"));
-                                LibInspira.setShared(global.settingpreferences, global.settings.jam_awal, obj.getString("setting_jamawal"));
-                                LibInspira.setShared(global.settingpreferences, global.settings.jam_akhir, obj.getString("setting_jamakhir"));
+                                setdatauser(obj);
 
                                 Intent intent = new Intent(Login.this, IndexInternal.class);
                                 startActivity(intent);

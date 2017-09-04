@@ -149,6 +149,7 @@ public class GlobalVar {
             public String role_salestracking = "role_salestracking"; //role apakah user dapat melihat trangking dari sales atau tidak (0/1)
             public String role_hpp = "role_hpp"; //role apakah user dapat melihat HPP dari barang (0/1)
             public String role_crossbranch = "role_crossbranch"; //role apakah user dapat melihat data dari cabang lain (0/1)
+            public String role_creategroup = "role_creategroup"; //role apakah user dapat membuat dan mengedit (0/1)
         }
 
         public class Data

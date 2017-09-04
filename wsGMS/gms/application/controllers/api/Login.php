@@ -202,7 +202,8 @@ class Login extends REST_Controller {
 						b.addscheduletask AS addscheduletask,
 						b.salestracking AS salestracking,
 						b.hpp AS hpp,
-						b.crossbranch AS crossbranch
+						b.crossbranch AS crossbranch,
+						b.creategroup AS creategroup
 					FROM whuser_mobile a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
 					JOIN tuser c ON a.nomortuser = c.nomor
@@ -236,6 +237,7 @@ class Login extends REST_Controller {
 												'role_salestracking'			=> $r['salestracking'],
 												'role_hpp'          			=> $r['hpp'],
                                                 'role_crossbranch'  			=> $r['crossbranch'],
+                                                'role_creategroup'  			=> $r['creategroup'],
                                                 'setting_interval'  			=> $interval,
                                                 'setting_radius'      			=> $radius,
                                                 'setting_tracking'  			=> $tracking,
@@ -312,7 +314,8 @@ class Login extends REST_Controller {
 						b.addscheduletask AS addscheduletask,
 						b.salestracking AS salestracking,
 						b.hpp AS hpp,
-                        b.crossbranch AS crossbranch
+                        b.crossbranch AS crossbranch,
+                        b.creategroup AS creategroup
 					FROM whuser_mobile a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
 					JOIN tuser c ON a.nomortuser = c.nomor
@@ -347,6 +350,7 @@ class Login extends REST_Controller {
 													'role_salestracking'			=> $r['salestracking'],
 													'role_hpp'          			=> $r['hpp'],
                                                     'role_crossbranch'  			=> $r['crossbranch'],
+                                                    'role_creategroup'  			=> $r['creategroup'],
                                                     'setting_interval'  			=> $interval,
                                                     'setting_radius'      			=> $radius,
                                                     'setting_tracking'  			=> $tracking,

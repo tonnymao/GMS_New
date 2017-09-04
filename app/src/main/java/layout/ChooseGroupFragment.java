@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,6 +39,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 public class ChooseGroupFragment extends Fragment implements View.OnClickListener {
     private EditText etSearch;
     private ImageButton ibtnSearch;
+    private FloatingActionButton fab;
 
     private TextView tvInformation, tvNoData;
     private ListView lvSearch;
@@ -89,6 +91,13 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
+        if(LibInspira.getShared(global.userpreferences, global.user.role_creategroup, "").equals("1"))
+        {
+            fab = (FloatingActionButton) getView().findViewById(R.id.fab);
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(this);
+        }
+
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -124,6 +133,10 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         if(id==R.id.ibtnSearch)
         {
             search();
+        }
+        else if(id==R.id.fab)
+        {
+
         }
     }
 
