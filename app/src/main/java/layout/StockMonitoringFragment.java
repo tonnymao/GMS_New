@@ -79,6 +79,8 @@ public class StockMonitoringFragment extends Fragment implements View.OnClickLis
     public void onClick(View view) {
         int id = view.getId();
 
+        LibInspira.clearShared(global.stockmonitoringpreferences);
+
         if(id==R.id.btnPosisiStok)
         {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "stockposition");

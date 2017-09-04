@@ -21,14 +21,20 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.inspira.gms.LibInspira;
+import com.inspira.gms.LibPDF;
 import com.inspira.gms.R;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,13 +42,14 @@ import java.util.Date;
 import java.util.List;
 
 import static com.inspira.gms.IndexInternal.global;
+import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
 public class FilterStockFragment extends Fragment implements View.OnClickListener{
     private TextView tvGudang, tvKategori, tvBentuk, tvSurface, tvJenis, tvGrade;
     private ImageButton iBtnGudang, iBtnKategori, iBtnBentuk, iBtnSurface, iBtnJenis, iBtnGrade;
-    private EditText edtBarang, edtUkuran1, edtUkuran2, edtTebal, edtMotif;
+    private EditText edtBarang, edtUkuran1, edtUkuran2, edtTebal, edtMotif, edtBlok;
     private DatePickerDialog dp;
     private TextView tvFilterStockDate;
 
@@ -84,17 +91,21 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvJenis = (TextView) getView().findViewById(R.id.tvJenis);
         tvGrade = (TextView) getView().findViewById(R.id.tvGrade);
         tvGudang = (TextView) getView().findViewById(R.id.tvGudang);
+
         iBtnKategori = (ImageButton) getView().findViewById(R.id.ibtnClearKategori);
         iBtnBentuk = (ImageButton) getView().findViewById(R.id.ibtnClearBentuk);
         iBtnSurface = (ImageButton) getView().findViewById(R.id.ibtnClearSurface);
         iBtnJenis = (ImageButton) getView().findViewById(R.id.ibtnClearJenis);
         iBtnGrade = (ImageButton) getView().findViewById(R.id.ibtnClearGrade);
         iBtnGudang = (ImageButton) getView().findViewById(R.id.ibtnClearGudang);
+
         edtBarang = (EditText) getView().findViewById(R.id.edtBarang);
         edtTebal = (EditText) getView().findViewById(R.id.edtTebal);
         edtMotif = (EditText) getView().findViewById(R.id.edtMotif);
         edtUkuran1 = (EditText) getView().findViewById(R.id.edtUkuran1);
         edtUkuran2 = (EditText) getView().findViewById(R.id.edtUkuran2);
+        edtBlok = (EditText) getView().findViewById(R.id.edtBlok);
+
         tvFilterStockDate = (TextView) getView().findViewById(R.id.tvFilterStockDate);
         tvFilterStockDate.setOnClickListener(this);
 
@@ -118,6 +129,11 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvJenis.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.jenis, ""));
         tvGrade.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.grade, ""));
         tvGudang.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, ""));
+
+        if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang"))
+        {
+            getView().findViewById(R.id.trBlok).setVisibility(View.VISIBLE);
+        }
 
         // Define DatePicker
         Calendar newCalendar = Calendar.getInstance();
@@ -161,26 +177,36 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         int id = view.getId();
+
+        //menyimpan filter
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorbarang, edtBarang.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.blok, edtBlok.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvFilterStockDate.getText().toString());
+        if(edtUkuran1.getText().toString().equals("") && edtUkuran2.getText().toString().equals(""))
+        {
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
+        }
+        else
+        {
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, edtUkuran1.getText().toString() + "x" + edtUkuran2.getText().toString());
+        }
+
         if (id == R.id.btnFilterUpdate){
-            //menyimpan filter
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.nomorbarang, edtBarang.getText().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
-            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvFilterStockDate.getText().toString());
-            if(edtUkuran1.getText().toString().equals("") && edtUkuran2.getText().toString().equals("")){
-                LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
-            }else {
-                LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, edtUkuran1.getText().toString() + "x" + edtUkuran2.getText().toString());
-            }
-
-
             LibInspira.setShared(global.datapreferences, global.data.stockPosisi, "");  //added by Tonny @21-Aug-2017  clear data stockposisi
-            if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition")){
+            if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition"))
+            {
                 LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockPosisiFragment());
-            }else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockpositionrandom")){
+            }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockpositionrandom"))
+            {
                 LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockPosisiRandomFragment());
-            }else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang")){
-                LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new StockRandomPerBarangFragment());
+            }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang"))
+            {
+                String actionUrl = "Stock/getStockRandomPerBarang/";
+                new getData().execute( actionUrl );
             }
         }
         else if (id == R.id.tvFilterStockDate){
@@ -228,6 +254,100 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         else if (id == R.id.ibtnClearSurface){
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.surface, "");
             tvSurface.setText("");
+        }
+    }
+
+    private void createPDF(String data, int type)
+    {
+        LibPDF pdf = new LibPDF(getActivity());
+        try {pdf.createPDF(data);}
+        catch (FileNotFoundException e) {e.printStackTrace();}
+        catch (DocumentException e) {e.printStackTrace();}
+    }
+
+
+    private class getData extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            String nomorbarang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.nomorbarang, "");
+            String namagudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, "");
+            String kategori = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kategori, "");
+            String bentuk = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.bentuk, "");
+            String jenis = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.jenis, "");
+            String grade = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.grade, "");
+            String surface = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.surface, "");
+            String ukuran = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
+            String tebal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tebal, "");
+            String motif = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.motif, "");
+            String tanggal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggal, "");
+
+            String nomorcabang = LibInspira.getShared(global.userpreferences, global.user.cabang, "");
+            String kodegudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, "");
+
+            String blok = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.blok, "");
+
+            try {
+                jsonObject.put("kodegudang", kodegudang);
+                jsonObject.put("nomorbarang", nomorbarang);
+                jsonObject.put("namagudang", namagudang);
+                jsonObject.put("kategori", kategori);
+                jsonObject.put("bentuk", bentuk);
+                jsonObject.put("jenis", jenis);
+                jsonObject.put("grade", grade);
+                jsonObject.put("surface", surface);
+                jsonObject.put("ukuran", ukuran);
+                jsonObject.put("tebal", tebal);
+                jsonObject.put("motif", motif);
+                jsonObject.put("tanggal", tanggal);
+                jsonObject.put("nomorcabang", nomorcabang);
+
+                jsonObject.put("blok", blok);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return LibInspira.executePost(getContext(), urls[0], jsonObject, 60000);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try
+            {
+                LibInspira.hideLoading();
+                boolean error = false;
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(obj.has("query")){
+                            LibInspira.ShowShortToast(getContext(), "Failed get data");
+                            error = true;
+                        }
+                    }
+                }
+                else
+                {
+                    error = true;
+                }
+
+                if(!error)
+                {
+                    createPDF(result, 1);
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.hideLoading();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Getting Stock Report", "please waiting...");
         }
     }
 }

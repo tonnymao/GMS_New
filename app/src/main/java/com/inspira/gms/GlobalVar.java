@@ -37,6 +37,9 @@ public class GlobalVar {
 
     public static String webserviceURL = "/wsGMS/gms/index.php/api/";
 
+    public static String folder = "/GMS"; //added by ADI @01-Sep-2017
+    public static String folderPDF = folder + "/PDF"; //added by ADI @01-Sep-2017
+
         public GlobalVar(Context context)
         {
             sharedpreferences = context.getSharedPreferences("global", Context.MODE_PRIVATE);
@@ -217,6 +220,7 @@ public class GlobalVar {
             public String ukuran = "ukuran";  //aaxbb //added by Tonny @20-Aug-2017
             public String tebal = "tebal";  //added by Tonny @20-Aug-2017
             public String motif = "motif";  //added by Tonny @20-Aug-2017
+            public String blok = "blok"; //added by ADI @04-Sep-2017
             public String tanggal = "tanggal"; //yyyy-MM-dd //added by Tonny @20-Aug-2017
         }
 

@@ -488,7 +488,8 @@ class Stock extends REST_Controller {
                   AND b.ukuran LIKE '%$ukuran%'
                   AND b.tebal LIKE '%$tebal%'
                   AND b.motif LIKE '%$motif%'
-                  AND b.surface LIKE '%$surface%'";
+                  AND b.surface LIKE '%$surface%'
+                  ORDER BY b.nama, c.blok";
         $this->db->query($query);
         $result = $this->db->query($query);
 
@@ -500,9 +501,17 @@ class Stock extends REST_Controller {
                                                 'namagudang'			=> $r['namagudang'],
                                                 'kodebarang'			=> $r['kodebarang'],
                                                 'namabarang'			=> $r['namabarang'],
-                                                'satuan'                => $r['satuan'],
-                                                'qty' 					=> $r['qty'],
-                                                'm2' 					=> $r['m2']
+                                                'barcode'	    		=> $r['barcode'],
+                                                'bundle'	    		=> $r['bundle'],
+                                                'slab'	    		    => $r['slab'],
+                                                'blok'	    	    	=> $r['blok'],
+                                                'peti'	    		    => $r['peti'],
+                                                'm2'	    	    	=> $r['m2'],
+                                                'panjang'	    		=> $r['panjang'],
+                                                'lebar'	    	    	=> $r['lebar'],
+                                                'tebal'	    	    	=> $r['tebal'],
+                                                'coeff1'	    		=> $r['coeff1'],
+                                                'jumlah'	    		=> $r['jumlah'],
                                                 )
                 );
             }

@@ -464,7 +464,7 @@ public class LibInspira {
     //added by Tonny @25-Aug-2017  untuk mendapatkan tanggal hari ini format custom
     public static String getCurrentDate(String _dateFormat){
         Calendar c = Calendar.getInstance();
-        System.out.println("Current time => " + c.getTime());
+//        System.out.println("Current time => " + c.getTime());
 
         SimpleDateFormat df = new SimpleDateFormat(_dateFormat);
         String formattedDate = df.format(c.getTime());
