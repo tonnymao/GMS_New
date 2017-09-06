@@ -204,6 +204,9 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
             Double netto = price - totaldisc;
             Double subtotal = netto * qty + fee;
 
+            //added by Tonny @06-Sep-2017
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, subtotal.toString());
+
             tvDisc.setText(LibInspira.delimeter(String.valueOf(totaldisc)));
             tvNetto.setText(LibInspira.delimeter(String.valueOf(netto)));
             tvSubtotal.setText(LibInspira.delimeter(String.valueOf(subtotal)));
@@ -224,17 +227,6 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
 
         if (id == R.id.tvItem) {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseJasaFragment());
-        } else if (id == R.id.btnNext) {
-            if (LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_sales_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nomor, "").equals("")
-                    ) {
-                LibInspira.ShowShortToast(getContext(), "All Field Required");
-            } else {
-                //insert data
-                //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemListFragment());
-            }
         } else if (id == R.id.btnAdd)  //modified by Tonny @01-Sep-2017
         {
             //urutannya: nomor~kode~nama~satuan~price~qty~fee~disc
@@ -243,7 +235,7 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_nama, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_satuan, "") + "~" +
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_qty, "") + "~" +
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_fee, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_disc, "") + "~" +
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, "") + "|";
+                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, "") + "|";
 
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, strData);
             LibInspira.BackFragment(getFragmentManager());

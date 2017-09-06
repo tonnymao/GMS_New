@@ -336,6 +336,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
                     {
                         LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_kode, finalHolder.adapterItem.getKode());
                         LibInspira.setShared(global.temppreferences, global.temp.salesorder_customer_nama, finalHolder.adapterItem.getNama());
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }

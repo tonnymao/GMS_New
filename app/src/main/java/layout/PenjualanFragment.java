@@ -1,6 +1,6 @@
 /******************************************************************************
     Author           : ADI
-    Description      : dashboard untuk internal
+    Description      : menu pada salesorder untuk membedakan jenisnya (PPN, non PPN, Approval, dan Disapproval)
     History          :
 
 ******************************************************************************/
@@ -95,10 +95,12 @@ public class PenjualanFragment extends Fragment implements View.OnClickListener{
         int id = view.getId();
         if(id==R.id.btnPPN)
         {
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_isPPN, "1");  //added by Tonny @04-Sep-2017
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanSubFragment());
         }
         else if(id==R.id.btnNonPPN)
         {
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_isPPN, "0");  //added by Tonny @04-Sep-2017
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanSubFragment());
         }
         else if(id==R.id.btnApproval)

@@ -212,6 +212,9 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
             Double netto = price - totaldisc;
             Double subtotal = netto * qty + fee;
 
+            //added by Tonny @05-Sep-2017
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_subtotal, subtotal.toString());
+
             tvDisc.setText(LibInspira.delimeter(String.valueOf(totaldisc)));
             tvNetto.setText(LibInspira.delimeter(String.valueOf(netto)));
             tvSubtotal.setText(LibInspira.delimeter(String.valueOf(subtotal)));
@@ -233,24 +236,7 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
         if(id==R.id.tvItem)
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
-        }
-        else if(id==R.id.btnNext)
-        {
-            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_sales_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nomor, "").equals("")
-                    )
-            {
-                LibInspira.ShowShortToast(getContext(), "All Field Required");
-            }
-            else
-            {
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemListFragment());
-            }
-        }
-        else if (id==R.id.btnAdd)  //modified by Tonny @01-Sep-2017
-        {
+        }else if (id==R.id.btnAdd){  //modified by Tonny @01-Sep-2017
 //            insertOrderDetailItem = new InsertOrderDetailItem();
 //            insertOrderDetailItem.execute( actionUrl );
 
@@ -260,7 +246,7 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
                              LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_satuan, "") + "~" +
                              LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "") + "~" +
                              LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "") + "~" +
-                             LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_notes, "") + "|";
+                             LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_subtotal, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_notes, "") + "|";
 
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, strData);
             LibInspira.BackFragment(getFragmentManager());

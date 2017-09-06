@@ -116,6 +116,10 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
     {
         itemadapter.clear();
         list.clear();
+        if (strData.equals("")){
+            //strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
+            return;
+        }
 
         String data = strData;
         String[] pieces = data.trim().split("\\|");
@@ -138,7 +142,8 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
                     String qty = parts[5];
                     String fee = parts[6];
                     String disc = parts[7];
-                    String notes = parts[8];
+                    //String subtotal = parts[8];
+                    String notes = parts[9];
 
                     //if(nomor.equals("null")) nomor = "";
                     if(kode.equals("null")) kode = "";

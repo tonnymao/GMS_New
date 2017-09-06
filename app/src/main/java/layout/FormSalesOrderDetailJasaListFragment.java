@@ -37,12 +37,6 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 //import android.app.Fragment;
 
 public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailItemListFragment implements View.OnClickListener{
-    private ListView lvSearch;
-    private ItemListAdapter itemadapter;
-    private ArrayList<ItemAdapter> list;
-    private Button btnBack, btnNext;
-    private FloatingActionButton fab;
-    InsertData insertData;
 
     public FormSalesOrderDetailJasaListFragment() {
         // Required empty public constructor
@@ -77,7 +71,6 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-        btnNext.setText("Save");
     }
 
     @Override
@@ -111,93 +104,13 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
         }
         else if(id==R.id.btnNext)
         {
-            //LibInspira.alertbox("Adding New Sales Order", "Do you want to add the current data?", this, , null);
-            LibInspira.alertbox("Adding New Sales Order", "Do you want to add the current data?", getActivity(), new Runnable(){
-                public void run() {
-                    sendData();
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
-                }
-            }, null);
-        }
-    }
-
-    //added by Tonny @02-Sep-2017
-    //untuk menjalankan perintah send data ke web service
-    private void sendData(){
-        String actionUrl = "Order/insertNewOrderJual/";
-        insertData = new InsertData();
-        insertData.execute(actionUrl);
-    }
-
-    private class InsertData extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-
-            //---------------------------------------------HEADER-----------------------------------------------------//
-//                jsonObject.put("kode", LibInspira.getShared(global.temppreferences, global.temp.nomorsales, ""));
-//                jsonObject.put("tanggal", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("nomorcustomer", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("kodecustomer", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("nomorbroker", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("kodebroker", LibInspira.getShared(global.temppreferences, global.temp.nomorsales, ""));
-//                jsonObject.put("nomorsales", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("kodesales", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("subtotaljasa", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("subtotalbiaya", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("totalrp", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("pembuat", LibInspira.getShared(global.temppreferences, global.temp.nomorsales, ""));
-//                jsonObject.put("nomorcabang", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("cabang", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("valuta", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("jenispenjualan", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-            //-------------------------------------------------------------------------------------------------------//
-            //---------------------------------------------DETAIL----------------------------------------------------//
-            jsonObject = new JSONObject();
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("resultQuery", result);
-            try
-            {
-                String totalomzet = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("query")){
-                            totalomzet = (obj.getString("totalomzet"));
-
-                            if(totalomzet.equals("")) totalomzet = "null";
-                        }
-                    }
-                    //tvTotalOmzet.setText("Rp. " + LibInspira.delimeter(totalomzet));
-                }
-                //tvInformation.animate().translationYBy(-80);
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-                //tvInformation.animate().translationYBy(-80);
+            //pengecekan jika user tidak memilih item dan jasa namun ingin melanjutkan, maka tampilkan pesan error
+            if (LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("") &&
+                LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "").equals("")){
+                LibInspira.ShowLongToast(getContext(), "There is no item and pekerjaan to proceed. Please choose item or pekerjaan first.");
+            }else {
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SummarySalesOrderFragment());
             }
         }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //tvInformation.setVisibility(View.VISIBLE);
-        }
     }
-
 }

@@ -248,8 +248,58 @@ class Order extends REST_Controller {
         }
 	}
 
-    //untuk menampilkan data item di salesorder list
-	function getSalesOrderItemList_post(){
+    //added by Tonny
+    // TIDAK DIPAKAI ?
+//	function getSalesOrderItemList_post(){
+//        $data['data'] = array();
+//
+//        $value = file_get_contents('php://input');
+//        $jsonObject = (json_decode($value , true));
+//        $nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
+//        $query = "SELECT a.Kode kode,
+//                  a.Tanggal tanggal,
+//                  a.NomorCabang nomorcabang,
+//                  a.Cabang cabang,
+//                  a.NomorCustomer nomorcustomer,
+//                  a.KodeCustomer kodecustomer,
+//                  b.nama namacustomer
+//                  FROM thorderjual a
+//                  JOIN tcustomer b
+//                    ON b.nomor = a.nomorcustomer
+//                  WHERE a.status = 1
+//                    AND a.nomorsales = '$nomorsales'
+//                    AND a.approve = 0 ";
+//
+//        $result = $this->db->query($query);
+//
+//        if( $result && $result->num_rows() > 0){
+//            foreach ($result->result_array() as $r){
+//
+//                array_push($data['data'], array(
+//                                                'kode'					=> $r['kode'],
+//                                                'tanggal' 			    => $r['tanggal'],
+//                                                'nomorcabang' 			=> $r['nomorcabang'],
+//                                                'cabang' 			    => $r['cabang'],
+//                                                'nomorcustomer' 	    => $r['nomorcustomer'],
+//                                                'kodecustomer' 			=> $r['kodecustomer'],
+//                                                'namacustomer' 			=> $r['namacustomer']
+//                                                )
+//                );
+//            }
+//        }else{
+//            array_push($data['data'], array( 'query' => $this->error($query) ));
+//        }
+//
+//        if ($data){
+//            // Set the response and exit
+//            $this->response($data['data']); // OK (200) being the HTTP response code
+//        }
+//    }
+
+    //added by Tonny
+    // untuk mendapatkan format setting untuk sales order
+    //output -> [prefix],[length nomor urut],[format bulan tahun],[header transaksi],[detail transaksi] -> 'SOP,5,YYMM,TTRANSAKSI,TDORDERJUAL'
+    function getFormatSettingSalesOrder_post(){
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
@@ -282,35 +332,6 @@ class Order extends REST_Controller {
                                                 'nomorcustomer' 	    => $r['nomorcustomer'],
                                                 'kodecustomer' 			=> $r['kodecustomer'],
                                                 'namacustomer' 			=> $r['namacustomer']
-                                                )
-                );
-            }
-        }else{
-            array_push($data['data'], array( 'query' => $this->error($query) ));
-        }
-
-        if ($data){
-            // Set the response and exit
-            $this->response($data['data']); // OK (200) being the HTTP response code
-        }
-    }
-
-    function getMaxKode(){
-        $data['data'] = array();
-
-        $value = file_get_contents('php://input');
-        $jsonObject = (json_decode($value , true));
-        $query = "SELECT MAX(kode) AS kodemax
-                  FROM thorderjual
-                  WHERE
-                    kode LIKE '%SOP-01%'";
-
-        $result = $this->db->query($query);
-
-        if( $result && $result->num_rows() > 0){
-            foreach ($result->result_array() as $r){
-                array_push($data['data'], array(
-                                                'kodemax'					=> $r['kodemax']
                                                 )
                 );
             }

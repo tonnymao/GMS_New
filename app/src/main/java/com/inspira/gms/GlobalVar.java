@@ -92,12 +92,15 @@ public class GlobalVar {
             public String scheduletask_description = "scheduletask_description";
             public String scheduletask_type = "scheduletask_type";
 
+
+            public String salesorder_disc = "salesorder_disc"; //added by Tonny @06-Sep-2017
+            public String salesorder_ppn = "salesorder_ppn"; //added by Tonny @06-Sep-2017
             public String salesorder_date = "salesorder_date"; //added by Tonny @30-Aug-2017
             public String salesorder_customer_nomor = "salesorder_customer_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_customer_kode = "salesorder_customer_kode"; //added by Tonny @05-Sep-2017
             public String salesorder_customer_nama = "salesorder_customer_nama"; //added by ADI @24-Aug-2017
-            public String salesorder_sales_nomor = "salesorder_sales_nomor"; //added by ADI @24-Aug-2017
-            public String salesorder_sales_nama = "salesorder_sales_nama"; //added by ADI @24-Aug-2017
             public String salesorder_broker_nomor = "salesorder_broker_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_broker_kode = "salesorder_broker_kode"; //added by Tonny @05-Sep-2017
             public String salesorder_broker_nama = "salesorder_broker_nama"; //added by ADI @24-Aug-2017
             public String salesorder_valuta_nomor = "salesorder_valuta_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_valuta_nama = "salesorder_valuta_nama"; //added by ADI @24-Aug-2017
@@ -112,6 +115,7 @@ public class GlobalVar {
             public String salesorder_pekerjaan_qty = "salesorder_pekerjaan_qty"; //added by Tonny @02-Sep-2017
             public String salesorder_pekerjaan_fee = "salesorder_pekerjaan_fee"; //added by Tonny @02-Sep-2017
             public String salesorder_pekerjaan_disc = "salesorder_pekerjaan_disc"; //added by Tonny @02-Sep-2017
+            public String salesorder_pekerjaan_subtotal = "salesorder_pekerjaan_subtotal"; //added by Tonny @05-Sep-2017
             public String salesorder_pekerjaan_notes = "salesorder_pekerjaan_notes"; //added by Tonny @02-Sep-2017
 
             public String salesorder_item = "salesorder_item"; //added by Tonny @01-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~notes
@@ -123,7 +127,14 @@ public class GlobalVar {
             public String salesorder_item_qty = "salesorder_item_qty"; //added by ADI @24-Aug-2017
             public String salesorder_item_fee = "salesorder_item_fee"; //added by ADI @24-Aug-2017
             public String salesorder_item_disc = "salesorder_item_disc"; //added by ADI @24-Aug-2017
+            public String salesorder_item_subtotal = "salesorder_item_subtotal"; //added by Tonny @05-Sep-2017
             public String salesorder_item_notes = "salesorder_item_notes"; //added by Tonny @01-Sep-2017
+
+            //added by Tonny @04-Sep-2017 untuk mengecek apakah salesorder yg akan diinputkan termasuk ppn atau bukan
+            public String salesorder_isPPN = "salesorder_isPPN";
+
+            //added by Tonny @04-Sep-2017 untuk mengecek apakah salesorder yg akan diinputkan sudah diapprove atau tidak
+            public String salesorder_isApproved = "salesorder_isApproved";
         }
 
         public class User
@@ -132,6 +143,7 @@ public class GlobalVar {
             public String password = "password";  //added by Tonny @30-Jul-2017
             public String nomor_android = "nomor_android";
             public String nomor_sales = "nomor_sales";
+            public String kode_sales = "kode_sales"; //added by Tonny @05-Sep-2017
             public String nama = "nama";
             public String tipe = "tipe";
             public String role = "role";
@@ -185,6 +197,17 @@ public class GlobalVar {
 
             //UNTUK MENYIMPAN DATA SALESMAN OMZET
             public String salesmanomzet = "salesmanomzet";  //nomorsales~namasales~omzet~tanggal  //added by Tonny @25-Aug-2017
+
+            //UNTUK MENYIMPAN DATA FORMATSETTING SALESORDER
+            public String salesorder_formatsetting = "salesorder_formatsetting";  //prefix,length,YYMM,ttransaksi,tdorderjual  //added by Tonny @04-Sep-2017
+
+            public String salesorder_prefix_kode = "salesorder_prefix_kode";  //added by Tonny @04-Sep-2017
+            public String salesorder_length_kode = "salesorder_length_kode";  //added by Tonny @04-Sep-2017
+            public String salesorder_formatdate_kode = "salesorder_formatdate_kode";  //added by Tonny @04-Sep-2017
+            public String salesorder_header_kode = "salesorder_header_kode";  //added by Tonny @04-Sep-2017
+            public String salesorder_detail_kode = "salesorder_detail_kode";  //added by Tonny @04-Sep-2017
+
+            public String salesorder_nomorurut_kode = "salesorder_nomorurut_kode";  //added by Tonny @04-Sep-2017
 
             //UNTUK MENYIMPAN DATA SALES ORDER HEADER
 

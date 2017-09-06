@@ -31,7 +31,7 @@ import static com.inspira.gms.IndexInternal.global;
 
 public class FormSalesOrderHeaderFragment extends Fragment implements View.OnClickListener{
 
-    private TextView tvDate, tvCustomer, tvSales, tvBroker, tvValuta;
+    private TextView tvDate, tvCustomer, tvBroker, tvValuta;
     private Button btnNext;
     private DatePickerDialog dp;
 
@@ -70,21 +70,18 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         super.onActivityCreated(bundle);
 
         tvCustomer = (TextView) getView().findViewById(R.id.tvCustomer);
-        tvSales = (TextView) getView().findViewById(R.id.tvTarget);
         tvBroker = (TextView) getView().findViewById(R.id.tvBroker);
         tvValuta = (TextView) getView().findViewById(R.id.tvValuta);
         tvDate = (TextView) getView().findViewById(R.id.tvDate); //added by Tonny @30-Aug-2017
         btnNext = (Button) getView().findViewById(R.id.btnNext);
 
         tvCustomer.setOnClickListener(this);
-        tvSales.setOnClickListener(this);
         tvBroker.setOnClickListener(this);
         tvValuta.setOnClickListener(this);
         tvDate.setOnClickListener(this);  //added by Tonny @30-Aug-2017
         btnNext.setOnClickListener(this);
 
         tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, "").toUpperCase());
-        tvSales.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_sales_nama, "").toUpperCase());
         tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, "").toUpperCase());
         tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, "").toUpperCase());
 
@@ -148,7 +145,6 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         else if(id==R.id.btnNext)
         {
             if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_sales_nomor, "").equals("") ||
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nomor, "").equals("") ||
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nomor, "").equals("")
                     )

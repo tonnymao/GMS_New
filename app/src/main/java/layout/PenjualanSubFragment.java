@@ -79,7 +79,8 @@ public class PenjualanSubFragment extends Fragment implements View.OnClickListen
         }
         else if(id==R.id.btnDeliveryOrder)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormScheduleTaskFragment());
+            //remarked by Tonny @04-Sep-2017
+            //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormScheduleTaskFragment());
         }
     }
 }

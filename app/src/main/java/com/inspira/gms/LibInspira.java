@@ -451,6 +451,23 @@ public class LibInspira {
         alertDialog.show();
     }
 
+    public static void alertBoxYesNo(String _title, String _message, final Activity _activity, final Runnable _commandYES, final Runnable _commandNO){
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
+        alertDialog.setTitle(_title);
+        alertDialog.setMessage(_message);
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (_commandYES != null)
+                    _commandYES.run();
+            } });
+        if (_commandNO != null){
+            alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    _commandNO.run();
+                } });}
+        alertDialog.show();
+    }
+
     //added by Tonny @25-Aug-2017  untuk mendapatkan tanggal hari ini format default (yyyy/MM/dd)
     public static String getCurrentDate(){
         Calendar c = Calendar.getInstance();
@@ -464,6 +481,8 @@ public class LibInspira {
     //added by Tonny @25-Aug-2017  untuk mendapatkan tanggal hari ini format custom
     public static String getCurrentDate(String _dateFormat){
         Calendar c = Calendar.getInstance();
+        _dateFormat = _dateFormat.replace("Y", "y");  //added by Tonny @05-Sep-2017
+        _dateFormat = _dateFormat.replace("D", "d");  //added by Tonny @05-Sep-2017
 //        System.out.println("Current time => " + c.getTime());
 
         SimpleDateFormat df = new SimpleDateFormat(_dateFormat);

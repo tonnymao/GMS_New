@@ -315,6 +315,7 @@ public class ChooseBrokerFragment extends Fragment implements View.OnClickListen
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
                     {
                         LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nomor, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_kode, finalHolder.adapterItem.getKode());  //added by Tonny @05-Sep-2017
                         LibInspira.setShared(global.temppreferences, global.temp.salesorder_broker_nama, finalHolder.adapterItem.getNama());
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }

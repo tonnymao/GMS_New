@@ -187,6 +187,7 @@ class Login extends REST_Controller {
 						a.nomortuser AS nomor,
 						a.password AS password,
 						a.nomorthsales AS nomor_sales,
+						d.kode AS kode_sales,
 						a.userid AS nama,
 						a.tipeuser AS tipe,
 						a.nomorrole AS role,
@@ -207,6 +208,7 @@ class Login extends REST_Controller {
 					FROM whuser_mobile a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
 					JOIN tuser c ON a.nomortuser = c.nomor
+					JOIN thsales d ON a.nomorthsales = d.nomor
 					WHERE a.status_aktif = 1
 					AND c.status = 1
 					AND a.userid = ? 
@@ -220,7 +222,8 @@ class Login extends REST_Controller {
                 								'user_nomor_android'			=> $r['nomor_android'],
 												'user_nomor'					=> $r['nomor'],
 												'user_password'					=> $r['password'],
-                                                'user_nomor_sales'         		=> $r['nomor_sales'], 
+                                                'user_nomor_sales'         		=> $r['nomor_sales'],
+                                                'user_kode_sales'         		=> $r['kode_sales'],
                 								'user_nama' 					=> $r['nama'], 
 												'user_tipe' 					=> $r['tipe'], 
 												'user_role' 					=> $r['role'], 
@@ -250,7 +253,7 @@ class Login extends REST_Controller {
 			array_push($data['data'], array( 'query' => $this->error($query) ));
 		}  
 	
-        if ($data){
+        if ($query){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
@@ -298,6 +301,7 @@ class Login extends REST_Controller {
 						a.nomor AS nomor_android,
 						a.nomortuser AS nomor,
 						a.nomorthsales AS nomor_sales,
+						d.kode AS kode_sales,
 						a.password AS password,
 						a.userid AS nama,
 						a.tipeuser AS tipe,
@@ -319,6 +323,7 @@ class Login extends REST_Controller {
 					FROM whuser_mobile a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
 					JOIN tuser c ON a.nomortuser = c.nomor
+					JOIN thsales d ON a.nomorthsales = d.nomor
 					WHERE a.status_aktif = 1
 						AND c.status = 1		
 						AND hash = '$hash'";
@@ -332,7 +337,8 @@ class Login extends REST_Controller {
 													'success'						=> "true",
 													'user_nomor_android'			=> $r['nomor_android'],
 													'user_nomor' 					=> $r['nomor'],
-													'user_nomor_sales'         		=> $r['nomor_sales'], 
+													'user_nomor_sales'         		=> $r['nomor_sales'],
+													'user_kode_sales'         		=> $r['kode_sales'],
 													'user_password'					=> $r['password'],
 													'user_nama' 					=> $r['nama'], 
 													'user_tipe' 					=> $r['tipe'], 
