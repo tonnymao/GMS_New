@@ -274,8 +274,8 @@ public class LibInspira {
             // 1. create HttpClient
             HttpClient httpClient = new DefaultHttpClient();
             HttpParams httpParameters = httpClient.getParams();
-            HttpConnectionParams.setConnectionTimeout(httpParameters, 5000);
-            HttpConnectionParams.setSoTimeout(httpParameters, 5000);
+            HttpConnectionParams.setConnectionTimeout(httpParameters, 10000);  //modified by Tonny @07-Sep-2017 5000 --> 10000
+            HttpConnectionParams.setSoTimeout(httpParameters, 10000);  //modified by Tonny @07-Sep-2017 5000 --> 10000
             HttpConnectionParams.setTcpNoDelay(httpParameters, true);
 
             // 2. make POST request to the given URL

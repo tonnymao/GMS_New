@@ -256,7 +256,7 @@ class Login extends REST_Controller {
 			array_push($data['data'], array( 'query' => $this->error($query) ));
 		}  
 	
-        if ($query){
+        if ($data){
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }

@@ -94,8 +94,14 @@ public class GlobalVar {
 
 
             public String salesorder_disc = "salesorder_disc"; //added by Tonny @06-Sep-2017
+            public String salesorder_disc_nominal = "salesorder_disc_nominal"; //added by Tonny @06-Sep-2017
             public String salesorder_ppn = "salesorder_ppn"; //added by Tonny @06-Sep-2017
+            public String salesorder_ppn_nominal = "salesorder_ppn_nominal"; //added by Tonny @06-Sep-2017
             public String salesorder_date = "salesorder_date"; //added by Tonny @30-Aug-2017
+            public String salesorder_subtotal = "salesorder_subtotal"; //added by Tonny @06-Sep-2017
+            public String salesorder_subtotal_fee = "salesorder_subtotal_fee";  //added by Tonny @06-Sep-2017
+            public String salesorder_total = "salesorder_total"; //added by Tonny @06-Sep-2017
+
             public String salesorder_customer_nomor = "salesorder_customer_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_customer_kode = "salesorder_customer_kode"; //added by Tonny @05-Sep-2017
             public String salesorder_customer_nama = "salesorder_customer_nama"; //added by ADI @24-Aug-2017
@@ -106,7 +112,7 @@ public class GlobalVar {
             public String salesorder_valuta_nama = "salesorder_valuta_nama"; //added by ADI @24-Aug-2017
             public String salesorder_valuta_kurs = "salesorder_valuta_kurs"; //added by ADI @24-Aug-2017
 
-            public String salesorder_pekerjaan = "salesorder_pekerjaan"; //added by Tonny @02-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~notes
+            public String salesorder_pekerjaan = "salesorder_pekerjaan"; //added by Tonny @02-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
             public String salesorder_pekerjaan_nomor = "salesorder_pekerjaan_nomor"; //added by Tonny @02-Sep-2017
             public String salesorder_pekerjaan_nama = "salesorder_pekerjaan_nama"; //added by Tonny @02-Sep-2017
             public String salesorder_pekerjaan_kode = "salesorder_pekerjaan_kode"; //added by Tonny @02-Sep-2017
@@ -118,7 +124,7 @@ public class GlobalVar {
             public String salesorder_pekerjaan_subtotal = "salesorder_pekerjaan_subtotal"; //added by Tonny @05-Sep-2017
             public String salesorder_pekerjaan_notes = "salesorder_pekerjaan_notes"; //added by Tonny @02-Sep-2017
 
-            public String salesorder_item = "salesorder_item"; //added by Tonny @01-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~notes
+            public String salesorder_item = "salesorder_item"; //added by Tonny @01-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
             public String salesorder_item_nomor = "salesorder_item_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_item_nama = "salesorder_item_nama"; //added by ADI @24-Aug-2017
             public String salesorder_item_kode = "salesorder_item_kode"; //added by ADI @24-Aug-2017
@@ -150,6 +156,7 @@ public class GlobalVar {
             public String hash = "hash";
             public String token = "token";
             public String cabang = "cabang"; //added by ADI @07-Aug-2017
+            public String namacabang = "namacabang"; //added by Tonny @06-Sep-2017
             public String role_isowner = "role_isowner"; //role untuk mengetahui user termasuk owner atau tidak (0/1)
             public String role_issales = "role_issales"; //role untuk mengetahui user termasuk sales atau tidak (0/1)
             public String role_setting = "role_setting"; //role apakah user dapat melakukan setting atau tidak (0/1)
