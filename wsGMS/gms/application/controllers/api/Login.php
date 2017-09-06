@@ -193,6 +193,7 @@ class Login extends REST_Controller {
 						a.nomorrole AS role,
 						a.hash AS hash,
 						c.nomorcabang AS cabang,
+						e.cabang AS namacabang,
 						b.isowner AS isowner,
 						b.issales AS issales,
 						b.setting AS setting,
@@ -209,6 +210,7 @@ class Login extends REST_Controller {
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
 					JOIN tuser c ON a.nomortuser = c.nomor
 					JOIN thsales d ON a.nomorthsales = d.nomor
+					JOIN tcabang e ON c.nomorcabang = e.nomor
 					WHERE a.status_aktif = 1
 					AND c.status = 1
 					AND a.userid = ? 
@@ -229,6 +231,7 @@ class Login extends REST_Controller {
 												'user_role' 					=> $r['role'], 
 												'user_hash' 					=> $r['hash'], 
 												'user_cabang' 					=> $r['cabang'],
+												'user_nama_cabang' 				=> $r['namacabang'],
 												'role_isowner'					=> $r['isowner'],
 												'role_issales'					=> $r['issales'],
 												'role_setting'					=> $r['setting'],
@@ -308,6 +311,7 @@ class Login extends REST_Controller {
 						a.nomorrole AS role,
 						a.hash AS hash,
 						c.nomorcabang AS cabang,
+						e.cabang AS namacabang,
 						b.isowner AS isowner,
 						b.issales AS issales,
 						b.setting AS setting,
@@ -324,6 +328,7 @@ class Login extends REST_Controller {
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
 					JOIN tuser c ON a.nomortuser = c.nomor
 					JOIN thsales d ON a.nomorthsales = d.nomor
+					JOIN tcabang e ON c.nomorcabang = e.nomor
 					WHERE a.status_aktif = 1
 						AND c.status = 1		
 						AND hash = '$hash'";
@@ -338,13 +343,14 @@ class Login extends REST_Controller {
 													'user_nomor_android'			=> $r['nomor_android'],
 													'user_nomor' 					=> $r['nomor'],
 													'user_nomor_sales'         		=> $r['nomor_sales'],
-													'user_kode_sales'         		=> $r['kode_sales'],
+													'user_kode_sales'         		=> $r['kode_sales'],  //added by Tonny
 													'user_password'					=> $r['password'],
 													'user_nama' 					=> $r['nama'], 
 													'user_tipe' 					=> $r['tipe'], 
 													'user_role' 					=> $r['role'], 
 													'user_hash' 					=> $r['hash'], 
-													'user_cabang' 					=> $r['cabang'], 
+													'user_cabang' 					=> $r['cabang'],
+													'user_nama_cabang' 				=> $r['namacabang'],  //added by Tonny
 													'role_isowner'					=> $r['isowner'],
 													'role_issales'					=> $r['issales'],
 													'role_setting'					=> $r['setting'],
