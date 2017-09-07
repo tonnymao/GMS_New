@@ -257,6 +257,7 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
         private String nama;
         private String nomorpropinsi;
         private String kode;
+        private Boolean isChoosen = false;
 
         public ItemAdapter() {}
 
@@ -271,6 +272,9 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
+
+        public Boolean getChoosen() {return isChoosen;}
+        public void setChoosen(Boolean _param) {this.isChoosen = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -312,11 +316,23 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
 
             row.setTag(holder);
-            setupItem(holder);
+            setupItem(holder, row);
 
+            final Holder finalHolder = holder;
+            final View finalRow = row;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(finalHolder.adapterItem.getChoosen())
+                    {
+                        finalHolder.adapterItem.setChoosen(false);
+                        finalRow.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                    }
+                    else
+                    {
+                        finalHolder.adapterItem.setChoosen(true);
+                        finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
+                    }
                     LibInspira.ShowLongToast(context, "coba");
                 }
             });
@@ -324,8 +340,16 @@ public class ChooseKotaFragment extends Fragment implements View.OnClickListener
             return row;
         }
 
-        private void setupItem(final Holder holder) {
+        private void setupItem(final Holder holder, final View row) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            if(holder.adapterItem.getChoosen())
+            {
+                row.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
+            }
+            else
+            {
+                row.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+            }
         }
     }
 }
