@@ -195,21 +195,21 @@ $active_record = TRUE;
 
 
 //================ database DEFAULT INSPIRA ================// 
-	$db['default']['hostname'] = 'vpn.inspiraworld.com:3307';
-	$db['default']['username'] = 'inspiradb';
-	$db['default']['password'] = 'inspire';
-	$db['default']['database'] = 'gms';
-	$db['default']['dbdriver'] = 'mysqli';
-	$db['default']['dbprefix'] = '';
-	$db['default']['pconnect'] = FALSE;
-	$db['default']['db_debug'] = FALSE;
-	$db['default']['cache_on'] = FALSE;
-	$db['default']['cachedir'] = '';
-	$db['default']['char_set'] = 'utf8';
-	$db['default']['dbcollat'] = 'utf8_general_ci';
-	$db['default']['swap_pre'] = '';
-	$db['default']['autoinit'] = TRUE;
-	$db['default']['stricton'] = FALSE;
+	$db['default']['hostname'] = 'vpn.inspiraworld.com:3308';
+    $db['default']['username'] = 'inspiradb';
+    $db['default']['password'] = 'inspira2017!!';
+    $db['default']['database'] = 'gms_web';
+    $db['default']['dbdriver'] = 'mysqli';
+    $db['default']['dbprefix'] = '';
+    $db['default']['pconnect'] = FALSE;
+    $db['default']['db_debug'] = FALSE;
+    $db['default']['cache_on'] = FALSE;
+    $db['default']['cachedir'] = '';
+    $db['default']['char_set'] = 'utf8';
+    $db['default']['dbcollat'] = 'utf8_general_ci';
+    $db['default']['swap_pre'] = '';
+    $db['default']['autoinit'] = TRUE;
+    $db['default']['stricton'] = FALSE;
 
 
 

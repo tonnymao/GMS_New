@@ -45,7 +45,7 @@ class Login extends REST_Controller {
     }
 
     function error($string) {
-        return str_replace( array("\t", "\n") , "", $string);
+        return str_replace( array("\t", "\n", "\r") , " ", $string);
     }
 	
 	function getGCMId($user_nomor){
@@ -185,13 +185,13 @@ class Login extends REST_Controller {
         $query = "	SELECT 
 						a.nomor AS nomor_android,
 						a.nomortuser AS nomor,
-						a.password AS password,
+						a.password AS `password`,
 						a.nomorthsales AS nomor_sales,
 						d.kode AS kode_sales,
 						a.userid AS nama,
 						a.tipeuser AS tipe,
 						a.nomorrole AS role,
-						a.hash AS hash,
+						a.hash AS `hash`,
 						c.nomorcabang AS cabang,
 						e.cabang AS namacabang,
 						b.isowner AS isowner,
@@ -213,8 +213,8 @@ class Login extends REST_Controller {
 					JOIN tcabang e ON c.nomorcabang = e.nomor
 					WHERE a.status_aktif = 1
 					AND c.status = 1
-					AND a.userid = ? 
-					AND BINARY a.password = ?";
+					AND a.userid = '$user'
+					AND BINARY a.password = '$pass'";
         $result = $this->db->query($query, array($user, $pass));
 
         if( $result && $result->num_rows() > 0){
