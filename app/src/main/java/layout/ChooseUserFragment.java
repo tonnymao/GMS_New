@@ -205,7 +205,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if (!obj.has("query")) {
-                            String nomor = (obj.getString("nomortuser"));
+                            String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
 
                             if (nomor.equals("")) nomor = "null";

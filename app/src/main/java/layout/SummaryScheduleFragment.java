@@ -95,7 +95,7 @@ public class SummaryScheduleFragment extends Fragment {
         ((Button) getView().findViewById(R.id.btnSave)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String actionUrl = "Master/setSchedule/";
+                String actionUrl = "Schedule/setSchedule/";
                 new setSchedule().execute(actionUrl);
             }
         });
@@ -110,7 +110,7 @@ public class SummaryScheduleFragment extends Fragment {
             super.onPreExecute();
             description.replace('"', '\"');
             description.replace("'", "\'");
-            creator = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
+            creator = LibInspira.getShared(global.userpreferences, global.user.nomor_android, "");
         }
 
         @Override

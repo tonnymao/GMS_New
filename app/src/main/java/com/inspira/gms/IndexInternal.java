@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import layout.ChangePasswordFragment;
 import layout.ChooseCustomerProspectingFragment;
+import layout.ChooseGroupFragment;
 import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
@@ -237,7 +238,8 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_target) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChoosePeriodeFragment());  //added by Tonny @04-Aug-2017
         } else if (id == R.id.nav_group) {
-
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "Conversation");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());
         } else if (id == R.id.nav_salesorder) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment()); //added by ADI @24-Aug-2017
         } else if (id == R.id.nav_stockreport) {
