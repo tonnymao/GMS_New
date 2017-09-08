@@ -241,6 +241,98 @@ class Master extends REST_Controller {
 
     }
 
+    // --- POST get barang --- //
+    function getBarangImport_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.nama AS `nama`,
+                        a.NamaJual AS `namajual`,
+                        b.satuan AS `satuan`,
+                        a.HargaJualIDR AS `hargajual`
+                    FROM tbarang a
+                    JOIN vwbarang b ON a.nomor = b.nomor
+                    WHERE a.aktif = 1
+                        AND a.BarangImport = 1
+                    ORDER BY a.nama DESC;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama'],
+                                                'namajual' 				=> $r['namajual'],
+                                                'satuan' 				=> $r['satuan'],
+                                                'hargajual' 			=> $r['hargajual'],
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+
+    }
+
+    // --- POST get barang --- //
+    function getBarangLokal_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.nama AS `nama`,
+                        a.NamaJual AS `namajual`,
+                        b.satuan AS `satuan`,
+                        a.HargaJualIDR AS `hargajual`
+                    FROM tbarang a
+                    JOIN vwbarang b ON a.nomor = b.nomor
+                    WHERE a.aktif = 1
+                        AND a.BarangImport = 0
+                    ORDER BY a.nama DESC;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama'],
+                                                'namajual' 				=> $r['namajual'],
+                                                'satuan' 				=> $r['satuan'],
+                                                'hargajual' 			=> $r['hargajual'],
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+
+    }
+
     //  added by Tonny
     // --- POST get pekerjaan / jasa --- //
     function getPekerjaan_post()
