@@ -47,11 +47,12 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 //import android.app.Fragment;
 
 public class FilterStockFragment extends Fragment implements View.OnClickListener{
-    private TextView tvGudang, tvKategori, tvBentuk, tvSurface, tvJenis, tvGrade;
-    private ImageButton iBtnGudang, iBtnKategori, iBtnBentuk, iBtnSurface, iBtnJenis, iBtnGrade;
+    private TextView tvGudang, tvKategori, tvBentuk, tvSurface, tvJenis, tvGrade, tvBarang, tvLokasi;
+    private ImageButton iBtnGudang, iBtnKategori, iBtnBentuk, iBtnSurface, iBtnJenis, iBtnGrade, iBtnBarang, iBtnLokasi;
     private EditText edtBarang, edtUkuran1, edtUkuran2, edtTebal, edtMotif, edtBlok;
     private DatePickerDialog dp;
-    private TextView tvEndDate;
+    private TextView tvEndDate, tvStartDate;
+    private int dateType;
 
     public FilterStockFragment() {
         // Required empty public constructor
@@ -91,6 +92,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvJenis = (TextView) getView().findViewById(R.id.tvJenis);
         tvGrade = (TextView) getView().findViewById(R.id.tvGrade);
         tvGudang = (TextView) getView().findViewById(R.id.tvGudang);
+        tvBarang = (TextView) getView().findViewById(R.id.tvBarang);
+        tvLokasi = (TextView) getView().findViewById(R.id.tvLokasi);
 
         iBtnKategori = (ImageButton) getView().findViewById(R.id.ibtnClearKategori);
         iBtnBentuk = (ImageButton) getView().findViewById(R.id.ibtnClearBentuk);
@@ -98,6 +101,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         iBtnJenis = (ImageButton) getView().findViewById(R.id.ibtnClearJenis);
         iBtnGrade = (ImageButton) getView().findViewById(R.id.ibtnClearGrade);
         iBtnGudang = (ImageButton) getView().findViewById(R.id.ibtnClearGudang);
+        iBtnBarang = (ImageButton) getView().findViewById(R.id.ibtnClearBarang);
+        iBtnLokasi = (ImageButton) getView().findViewById(R.id.ibtnClearLokasi);
 
         edtBarang = (EditText) getView().findViewById(R.id.edtBarang);
         edtTebal = (EditText) getView().findViewById(R.id.edtTebal);
@@ -108,6 +113,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
 
         tvEndDate = (TextView) getView().findViewById(R.id.tvEndDate);
         tvEndDate.setOnClickListener(this);
+        tvStartDate = (TextView) getView().findViewById(R.id.tvStartDate);
+        tvStartDate.setOnClickListener(this);
 
         tvKategori.setOnClickListener(this);
         tvBentuk.setOnClickListener(this);
@@ -115,6 +122,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvJenis.setOnClickListener(this);
         tvGrade.setOnClickListener(this);
         tvGudang.setOnClickListener(this);
+        tvBarang.setOnClickListener(this);
+        tvLokasi.setOnClickListener(this);
 
         iBtnKategori.setOnClickListener(this);
         iBtnGudang.setOnClickListener(this);
@@ -122,6 +131,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         iBtnJenis.setOnClickListener(this);
         iBtnSurface.setOnClickListener(this);
         iBtnBentuk.setOnClickListener(this);
+        iBtnBarang.setOnClickListener(this);
+        iBtnLokasi.setOnClickListener(this);
 
         tvKategori.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kategori, ""));
         tvBentuk.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.bentuk, ""));
@@ -129,6 +140,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvJenis.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.jenis, ""));
         tvGrade.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.grade, ""));
         tvGudang.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, ""));
+        tvBarang.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namabarang, ""));
+        tvLokasi.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.lokasi, ""));
 
         if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition") || LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockpositionrandom"))
         {
@@ -159,6 +172,21 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             getView().findViewById(R.id.trEndDate).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trBlok).setVisibility(View.VISIBLE);
         }
+        else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperlokasi"))
+        {
+            getView().findViewById(R.id.trBarang).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trJenis).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trUkuran).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trTebal).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trMotif).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trSurface).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trEndDate).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trLokasi).setVisibility(View.VISIBLE);
+        }
         else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockmutasi") || LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockkartu"))
         {
             getView().findViewById(R.id.trBarangButton).setVisibility(View.VISIBLE);
@@ -178,7 +206,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
                     Date newdate = sdf.parse(date);
                     date = sdf.format(newdate);
 
-                    tvEndDate.setText(date);
+                    if(dateType==1) tvStartDate.setText(date);
+                    else if(dateType==2) tvEndDate.setText(date);
                 }
                 catch(Exception e)
                 {
@@ -193,6 +222,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = df.format(c.getTime());
         tvEndDate.setText(formattedDate);
+        tvStartDate.setText(formattedDate);
     }
 
     @Override
@@ -215,7 +245,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.blok, edtBlok.getText().toString());
-        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvEndDate.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggalawal, tvStartDate.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggalakhir, tvEndDate.getText().toString());
         if(edtUkuran1.getText().toString().equals("") && edtUkuran2.getText().toString().equals(""))
         {
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
@@ -240,8 +271,28 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
                 String actionUrl = "Stock/getStockRandomPerBarang/";
                 new getData().execute( actionUrl );
             }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperlokasi"))
+            {
+                String actionUrl = "Stock/getStockRandomPerLokasi/";
+                new getData().execute( actionUrl );
+            }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockmutasi"))
+            {
+                String actionUrl = "Stock/getStockMutasi/";
+                new getData().execute( actionUrl );
+            }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockkartu"))
+            {
+                String actionUrl = "Stock/getStockKartu/";
+                new getData().execute( actionUrl );
+            }
+        }
+        else if (id == R.id.tvStartDate){
+            dateType = 1;
+            dp.show();
         }
         else if (id == R.id.tvEndDate){
+            dateType = 2;
             dp.show();
         }
         else if (id == R.id.tvKategori){
@@ -262,6 +313,12 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         else if (id == R.id.tvSurface){
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseSurfaceFragment());
         }
+        else if (id == R.id.tvBarang){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment());
+        }
+        else if (id == R.id.tvLokasi){
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseLokasiFragment());
+        }
         else if (id == R.id.ibtnClearKategori){
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kategori, "");
             tvKategori.setText("");
@@ -270,6 +327,11 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namagudang, "");
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodegudang, "");
             tvGudang.setText("");
+        }
+        else if (id == R.id.ibtnClearBarang){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namabarang, "");
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodebarang, "");
+            tvBarang.setText("");
         }
         else if (id == R.id.ibtnClearBentuk){
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.bentuk, "");
@@ -287,12 +349,42 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.surface, "");
             tvSurface.setText("");
         }
+        else if (id == R.id.ibtnClearLokasi){
+            LibInspira.setShared(global.stockmonitoringpreferences, global.stock.lokasi, "");
+            tvLokasi.setText("");
+        }
     }
 
-    private void createPDF(String data, int type)
+    private void createPDF(String data)
     {
         LibPDF pdf = new LibPDF(getActivity());
-        try {pdf.createPDF(data);}
+        try
+        {
+            if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang"))
+            {
+                pdf.createPDF_stockrandomperbarang(data,
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalakhir, ""));
+            }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperlokasi"))
+            {
+                pdf.createPDF_stockrandomperlokasi(data,
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalakhir, ""));
+            }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockmutasi"))
+            {
+                pdf.createPDF_stockmutasi(data,
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalawal, ""),
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalakhir, ""));
+            }
+            else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockkartu"))
+            {
+                pdf.createPDF_stockkartu(data,
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalawal, ""),
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalakhir, ""),
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, ""),
+                        LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, ""));
+            }
+        }
         catch (FileNotFoundException e) {e.printStackTrace();}
         catch (DocumentException e) {e.printStackTrace();}
     }
@@ -312,16 +404,21 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
             String ukuran = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
             String tebal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tebal, "");
             String motif = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.motif, "");
-            String tanggal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggal, "");
+            String tanggal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalakhir, "");
 
             String nomorcabang = LibInspira.getShared(global.userpreferences, global.user.cabang, "");
             String kodegudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, "");
 
             String blok = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.blok, "");
+            String lokasi = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.lokasi, "");
+
+            String kodebarang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodebarang, "");
+            String tanggalawal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalawal, "");
 
             try {
-                jsonObject.put("kodegudang", kodegudang);
+                jsonObject.put("kodebarang", kodebarang);
                 jsonObject.put("nomorbarang", nomorbarang);
+                jsonObject.put("kodegudang", kodegudang);
                 jsonObject.put("namagudang", namagudang);
                 jsonObject.put("kategori", kategori);
                 jsonObject.put("bentuk", bentuk);
@@ -331,6 +428,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
                 jsonObject.put("ukuran", ukuran);
                 jsonObject.put("tebal", tebal);
                 jsonObject.put("motif", motif);
+                jsonObject.put("tanggalawal", tanggalawal);
                 jsonObject.put("tanggal", tanggal);
                 jsonObject.put("nomorcabang", nomorcabang);
 
@@ -366,7 +464,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
 
                 if(!error)
                 {
-                    createPDF(result, 1);
+                    createPDF(result);
                 }
             }
             catch(Exception e)

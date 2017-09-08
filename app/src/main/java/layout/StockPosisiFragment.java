@@ -225,7 +225,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             String ukuran = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
             String tebal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tebal, "");
             String motif = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.motif, "");
-            String tanggal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggal, "");
+            String tanggal = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.tanggalakhir, "");
             String nomorcabang = LibInspira.getShared(global.userpreferences, global.user.cabang, "");
             String kodegudang = LibInspira.getShared(global.stockmonitoringpreferences, global.stock.kodegudang, "");
             try {

@@ -462,6 +462,7 @@ class Stock extends REST_Controller {
         $ukuran = (isset($jsonObject["ukuran"]) ? $this->clean($jsonObject["ukuran"])     : "");
         $tebal = (isset($jsonObject["tebal"]) ? $this->clean($jsonObject["tebal"])     : "");
         $motif = (isset($jsonObject["motif"]) ? $this->clean($jsonObject["motif"])     : "");
+        $blok = (isset($jsonObject["blok"]) ? $this->clean($jsonObject["blok"])     : "");
         $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "");
         $nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "");
 
@@ -489,8 +490,8 @@ class Stock extends REST_Controller {
                   AND b.tebal LIKE '%$tebal%'
                   AND b.motif LIKE '%$motif%'
                   AND b.surface LIKE '%$surface%'
+                  AND c.blok LIKE '%$blok%'
                   ORDER BY b.nama, c.blok";
-        $this->db->query($query);
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
@@ -526,4 +527,168 @@ class Stock extends REST_Controller {
         }
     }
 
+    //--- Added by ADI --- //
+    // --- POST stock random per lokasi--- //
+    function getStockRandomPerLokasi_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $kodegudang = (isset($jsonObject["kodegudang"]) ? $this->clean($jsonObject["kodegudang"])     : "%");
+        $nomorbarang = (isset($jsonObject["nomorbarang"]) ? $this->clean($jsonObject["nomorbarang"])     : "%");
+        $kategori = (isset($jsonObject["kategori"]) ? $this->clean($jsonObject["kategori"])     : "%");
+        $bentuk = (isset($jsonObject["bentuk"]) ? $this->clean($jsonObject["bentuk"])     : "%");
+        $jenis = (isset($jsonObject["jenis"]) ? $this->clean($jsonObject["jenis"])     : "%");
+        $grade = (isset($jsonObject["grade"]) ? $this->clean($jsonObject["grade"])     : "%");
+        $surface = (isset($jsonObject["surface"]) ? $this->clean($jsonObject["surface"])     : "%");
+        $ukuran = (isset($jsonObject["ukuran"]) ? $this->clean($jsonObject["ukuran"])     : "%");
+        $tebal = (isset($jsonObject["tebal"]) ? $this->clean($jsonObject["tebal"])     : "%");
+        $motif = (isset($jsonObject["motif"]) ? $this->clean($jsonObject["motif"])     : "%");
+        $lokasi = (isset($jsonObject["lokasi"]) ? $this->clean($jsonObject["lokasi"])     : "%");
+        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "%");
+        $nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "%");
+
+         if($kodegudang == "") $kodegudang = "%";
+         if($nomorbarang == "") $nomorbarang = "%";
+         if($kategori == "") $kategori = "%";
+         if($bentuk == "") $bentuk = "%";
+         if($jenis == "") $jenis = "%";
+         if($grade == "") $grade = "%";
+         if($surface == "") $surface = "%";
+         if($ukuran == "") $ukuran = "%";
+         if($tebal == "") $tebal = "%";
+         if($motif == "") $motif = "%";
+         if($lokasi == "") $lokasi = "%";
+
+        $query = "CALL rp_posisistok_random_lokasi('$kodegudang', '$nomorbarang', '$kategori', '$jenis', '$grade', '$bentuk', '$ukuran', '$tebal', '$motif', '$surface', '$lokasi', '$tanggal')";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'kodegudang'			=> $r['kodegudang'],
+                                                'namagudang'			=> $r['namagudang'],
+                                                'kodebarang'			=> $r['kodebarang'],
+                                                'namabarang'			=> $r['namabarang'],
+                                                'barcode'	    		=> $r['barcode'],
+                                                'bundle'	    		=> $r['bundle'],
+                                                'slab'	    		    => $r['slab'],
+                                                'blok'	    	    	=> $r['blok'],
+                                                'peti'	    		    => $r['peti'],
+                                                'm2'	    	    	=> $r['m2'],
+                                                'panjang'	    		=> $r['panjang'],
+                                                'lebar'	    	    	=> $r['lebar'],
+                                                'tebal'	    	    	=> $r['tebal'],
+                                                'coeff1'	    		=> $r['coeff1'],
+                                                'jumlah'	    		=> $r['jumlah'],
+                                                'lokasi'	    		=> $r['lokasi'],
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+//            $this->response($this->error($query)); // OK (200) being the HTTP response code
+        }
+    }
+
+    //--- Added by ADI --- //
+    // --- POST stock mutasi--- //
+    function getStockMutasi_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $kodebarang = (isset($jsonObject["kodebarang"]) ? $this->clean($jsonObject["kodebarang"])     : "");
+        $kodegudang = (isset($jsonObject["kodegudang"]) ? $this->clean($jsonObject["kodegudang"])     : "");
+        $tanggalawal = (isset($jsonObject["tanggalawal"]) ? $this->clean($jsonObject["tanggalawal"])     : "20140908");
+        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "20170908");
+
+        if($kodebarang=="") $kodebarang = "%";
+        if($kodegudang=="") $kodegudang = "%";
+
+        $query = "CALL RP_MUTASI_STOK ('$kodebarang', '$kodegudang', '$tanggalawal', '$tanggal')";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'kodegudang'			=> $r['KODEGUDANG'],
+                                                'namagudang'			=> $r['NAMAGUDANG'],
+                                                'kodebarang'			=> $r['KODEBARANG'],
+                                                'namabarang'			=> $r['NAMABARANG'],
+                                                'qtyawal'	    		=> $r['QTYAWAL'],
+                                                'jumlahawal'	    	=> $r['JUMLAHAWAL'],
+                                                'qtymasuk'	    		=> $r['QTYMASUK'],
+                                                'jumlahmasuk'	    	=> $r['JUMLAHMASUK'],
+                                                'qtykeluar'	    		=> $r['QTYKELUAR'],
+                                                'jumlahkeluar'	    	=> $r['JUMLAHKELUAR'],
+                                                'qtyakhir'	    		=> $r['QTYAKHIR'],
+                                                'jumlahakhir'	    	=> $r['JUMLAHAKHIR'],
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+            //$this->response($query); // OK (200) being the HTTP response code
+        }
+    }
+
+    //--- Added by ADI --- //
+    // --- POST stock kartu--- //
+    function getStockKartu_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $kodebarang = (isset($jsonObject["kodebarang"]) ? $this->clean($jsonObject["kodebarang"])     : "");
+        $kodegudang = (isset($jsonObject["kodegudang"]) ? $this->clean($jsonObject["kodegudang"])     : "");
+        $tanggalawal = (isset($jsonObject["tanggalawal"]) ? $this->clean($jsonObject["tanggalawal"])     : "20140908");
+        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "20170908");
+
+        if($kodebarang=="") $kodebarang = "%";
+        if($kodegudang=="") $kodegudang = "%";
+
+        $query = "CALL RP_KARTU_STOK ('$kodebarang', '$kodegudang', '$tanggalawal', '$tanggal')";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'tanggal'   			=> $r['TANGGAL'],
+                                                'entity'    			=> $r['ENTITY'],
+                                                'keterangan'			=> $r['KETERANGAN'],
+                                                'qtyawal'	    		=> $r['QTYAWAL'],
+                                                'jumlahawal'	    	=> $r['JUMLAHAWAL'],
+                                                'qtymasuk'	    		=> $r['QTYMASUK'],
+                                                'jumlahmasuk'	    	=> $r['JUMLAHMASUK'],
+                                                'qtykeluar'	    		=> $r['QTYKELUAR'],
+                                                'jumlahkeluar'	    	=> $r['JUMLAHKELUAR'],
+                                                'qtyakhir'	    		=> $r['QTYAKHIR'],
+                                                'jumlahakhir'	    	=> $r['JUMLAHAKHIR'],
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+            //$this->response($query); // OK (200) being the HTTP response code
+        }
+    }
 }

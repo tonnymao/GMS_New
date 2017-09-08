@@ -312,7 +312,10 @@ public class ChooseKategoriFragment extends Fragment implements View.OnClickList
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockpositionrandom") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang"))
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockpositionrandom") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperlokasi"))
                     {
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kategori, finalHolder.adapterItem.getNama());
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
