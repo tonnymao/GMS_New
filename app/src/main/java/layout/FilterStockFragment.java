@@ -51,7 +51,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
     private ImageButton iBtnGudang, iBtnKategori, iBtnBentuk, iBtnSurface, iBtnJenis, iBtnGrade;
     private EditText edtBarang, edtUkuran1, edtUkuran2, edtTebal, edtMotif, edtBlok;
     private DatePickerDialog dp;
-    private TextView tvFilterStockDate;
+    private TextView tvEndDate;
 
     public FilterStockFragment() {
         // Required empty public constructor
@@ -106,8 +106,8 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         edtUkuran2 = (EditText) getView().findViewById(R.id.edtUkuran2);
         edtBlok = (EditText) getView().findViewById(R.id.edtBlok);
 
-        tvFilterStockDate = (TextView) getView().findViewById(R.id.tvFilterStockDate);
-        tvFilterStockDate.setOnClickListener(this);
+        tvEndDate = (TextView) getView().findViewById(R.id.tvEndDate);
+        tvEndDate.setOnClickListener(this);
 
         tvKategori.setOnClickListener(this);
         tvBentuk.setOnClickListener(this);
@@ -130,9 +130,41 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         tvGrade.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.grade, ""));
         tvGudang.setText(LibInspira.getShared(global.stockmonitoringpreferences, global.stock.namagudang, ""));
 
-        if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang"))
+        if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockposition") || LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockpositionrandom"))
         {
+            getView().findViewById(R.id.trBarang).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trJenis).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trUkuran).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trTebal).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trMotif).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trSurface).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trEndDate).setVisibility(View.VISIBLE);
+        }
+        else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockrandomperbarang"))
+        {
+            getView().findViewById(R.id.trBarang).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trKategori).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trJenis).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trGrade).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trBentuk).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trUkuran).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trTebal).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trMotif).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trSurface).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trEndDate).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.trBlok).setVisibility(View.VISIBLE);
+        }
+        else if(LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockmutasi") || LibInspira.getShared(global.sharedpreferences, global.shared.position,"").equals("stockkartu"))
+        {
+            getView().findViewById(R.id.trBarangButton).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trGudang).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trStartDate).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trEndDate).setVisibility(View.VISIBLE);
         }
 
         // Define DatePicker
@@ -146,7 +178,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
                     Date newdate = sdf.parse(date);
                     date = sdf.format(newdate);
 
-                    tvFilterStockDate.setText(date);
+                    tvEndDate.setText(date);
                 }
                 catch(Exception e)
                 {
@@ -160,7 +192,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = df.format(c.getTime());
-        tvFilterStockDate.setText(formattedDate);
+        tvEndDate.setText(formattedDate);
     }
 
     @Override
@@ -183,7 +215,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tebal, edtTebal.getText().toString());
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.motif, edtMotif.getText().toString());
         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.blok, edtBlok.getText().toString());
-        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvFilterStockDate.getText().toString());
+        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.tanggal, tvEndDate.getText().toString());
         if(edtUkuran1.getText().toString().equals("") && edtUkuran2.getText().toString().equals(""))
         {
             LibInspira.setShared(global.stockmonitoringpreferences, global.stock.ukuran, "");
@@ -209,7 +241,7 @@ public class FilterStockFragment extends Fragment implements View.OnClickListene
                 new getData().execute( actionUrl );
             }
         }
-        else if (id == R.id.tvFilterStockDate){
+        else if (id == R.id.tvEndDate){
             dp.show();
         }
         else if (id == R.id.tvKategori){
