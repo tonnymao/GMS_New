@@ -97,7 +97,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
         refreshList();
 
-        String actionUrl = "Master/getSchedules/";
+        String actionUrl = "Schedule/getSchedules/";
         new getData().execute( actionUrl );
     }
 
@@ -269,7 +269,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         protected void onPreExecute() {
             super.onPreExecute();
             tvInformation.setVisibility(View.VISIBLE);
-            user = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
+            user = LibInspira.getShared(global.userpreferences, global.user.nomor_android, "");
         }
     }
 
@@ -366,7 +366,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
             row.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    if (finalholder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))) {
+                    if (finalholder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""))) {
                         DialogInterface.OnClickListener dialog = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -424,7 +424,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
 
             if (holder.adapterItem.getTarget().equals("null"))
                 holder.tvKeterangan1.setVisibility(View.GONE);
-            if (holder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+            if (holder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nama, "")))
                 holder.tvKeterangan1.setText("Target: " + holder.adapterItem.getTarget());
             else
                 holder.tvKeterangan1.setText("Creator: " + holder.adapterItem.getCreator());

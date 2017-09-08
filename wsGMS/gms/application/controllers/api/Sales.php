@@ -279,7 +279,7 @@ class Sales extends REST_Controller {
         
         $this->db->trans_begin();
         
-        $query = "INSERT INTO `gms`.`whtracking_mobile`(`nomortuser`,`nomorthsales`,`latitude`,`longitude`,`trackingDate`,`fakeGPS`) VALUES ($nomortuser, $nomorthsales, $latitude, $longitude, NOW(), $fakeGPS)";
+        $query = "INSERT INTO `whtracking_mobile`(`nomortuser`,`nomorthsales`,`latitude`,`longitude`,`trackingDate`,`fakeGPS`) VALUES ($nomortuser, $nomorthsales, $latitude, $longitude, NOW(), $fakeGPS)";
 		
         $this->db->query($query);
         

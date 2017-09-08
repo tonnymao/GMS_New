@@ -24,6 +24,7 @@ import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
-        if(LibInspira.getShared(global.userpreferences, global.user.role_creategroup, "").equals("1"))
+        if(LibInspira.getShared(global.userpreferences, global.user.role_creategroup, "").equals("1") && LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("Conversation"))
         {
             fab = (FloatingActionButton) getView().findViewById(R.id.fab);
             fab.setVisibility(View.VISIBLE);
@@ -117,7 +118,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
 
         refreshList();
 
-        String actionUrl = "Master/getGroups/";
+        String actionUrl = "Group/getGroups/";
         new getData().execute( actionUrl );
     }
 
@@ -203,6 +204,12 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
+            try {
+                jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             return LibInspira.executePost(getContext(), urls[0], jsonObject);
         }
         // onPostExecute displays the results of the AsyncTask.
@@ -261,6 +268,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
 
         private String nomor;
         private String nama;
+        private Boolean isChoosen = false;
 
         public ItemAdapter() {}
 
@@ -269,6 +277,9 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
+
+        public Boolean getChoosen() {return isChoosen;}
+        public void setChoosen(Boolean _param) {this.isChoosen = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -313,6 +324,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
             setupItem(holder);
 
             final Holder finalHolder = holder;
+            final View finalRow = row;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -322,6 +334,15 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
                         LibInspira.setShared(global.schedulepreferences, global.schedule.groupIDsch, finalHolder.adapterItem.getNomor());
                         LibInspira.setShared(global.schedulepreferences, global.schedule.groupsch, finalHolder.adapterItem.getNama());
                         LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SummaryScheduleFragment());
+                    }
+                    else if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("Conversation")) {
+                        if(finalHolder.adapterItem.getChoosen()) {
+                            finalHolder.adapterItem.setChoosen(false);
+                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                        } else {
+                            finalHolder.adapterItem.setChoosen(true);
+                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
+                        }
                     }
                 }
             });

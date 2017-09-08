@@ -54,46 +54,49 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        globalVar = new GlobalVar(this);
-        HandlerThread thread = new HandlerThread("ServiceStartArguments",
-                Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
-        TAG = GMSbackgroundTask.class.getSimpleName();
-        Log.i("GMSbackgroundTask", "starting background service");
-        mServiceLooper = thread.getLooper();
-        mServiceHandler = new ServiceHandler(mServiceLooper);
-        GpsStopped = false;
+        if(!globalVar.settingpreferences.getString("jam_awal", "").equals(""))
+        {
+            globalVar = new GlobalVar(this);
+            HandlerThread thread = new HandlerThread("ServiceStartArguments",
+                    Process.THREAD_PRIORITY_BACKGROUND);
+            thread.start();
+            TAG = GMSbackgroundTask.class.getSimpleName();
+            Log.i("GMSbackgroundTask", "starting background service");
+            mServiceLooper = thread.getLooper();
+            mServiceHandler = new ServiceHandler(mServiceLooper);
+            GpsStopped = false;
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 //        Criteria criteria = new Criteria();
 //        locationManager.getBestProvider(criteria, true);
 
-        Networkprovider = LocationManager.NETWORK_PROVIDER;
-        GPSprovider = LocationManager.GPS_PROVIDER;
+            Networkprovider = LocationManager.NETWORK_PROVIDER;
+            GPSprovider = LocationManager.GPS_PROVIDER;
 
-        trackingType = globalVar.settingpreferences.getString("tracking", "");
-        String[] stateTime = globalVar.settingpreferences.getString("jam_awal", "").split(":");
-        String stateTimeValue = stateTime[0] + stateTime[1];
-        startState = Integer.valueOf(stateTimeValue);
-        stateTime = globalVar.settingpreferences.getString("jam_akhir", "").split(":");
-        stateTimeValue = stateTime[0] + stateTime [1];
-        endState = Integer.valueOf(stateTimeValue);
-        trackingRadius = Double.valueOf(globalVar.settingpreferences.getString("radius", ""));
-        trackingInterval = Long.valueOf(globalVar.settingpreferences.getString("interval", ""));
+            trackingType = globalVar.settingpreferences.getString("tracking", "");
+            String[] stateTime = globalVar.settingpreferences.getString("jam_awal", "").split(":");
+            String stateTimeValue = stateTime[0] + stateTime[1];
+            startState = Integer.valueOf(stateTimeValue);
+            stateTime = globalVar.settingpreferences.getString("jam_akhir", "").split(":");
+            stateTimeValue = stateTime[0] + stateTime [1];
+            endState = Integer.valueOf(stateTimeValue);
+            trackingRadius = Double.valueOf(globalVar.settingpreferences.getString("radius", ""));
+            trackingInterval = Long.valueOf(globalVar.settingpreferences.getString("interval", ""));
 
-        if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Location location = locationManager.getLastKnownLocation(GPSprovider);
-            if (location != null) {
-                oldLocation = location;
+            if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Location location = locationManager.getLastKnownLocation(GPSprovider);
+                if (location != null) {
+                    oldLocation = location;
+                }
+                else if (trackingType.equals("GPS and Network")) {
+                    location = locationManager.getLastKnownLocation(Networkprovider);
+                    oldLocation = location;
+                }
             }
-            else if (trackingType.equals("GPS and Network")) {
-                location = locationManager.getLastKnownLocation(Networkprovider);
-                oldLocation = location;
-            }
+
+            foregroundNotif("GMS Inspira", "Background Service Works Fine!"); // you can change the title and desc of the notification
         }
-
-        foregroundNotif("GMS Inspira", "Background Service Works Fine!"); // you can change the title and desc of the notification
     }
 
     @Override
