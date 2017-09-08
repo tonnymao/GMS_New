@@ -375,10 +375,10 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
             holder.tvKode.setText(holder.adapterItem.getKode().toUpperCase());
             //holder.tvSatuan.setText(holder.adapterItem.getSatuan().toUpperCase());
-            holder.tvPrice.setText(holder.adapterItem.getPrice().toUpperCase());
-            holder.tvQty.setText(holder.adapterItem.getQty().toUpperCase() + " " + holder.adapterItem.getSatuan().toUpperCase());
-            holder.tvFee.setText(holder.adapterItem.getFee().toUpperCase());
-            holder.tvDisc.setText(holder.adapterItem.getDisc().toUpperCase());
+            holder.tvPrice.setText(LibInspira.delimeter(holder.adapterItem.getPrice().toUpperCase()));
+            holder.tvQty.setText(LibInspira.delimeter(holder.adapterItem.getQty().toUpperCase()) + " " + holder.adapterItem.getSatuan().toUpperCase());
+            holder.tvFee.setText(LibInspira.delimeter(holder.adapterItem.getFee().toUpperCase()));
+            holder.tvDisc.setText(LibInspira.delimeter(holder.adapterItem.getDisc().toUpperCase()));
             holder.tvNotes.setText(holder.adapterItem.getNotes());
         }
     }

@@ -211,12 +211,16 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
         Double dblItemSubtotal = 0.0;
         Double dblPekerjaanSubtotal = 0.0;
         Double dblFeeSubtotal = 0.0;
+        Log.d("data", data);
         String[] pieces = data.trim().split("\\|");
-        if((pieces.length > 1 && !pieces[0].equals(""))){
+        Log.d("pieces length", Integer.toString(pieces.length));
+        if((pieces.length >= 1 && !pieces[0].equals(""))){
             for(int i=0 ; i < pieces.length ; i++){
+                Log.d("sebelum if", "");
                 if(!pieces[i].equals(""))
                 {
-                    String[] parts = pieces[i].trim().split("\\~");
+                    Log.d("masuk if", "");
+                    String[] parts = pieces[i].trim().split("~");
                     String fee = parts[6];
                     String subtotal = parts[8];
                     if(fee.equals("")) fee = "0";
@@ -232,7 +236,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
 
         data = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");;
         pieces = data.trim().split("\\|");
-        if((pieces.length > 1 && !pieces[0].equals(""))){
+        if((pieces.length >= 1 && !pieces[0].equals(""))){
             for(int i=0 ; i < pieces.length ; i++){
                 if(!pieces[i].equals(""))
                 {
@@ -273,36 +277,6 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
 
         @Override
         protected String doInBackground(String... urls) {
-
-            //---------------------------------------------HEADER-----------------------------------------------------//
-//                jsonObject.put("kode", LibInspira.getShared(global.temppreferences, global.temp.nomorsales, ""));
-//                jsonObject.put("tanggal", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("nomorcustomer", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("kodecustomer", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("nomorbroker", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("kodebroker", LibInspira.getShared(global.temppreferences, global.temp.nomorsales, ""));
-//                jsonObject.put("nomorsales", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("kodesales", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("subtotaljasa", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("subtotalbiaya", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("totalrp", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("pembuat", LibInspira.getShared(global.temppreferences, global.temp.nomorsales, ""));
-//                jsonObject.put("nomorcabang", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("cabang", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("valuta", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("jenispenjualan", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-            //-------------------------------------------------------------------------------------------------------//
-            //---------------------------------------------DETAIL----------------------------------------------------//
             jsonObject = new JSONObject();
 
             String strNomor = "";
