@@ -50,7 +50,7 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_sales_order_detail_item, container, false);
+        View v = inflater.inflate(R.layout.fragment_sales_order_detail_jasa, container, false);
         getActivity().setTitle("Sales Order - New Pekerjaan");
         return v;
     }
@@ -95,45 +95,6 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
             }
         });
 
-        etFee.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                LibInspira.formatNumberEditText(etFee, this, true, false);
-                LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_fee, etFee.getText().toString().replace(",", ""));
-                //hitungSubtotal();
-                refreshData();
-            }
-        });
-
-        etDisc.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_disc, etDisc.getText().toString().replace(",", ""));
-                //hitungSubtotal();
-                refreshData();
-            }
-        });
-
         etQty.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -154,27 +115,8 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
             }
         });
 
-        etNotes.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, etNotes.getText().toString().trim());
-                refreshData();
-            }
-        });
-
+        //untuk edit?
         etPrice.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, "0"));
-        etFee.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_fee, "0"));
-        etDisc.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_disc, "0"));
         etQty.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_qty, "0"));
         etNotes.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, ""));
 
@@ -188,6 +130,16 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
         tvCode.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_kode, ""));
         tvSatuan.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_satuan, ""));
 
+        if(etPrice.getText().toString().equals("")){
+            etPrice.setText("0");
+//        }else if(etQty.getText().toString().equals("")){
+//            etQty.setText("0");
+//        }else if(etFee.getText().toString().equals("")){
+//            etFee.setText("0");
+//        }else if(etDisc.getText().toString().equals("")){
+//            etDisc.setText("0");
+        }
+
         if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_nama, "").equals(""))
         {
             if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, "").equals("")) LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, "0");
@@ -197,17 +149,13 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
 
             Double qty = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_qty, "0"));
             Double price = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, "0"));
-            Double fee = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_fee, "0"));
-            Double disc = Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_disc, "0"));
 
-            Double totaldisc = disc * price / 100;
-            Double netto = price - totaldisc;
-            Double subtotal = netto * qty + fee;
+            Double netto = price;
+            Double subtotal = netto * qty;
 
             //added by Tonny @06-Sep-2017
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, subtotal.toString());
 
-            tvDisc.setText(LibInspira.delimeter(String.valueOf(totaldisc)));
             tvNetto.setText(LibInspira.delimeter(String.valueOf(netto)));
             tvSubtotal.setText(LibInspira.delimeter(String.valueOf(subtotal)));
         }
@@ -230,12 +178,44 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
         } else if (id == R.id.btnAdd)  //modified by Tonny @01-Sep-2017
         {
             //urutannya: nomor~kode~nama~satuan~price~qty~fee~disc
-            String strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "") + //salesorderitem di bagian depan
+            String strData = "";
+            if (etNotes.getText().toString().equals("")){
+                LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, "_");
+            }
+            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_nomor, "").equals("")){
+                LibInspira.ShowShortToast(getContext(), "There is no pekerjaan to add.");
+                return;
+            }
+            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_index, "").equals(""))
+            {
+                //MODE ADD
+                strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "") + //salesorderitem di bagian depan
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_nomor, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_kode, "") + "~" +
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_nama, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_satuan, "") + "~" +
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_qty, "") + "~" +
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_fee, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_disc, "") + "~" +
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, "") + "|";
+                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, "_") + "|";
+            }
+            else
+            {
+                //MODE EDIT
+                String[] pieces = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "").trim().split("\\|");
+                for(int i=0 ; i < pieces.length ; i++){
+                    if(i != Integer.parseInt(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_index, "")))
+                    {
+                        strData = strData + pieces[i] + "|";
+                    }
+                    else
+                    {
+                        strData = strData +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_nomor, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_kode, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_nama, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_satuan, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_price, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_qty, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_fee, "0") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_disc, "0") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, "_") + "|";
+                    }
+                }
+            }
 
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, strData);
             LibInspira.BackFragment(getFragmentManager());

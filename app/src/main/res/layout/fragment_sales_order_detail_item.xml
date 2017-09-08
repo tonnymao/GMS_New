@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:clickable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -138,11 +139,12 @@
                     android:textColor="@color/colorPrimaryDark" />
 
                 <TextView
+                    android:id="@+id/textView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=" : "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <TextView
@@ -164,7 +166,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Qty"
                     android:textColor="@color/colorPrimaryDark" />
@@ -172,7 +174,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".3"
+                    android:layout_weight="1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text=" : "
                     android:textColor="@color/colorPrimaryDark" />
@@ -181,17 +183,18 @@
                     android:id="@+id/etQty"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorPrimaryDark"
+                    android:text="0"
                     android:inputType="numberDecimal"
-                    android:textAlignment="center"/>
+                    android:textAlignment="textEnd"/>
 
                 <TextView
                     android:id="@+id/tvSatuan"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="3.5"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:padding="8dp"
                     android:textColor="@color/colorPrimaryDark" />
@@ -227,6 +230,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:padding="8dp"
                     android:inputType="number"
+                    android:text="0"
+                    android:textAlignment="textEnd"
                     android:textColor="@color/colorPrimaryDark" />
             </TableRow>
 
@@ -260,6 +265,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:padding="8dp"
                     android:inputType="number"
+                    android:textAlignment="textEnd"
+                    android:text="0"
                     android:textColor="@color/colorPrimaryDark" />
             </TableRow>
 
@@ -293,7 +300,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorPrimaryDark"
                     android:inputType="numberDecimal"
-                    android:textAlignment="center"/>
+                    android:text="0"
+                    android:textAlignment="textEnd"/>
 
                 <TextView
                     android:layout_width="0dp"

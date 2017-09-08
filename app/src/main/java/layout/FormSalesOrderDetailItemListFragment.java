@@ -11,11 +11,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.inspira.gms.LibInspira;
@@ -28,8 +30,8 @@ import static com.inspira.gms.IndexInternal.global;
 
 public class FormSalesOrderDetailItemListFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
-    private ItemListAdapter itemadapter;
-    private ArrayList<ItemAdapter> list;
+    protected ItemListAdapter itemadapter;
+    protected ArrayList<ItemAdapter> list;
     private Button btnBack, btnNext;
     private FloatingActionButton fab;
     protected String strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
@@ -83,6 +85,7 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         btnNext.setOnClickListener(this);
 
         refreshList();
+        Log.d("onActivityCreated: ", "created");
     }
 
     @Override
@@ -100,6 +103,17 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         }
         else if(id==R.id.fab)
         {
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_index, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_notes, "");
+
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemFragment());
         }
         else if(id==R.id.btnBack)
@@ -112,15 +126,20 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         }
     }
 
-    protected void refreshList()
+    @Override
+    public void onResume() {
+        super.onResume();
+        strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
+    }
+
+     protected void refreshList()
     {
         itemadapter.clear();
         list.clear();
+        getStrData();  //added by Tonny @07-Sep-2017
         if (strData.equals("")){
-            //strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
             return;
         }
-
         String data = strData;
         String[] pieces = data.trim().split("\\|");
         if((pieces.length==1 && pieces[0].equals("")))
@@ -130,52 +149,109 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         else
         {
             for(int i=0 ; i < pieces.length ; i++){
+                Log.d("Index", data);
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
+                    Log.d("pieces: ", pieces[i]);
+                    try {
+                        String nomor = parts[0];
+                        String kode = parts[1];
+                        String nama = parts[2];
+                        String satuan = parts[3];
+                        String price = parts[4];
+                        String qty = parts[5];
+                        String fee = parts[6];
+                        String disc = parts[7];
+                        //String subtotal = parts[8];
+                        String notes = parts[9];
 
-                    //String nomor = parts[0];
-                    String kode = parts[1];
-                    String nama = parts[2];
-                    String satuan = parts[3];
-                    String price = parts[4];
-                    String qty = parts[5];
-                    String fee = parts[6];
-                    String disc = parts[7];
-                    //String subtotal = parts[8];
-                    String notes = parts[9];
+                        if(nomor.equals("null")) nomor = "";
+                        if(kode.equals("null")) kode = "";
+                        if(nama.equals("null")) nama = "-";
+                        if(satuan.equals("null")) satuan = "";
+                        if(price.equals("null")) price = "";
+                        if(qty.equals("null")) qty = "";
+                        if(fee.equals("null")) fee = "";
+                        if(disc.equals("null")) disc = "";
+                        if(notes.equals("null")) notes = "";
 
-                    //if(nomor.equals("null")) nomor = "";
-                    if(kode.equals("null")) kode = "";
-                    if(nama.equals("null")) nama = "-";
-                    if(satuan.equals("null")) satuan = "";
-                    if(price.equals("null")) price = "";
-                    if(qty.equals("null")) qty = "";
-                    if(fee.equals("null")) fee = "";
-                    if(disc.equals("null")) disc = "";
-                    if(notes.equals("null")) notes = "";
+                        ItemAdapter dataItem = new ItemAdapter();
+                        dataItem.setIndex(i);
+                        dataItem.setNomor(nomor);
+                        dataItem.setNama(nama);
+                        dataItem.setKode(kode);
+                        dataItem.setSatuan(satuan);
+                        dataItem.setPrice(price);
+                        dataItem.setQty(qty);
+                        dataItem.setFee(fee);
+                        dataItem.setDisc(disc);
+                        dataItem.setNotes(notes);
 
-                    ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNama(nama);
-                    dataItem.setKode(kode);
-                    dataItem.setSatuan(satuan);
-                    dataItem.setPrice(price);
-                    dataItem.setQty(qty);
-                    dataItem.setFee(fee);
-                    dataItem.setDisc(disc);
-                    dataItem.setNotes(notes);
+                        list.add(dataItem);
 
-                    list.add(dataItem);
-
-                    itemadapter.add(dataItem);
-                    itemadapter.notifyDataSetChanged();
+                        itemadapter.add(dataItem);
+                        itemadapter.notifyDataSetChanged();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        LibInspira.ShowShortToast(getContext(), "The current data is invalid. Please add new data.");
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
+                        strData = "";
+                        refreshList();
+                    }
                 }
             }
         }
     }
 
+    protected void deleteSelectedItem(int _index){
+        String newdata = "";
+        getStrData();
+        if(!strData.equals(""))
+        {
+            String[] pieces = strData.trim().split("\\|");
+            for(int i=0 ; i < pieces.length ; i++){
+//                String string = pieces[i];
+//                String[] parts = string.trim().split("\\~");
+                if(i != _index)
+                {
+                    newdata = newdata + pieces[i] + "|";
+                }
+            }
+        }
+        setStrData(newdata);
+        refreshList();
+    }
+
+
+
+    protected void getStrData(){
+        strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
+    }
+
+    protected void setStrData(String newdata){
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, newdata);
+    }
+
+    protected void setEditData(String index, String nomor, String nama, String kode, String satuan, String price, String qty, String fee, String disc, String notes){
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_index, index);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, nomor);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, nama);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, kode);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, satuan);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, price);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, qty);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, fee);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, disc);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_notes, notes);
+
+        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemFragment());
+    }
+
     public class ItemAdapter {
 
+        private int index;
+        private String nomor;
         private String nama;
         private String kode;
         private String satuan;
@@ -186,6 +262,12 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         private String notes;
 
         public ItemAdapter() {}
+
+        public int getIndex() {return index;}
+        public void setIndex(int _param) {this.index = _param;}
+
+        public String getNomor() {return nomor;}
+        public void setNomor(String _param) {this.nomor = _param;}
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
@@ -232,6 +314,7 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvKode, tvNama, tvSatuan, tvPrice, tvQty, tvFee, tvDisc, tvNotes;
+            ImageButton ibtnDelete;
         }
 
         @Override
@@ -256,26 +339,44 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
             holder.tvFee = (TextView)row.findViewById(R.id.tvFee);
             holder.tvDisc = (TextView)row.findViewById(R.id.tvDisc);
             holder.tvNotes = (TextView)row.findViewById(R.id.tvNotes);
+            holder.ibtnDelete = (ImageButton) row.findViewById(R.id.ibtnDelete);
 
             row.setTag(holder);
             setupItem(holder);
 
+            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    LibInspira.ShowLongToast(context, "coba");
+                    setEditData(String.valueOf(finalHolder.adapterItem.getIndex()),
+                            finalHolder.adapterItem.getNomor(),
+                            finalHolder.adapterItem.getNama(),
+                            finalHolder.adapterItem.getKode(),
+                            finalHolder.adapterItem.getSatuan(),
+                            finalHolder.adapterItem.getPrice(),
+                            finalHolder.adapterItem.getQty(),
+                            finalHolder.adapterItem.getFee(),
+                            finalHolder.adapterItem.getDisc(),
+                            finalHolder.adapterItem.getNotes()
+                            );
                 }
             });
 
+            holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                deleteSelectedItem(finalHolder.adapterItem.getIndex());
+                }
+            });
             return row;
         }
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
             holder.tvKode.setText(holder.adapterItem.getKode().toUpperCase());
-            holder.tvSatuan.setText(holder.adapterItem.getSatuan().toUpperCase());
+            //holder.tvSatuan.setText(holder.adapterItem.getSatuan().toUpperCase());
             holder.tvPrice.setText(holder.adapterItem.getPrice().toUpperCase());
-            holder.tvQty.setText(holder.adapterItem.getQty().toUpperCase());
+            holder.tvQty.setText(holder.adapterItem.getQty().toUpperCase() + " " + holder.adapterItem.getSatuan().toUpperCase());
             holder.tvFee.setText(holder.adapterItem.getFee().toUpperCase());
             holder.tvDisc.setText(holder.adapterItem.getDisc().toUpperCase());
             holder.tvNotes.setText(holder.adapterItem.getNotes());

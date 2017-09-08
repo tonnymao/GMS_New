@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.inspira.gms.LibInspira;
@@ -43,6 +44,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
     private Button btnBack, btnNext;
     protected String actionUrl = "Order/getSalesOrderList/";
     private CheckData checkData;
+    private RelativeLayout relativeLayout;
     private FloatingActionButton fab;
 
     public SalesOrderListFragment() {
@@ -88,10 +90,8 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
-        btnBack = (Button) getView().findViewById(R.id.btnBack);
-        btnNext = (Button) getView().findViewById(R.id.btnNext);
-        btnBack.setVisibility(View.GONE);
-        btnNext.setVisibility(View.GONE);
+        relativeLayout = (RelativeLayout) getView().findViewById(R.id.rlFooter);
+        relativeLayout.setVisibility(View.GONE);
 
         refreshList();
 

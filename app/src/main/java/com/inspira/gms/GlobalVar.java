@@ -100,7 +100,9 @@ public class GlobalVar {
             public String salesorder_date = "salesorder_date"; //added by Tonny @30-Aug-2017
             public String salesorder_subtotal = "salesorder_subtotal"; //added by Tonny @06-Sep-2017
             public String salesorder_subtotal_fee = "salesorder_subtotal_fee";  //added by Tonny @06-Sep-2017
+            public String salesorder_import = "salesorder_import"; //added by Tonny @06-Sep-2017
             public String salesorder_total = "salesorder_total"; //added by Tonny @06-Sep-2017
+
 
             public String salesorder_customer_nomor = "salesorder_customer_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_customer_kode = "salesorder_customer_kode"; //added by Tonny @05-Sep-2017
@@ -113,6 +115,7 @@ public class GlobalVar {
             public String salesorder_valuta_kurs = "salesorder_valuta_kurs"; //added by ADI @24-Aug-2017
 
             public String salesorder_pekerjaan = "salesorder_pekerjaan"; //added by Tonny @02-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
+            public String salesorder_pekerjaan_index = "salesorder_pekerjaan_index"; //added by Tonny @02-Sep-2017
             public String salesorder_pekerjaan_nomor = "salesorder_pekerjaan_nomor"; //added by Tonny @02-Sep-2017
             public String salesorder_pekerjaan_nama = "salesorder_pekerjaan_nama"; //added by Tonny @02-Sep-2017
             public String salesorder_pekerjaan_kode = "salesorder_pekerjaan_kode"; //added by Tonny @02-Sep-2017
@@ -125,6 +128,7 @@ public class GlobalVar {
             public String salesorder_pekerjaan_notes = "salesorder_pekerjaan_notes"; //added by Tonny @02-Sep-2017
 
             public String salesorder_item = "salesorder_item"; //added by Tonny @01-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
+            public String salesorder_item_index = "salesorder_item_index"; //added by ADI @24-Aug-2017
             public String salesorder_item_nomor = "salesorder_item_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_item_nama = "salesorder_item_nama"; //added by ADI @24-Aug-2017
             public String salesorder_item_kode = "salesorder_item_kode"; //added by ADI @24-Aug-2017

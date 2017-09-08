@@ -91,8 +91,8 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
         tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, ""));
         tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, ""));
         tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, ""));
-        tvSubtotal.setText(getSubtotal().toString());
-        tvGrandTotal.setText("Rp. " + getGrandTotal().toString());
+        tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
+        tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
 
         btnSave.setOnClickListener(this);
         etDisc.addTextChangedListener(new TextWatcher() {
@@ -113,6 +113,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
                 tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
                 LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc, etDisc.getText().toString().replace(",", ""));
+                LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc_nominal, tvDiscNominal.getText().toString().replace(",", ""));
             }
         });
 
@@ -133,6 +134,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
                 tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
                 LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn, etPPN.getText().toString().replace(",", ""));
+                LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn_nominal, tvPPNNominal.getText().toString().replace(",", ""));
             }
         });
 
@@ -151,8 +153,10 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
         {
             LibInspira.alertBoxYesNo("Save Sales Order", "Do you want to add the current data?", getActivity(), new Runnable() {
                 public void run() {
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal, getSubtotal().toString());
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_total, getGrandTotal().toString());
                     sendData();
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
+                    //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
                 }
             }, new Runnable() {
                 public void run() {}
@@ -204,18 +208,26 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
     private Double getSubtotal(){
         String data = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");;
         Double dblSubtotal = 0.0;
+        Double dblItemSubtotal = 0.0;
+        Double dblPekerjaanSubtotal = 0.0;
+        Double dblFeeSubtotal = 0.0;
         String[] pieces = data.trim().split("\\|");
         if((pieces.length > 1 && !pieces[0].equals(""))){
             for(int i=0 ; i < pieces.length ; i++){
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
+                    String fee = parts[6];
                     String subtotal = parts[8];
+                    if(fee.equals("")) fee = "0";
                     if(subtotal.equals("")) subtotal = "0";
+                    dblFeeSubtotal = dblFeeSubtotal+ Double.parseDouble(fee);
+                    dblItemSubtotal = dblItemSubtotal + Double.parseDouble(subtotal);
                     dblSubtotal = dblSubtotal + Double.parseDouble(subtotal);
                     Log.d("subtotal item [" + i + "]", subtotal);
                 }
             }
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_subtotal, dblItemSubtotal.toString());
         }
 
         data = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");;
@@ -225,12 +237,18 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
+                    String fee = parts[6];
                     String subtotal = parts[8];
-                    if(subtotal.equals("")) subtotal = "0.0";
-                    Log.d("subtotal pekerjaan [" + i + "]", subtotal);
+                    if(fee.equals("")) fee = "0";
+                    if(subtotal.equals("")) subtotal = "0";
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, subtotal);
+                    dblFeeSubtotal = dblFeeSubtotal+ Double.parseDouble(fee);
+                    dblPekerjaanSubtotal = dblPekerjaanSubtotal + Double.parseDouble(subtotal);
                     dblSubtotal = dblSubtotal + Double.parseDouble(subtotal);
                 }
             }
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, dblPekerjaanSubtotal.toString());
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal_fee, dblFeeSubtotal.toString());
         }
         return dblSubtotal;
     }
@@ -437,24 +455,25 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 jsonObject.put("kodebroker", LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_kode, ""));
                 jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
                 jsonObject.put("kodesales", LibInspira.getShared(global.userpreferences, global.user.kode_sales, ""));
-                //jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.s, ""));
-//                jsonObject.put("subtotaljasa", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("subtotalbiaya", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.di, ""));
-//                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("totalrp", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("pembuat", LibInspira.getShared(global.temppreferences, global.temp.nomorsales, ""));
-//                jsonObject.put("nomorcabang", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("cabang", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("valuta", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("jenispenjualan", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
-//                jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.enddate, ""));
-//                jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.bulantahun, ""));
+                jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal, ""));
+                jsonObject.put("subtotaljasa", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, ""));
+                jsonObject.put("subtotalbiaya", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal_fee, ""));
+                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc, ""));
+                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc_nominal, ""));
+                //jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal, ""));
+                jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, ""));
+                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn, ""));
+                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn_nominal, ""));
+                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, ""));
+                jsonObject.put("totalrp", Double.toString(getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_kurs, ""))));
+                jsonObject.put("pembuat", LibInspira.getShared(global.userpreferences, global.user.nama, ""));
+                jsonObject.put("nomorcabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                jsonObject.put("cabang", LibInspira.getShared(global.temppreferences, global.user.namacabang, ""));
+                jsonObject.put("valuta", LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, ""));
+                jsonObject.put("kurs", LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_kurs, ""));
+                jsonObject.put("jenispenjualan", "Material");
+                jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, ""));
+                jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_isPPN, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

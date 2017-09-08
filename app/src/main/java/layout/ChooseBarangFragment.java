@@ -49,6 +49,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    protected String actionUrl = "Master/getBarang/";
 
     public ChooseBarangFragment() {
         // Required empty public constructor
@@ -85,7 +86,7 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
-        ((RelativeLayout) getView().findViewById(R.id.rlSearch)).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.rlSearch).setVisibility(View.VISIBLE);
         tvInformation = (TextView) getView().findViewById(R.id.tvInformation);
         tvNoData = (TextView) getView().findViewById(R.id.tvNoData);
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
@@ -114,7 +115,9 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
         refreshList();
 
-        String actionUrl = "Master/getBarang/";
+        if(actionUrl.equals("")){
+            actionUrl = "Master/getBarang/";
+        }
         new getData().execute( actionUrl );
     }
 

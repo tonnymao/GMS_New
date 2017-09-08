@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
     private TextView tvDate, tvCustomer, tvBroker, tvValuta;
     private Button btnNext;
     private DatePickerDialog dp;
+    private CheckBox chkBarangImport;
 
     public FormSalesOrderHeaderFragment() {
         // Required empty public constructor
@@ -68,23 +70,30 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-
         tvCustomer = (TextView) getView().findViewById(R.id.tvCustomer);
         tvBroker = (TextView) getView().findViewById(R.id.tvBroker);
         tvValuta = (TextView) getView().findViewById(R.id.tvValuta);
         tvDate = (TextView) getView().findViewById(R.id.tvDate); //added by Tonny @30-Aug-2017
         btnNext = (Button) getView().findViewById(R.id.btnNext);
+        chkBarangImport = (CheckBox) getView().findViewById(R.id.chkBarangImport);
 
         tvCustomer.setOnClickListener(this);
         tvBroker.setOnClickListener(this);
         tvValuta.setOnClickListener(this);
         tvDate.setOnClickListener(this);  //added by Tonny @30-Aug-2017
         btnNext.setOnClickListener(this);
+        chkBarangImport.setOnClickListener(this);  //added by Tonny @07-Sep-2017
 
         tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, "").toUpperCase());
         tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, "").toUpperCase());
         tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, "").toUpperCase());
 
+        //added by Tonny @08-Sep-2017 jika preferences import, maka centang chkBarangImport
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "0").equals("1")){
+            chkBarangImport.setChecked(true);
+        }else{
+            chkBarangImport.setChecked(false);
+        }
 
         if (!LibInspira.getShared(global.temppreferences, global.temp.salesorder_date, "").equals("")){
             tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_date, ""));
@@ -142,6 +151,11 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         else if(id==R.id.tvDate) {  //added by Tonny @30-Aug-2017
             dp.show();
         }
+        else if(id==R.id.chkBarangImport)
+        {
+            //jika user menekan button chkBarangImport, maka hapus cache / preferences dari salesorder item yang telah dibuat sebelumnya
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
+        }
         else if(id==R.id.btnNext)
         {
             if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, "").equals("") ||
@@ -153,6 +167,11 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
             }
             else
             {
+                if (chkBarangImport.isChecked()){
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "1");
+                }else{
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "0");
+                }
                 LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemListFragment());
             }
         }
