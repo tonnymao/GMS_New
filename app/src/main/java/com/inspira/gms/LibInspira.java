@@ -371,7 +371,7 @@ public class LibInspira {
                 result = "Did not work!";
 
         } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+//            Log.d("InputStream", e.getLocalizedMessage());
         }
 
         // 11. return result

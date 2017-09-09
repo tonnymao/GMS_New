@@ -332,7 +332,12 @@ public class ChooseGudangFragment extends Fragment implements View.OnClickListen
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockpositionrandom") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang"))
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockpositionrandom") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockmutasi") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockkartu") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperlokasi"))
                     {
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.namagudang, finalHolder.adapterItem.getNama());
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.kodegudang, finalHolder.adapterItem.getKode());

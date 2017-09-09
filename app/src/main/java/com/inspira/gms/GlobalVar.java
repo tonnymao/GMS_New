@@ -188,6 +188,7 @@ public class GlobalVar {
             public String broker = "broker"; // nomor~nama~kode
             public String valuta = "valuta"; // nomor~nama~kurs~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
+            public String lokasi = "lokasi"; // nomor~nama~gudang~kode //added by ADI @08-Sep-2017
 
             public String kategori = "kategori"; // nomor~nama~kode
             public String gudang = "gudang"; // nomor~nama~kode~alamat~kota
@@ -249,14 +250,18 @@ public class GlobalVar {
             public String jenis = "jenis";  //added by Tonny @19-Aug-2017
             public String grade = "grade";  //added by Tonny @19-Aug-2017
             public String surface = "surface";  //added by Tonny @19-Aug-2017
+            public String lokasi = "lokasi";  //added by Tonny @19-Aug-2017
             public String kodegudang = "kodegudang";  //added by Tonny @20-Aug-2017
             public String namagudang = "namagudang";  //added by Tonny @20-Aug-2017
+            public String kodebarang = "kodebarang";  //added by Tonny @20-Aug-2017
+            public String namabarang = "namabarang";  //added by Tonny @20-Aug-2017
             public String nomorbarang = "nomorbarang";  //added by Tonny @20-Aug-2017
             public String ukuran = "ukuran";  //aaxbb //added by Tonny @20-Aug-2017
             public String tebal = "tebal";  //added by Tonny @20-Aug-2017
             public String motif = "motif";  //added by Tonny @20-Aug-2017
             public String blok = "blok"; //added by ADI @04-Sep-2017
-            public String tanggal = "tanggal"; //yyyy-MM-dd //added by Tonny @20-Aug-2017
+            public String tanggalakhir = "tanggalakhir"; //yyyy-MM-dd //added by Tonny @20-Aug-2017 //modified by ADI @08-Sep-2017
+            public String tanggalawal = "tanggalawal"; //yyyy-MM-dd //added by ADI @08-Sep-2017
         }
 
         //untuk menampung value filter omzet yang sudah dipilih

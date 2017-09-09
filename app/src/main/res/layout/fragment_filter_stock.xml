@@ -567,6 +567,53 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp"
+                    android:id="@+id/trLokasi"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Lokasi"
+                        android:gravity="right"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".3"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text=" : "
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <TextView
+                        android:id="@+id/tvLokasi"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.8"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        style="@android:style/Widget.Button"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <ImageButton
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight=".4"
+                        android:id="@+id/ibtnClearLokasi"
+                        android:src="@drawable/clearbutton"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:scaleType="centerCrop" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
                     android:id="@+id/trBlok"
                     android:visibility="gone">
 

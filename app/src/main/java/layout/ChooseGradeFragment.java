@@ -312,7 +312,10 @@ public class ChooseGradeFragment extends Fragment implements View.OnClickListene
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockpositionrandom") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang"))
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockpositionrandom") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang") ||
+                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperlokasi"))
                     {
                         LibInspira.setShared(global.stockmonitoringpreferences, global.stock.grade, finalHolder.adapterItem.getNama());
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());

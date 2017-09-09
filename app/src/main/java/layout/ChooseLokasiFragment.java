@@ -38,7 +38,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 //import android.app.Fragment;
 
-public class ChooseJenisFragment extends Fragment implements View.OnClickListener{
+public class ChooseLokasiFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
     private ImageButton ibtnSearch;
 
@@ -47,7 +47,7 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
-    public ChooseJenisFragment() {
+    public ChooseLokasiFragment() {
         // Required empty public constructor
     }
 
@@ -62,7 +62,7 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_choose, container, false);
-        getActivity().setTitle("Jenis");
+        getActivity().setTitle("Lokasi");
         return v;
     }
 
@@ -111,7 +111,7 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
 
         refreshList();
 
-        String actionUrl = "Master/getJenis/";
+        String actionUrl = "Master/getLokasi/";
         new getData().execute( actionUrl );
     }
 
@@ -142,7 +142,7 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
             }
             else
             {
-                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
+                if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString()) || LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString()))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -156,10 +156,9 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.jenis, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.lokasi, "");
         String[] pieces = data.trim().split("\\|");
-
-        if(pieces.length==1)
+        if(pieces.length==1 && pieces[0].equals(""))
         {
             tvNoData.setVisibility(View.VISIBLE);
         }
@@ -167,23 +166,24 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
         {
             tvNoData.setVisibility(View.GONE);
             for(int i=0 ; i < pieces.length ; i++){
-                Log.d("item", pieces[i] + "a");
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
                     String nomor = parts[0];
                     String nama = parts[1];
-                    String kode = parts[2];
-
+                    String gudang = parts[2];
+                    String kode = parts[3];
 
                     if(nomor.equals("null")) nomor = "";
                     if(nama.equals("null")) nama = "";
+                    if(gudang.equals("null")) gudang = "";
                     if(kode.equals("null")) kode = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
+                    dataItem.setGudang(gudang);
                     dataItem.setKode(kode);
                     list.add(dataItem);
 
@@ -209,25 +209,27 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
                 String tempData= "";
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
-                    for (int i = 0; i < jsonarray.length(); i++) {
+                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             String nomor = (obj.getString("nomor"));
                             String nama = (obj.getString("nama"));
+                            String gudang = (obj.getString("gudang"));
                             String kode = (obj.getString("kode"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
+                            if(gudang.equals("")) gudang = "null";
                             if(kode.equals("")) kode = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + kode + "|";
+                            tempData = tempData + nomor + "~" + nama + "~" + gudang + "~" + kode + "|";
                         }
                     }
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.jenis, "")))
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.lokasi, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.jenis,
+                                global.data.lokasi,
                                 tempData
                         );
                         refreshList();
@@ -253,6 +255,7 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
 
         private String nomor;
         private String nama;
+        private String gudang;
         private String kode;
 
         public ItemAdapter() {}
@@ -265,6 +268,9 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
+
+        public String getGudang() {return gudang;}
+        public void setGudang(String _param) {this.gudang = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -287,6 +293,7 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
         public class Holder {
             ItemAdapter adapterItem;
             TextView tvNama;
+            TextView tvKeterangan;
         }
 
         @Override
@@ -304,20 +311,19 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
             holder.adapterItem = items.get(position);
 
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
+            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
 
             row.setTag(holder);
-            setupItem(holder);
+            setupItem(holder, row);
 
             final Holder finalHolder = holder;
+            final View finalRow = row;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockposition") ||
-                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockpositionrandom") ||
-                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperbarang") ||
-                            LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperlokasi"))
+                    if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockrandomperlokasi"))
                     {
-                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.jenis, finalHolder.adapterItem.getNama());
+                        LibInspira.setShared(global.stockmonitoringpreferences, global.stock.lokasi, finalHolder.adapterItem.getNama());
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                 }
@@ -326,8 +332,10 @@ public class ChooseJenisFragment extends Fragment implements View.OnClickListene
             return row;
         }
 
-        private void setupItem(final Holder holder) {
+        private void setupItem(final Holder holder, final View row) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            holder.tvKeterangan.setText("GUDANG: " + holder.adapterItem.getGudang().toUpperCase());
+            holder.tvKeterangan.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -37,7 +37,7 @@
             android:title="NFC Tools" />
         <item
             android:id="@+id/nav_customer_prospecting"
-            android:icon="@drawable/nfctools"
+            android:icon="@drawable/user"
             android:title="Customer Prospecting" />
     </group>
 
