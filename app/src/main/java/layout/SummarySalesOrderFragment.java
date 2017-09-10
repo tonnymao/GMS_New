@@ -216,10 +216,8 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
         Log.d("pieces length", Integer.toString(pieces.length));
         if((pieces.length >= 1 && !pieces[0].equals(""))){
             for(int i=0 ; i < pieces.length ; i++){
-                Log.d("sebelum if", "");
                 if(!pieces[i].equals(""))
                 {
-                    Log.d("masuk if", "");
                     String[] parts = pieces[i].trim().split("~");
                     String fee = parts[6];
                     String subtotal = parts[8];
@@ -240,7 +238,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
             for(int i=0 ; i < pieces.length ; i++){
                 if(!pieces[i].equals(""))
                 {
-                    String[] parts = pieces[i].trim().split("\\~");
+                    String[] parts = pieces[i].trim().split("~");
                     String fee = parts[6];
                     String subtotal = parts[8];
                     if(fee.equals("")) fee = "0";
@@ -318,7 +316,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                         );
                     }
 
-                    String actionUrl = "Order/getCounter/";
+                    String actionUrl = "Order/getCounterHeader/";
                     checkCounter = new CheckCounter();
                     checkCounter.execute(actionUrl);
                 }
@@ -343,7 +341,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
         protected String doInBackground(String... urls) {
             //melakukan split pada salesorder_formatsetting berdasarkan char ","
             String data = LibInspira.getShared(global.datapreferences, global.data.salesorder_formatsetting, "");
-            String[] pieces = data.trim().split("\\,");
+            String[] pieces = data.trim().split(",");
             jsonObject = new JSONObject();
             //jika data tidak valid, maka batalkan request
             if(pieces.length > 1 && !pieces[0].equals(""))
@@ -361,7 +359,11 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
             }
 
             try {
-                jsonObject.put("kode", LibInspira.getShared(global.datapreferences, global.data.salesorder_header_kode, ""));
+                //jsonObject.put("kode", LibInspira.getShared(global.datapreferences, global.data.salesorder_header_kode, ""));  //remarked by Tonny @10-Sep-2017
+                Log.d("sending prefix: ", LibInspira.getShared(global.datapreferences, global.data.salesorder_prefix_kode, "") + "-" +
+                        String.format("%02d", Integer.parseInt(LibInspira.getShared(global.userpreferences, global.user.cabang, ""))) + "/");
+                jsonObject.put("prefix", LibInspira.getShared(global.datapreferences, global.data.salesorder_prefix_kode, "") + "-" +
+                        String.format("%02d", Integer.parseInt(LibInspira.getShared(global.userpreferences, global.user.cabang, ""))) + "/");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -380,12 +382,13 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             counter = (obj.getString("counter"));
-                            if(counter.equals("")) counter = "0";
+                            if(counter.equals("null")) counter = "0";
                         }
                     }
 
-                    //ditambah 1
-                    String nomorurut = Integer.toString(Integer.parseInt(counter) + 1);
+                    String nomorurut = counter.replaceFirst("^0*", "");  //added by Tonny @10-Sep-2017  untuk menghilangkan angka nol di bagian depan
+                    if (nomorurut.isEmpty()) nomorurut = "0";
+                    nomorurut = Integer.toString(Integer.parseInt(nomorurut) + 1); // ditambah 1 untuk data baru
 
                     if(!nomorurut.equals(LibInspira.getShared(global.datapreferences, global.data.salesorder_nomorurut_kode, "")))
                     {
@@ -395,7 +398,8 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                                 nomorurut
                         );
                     }
-                    //createAutogenerate();
+                    Log.d("nomor urut baru ", nomorurut);
+                    Log.d("kode baru ", getAutogenerate());
                 }
             }
             catch(Exception e)
@@ -448,11 +452,13 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 jsonObject.put("jenispenjualan", "Material");
                 jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, ""));
                 jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_isPPN, ""));
+                //-------------------------------------------------------------------------------------------------------//
+                //---------------------------------------------DETAIL----------------------------------------------------//
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //-------------------------------------------------------------------------------------------------------//
-            //---------------------------------------------DETAIL----------------------------------------------------//
             jsonObject = new JSONObject();
 
             String strNomor = "";
@@ -513,14 +519,16 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
     }
 
     private String getAutogenerate(){
-        //format yang diinginkan
-        String formatLengthNumerator = "%" + LibInspira.getShared(global.datapreferences, global.data.salesorder_length_kode, "") + "d";
+        //format numerator yang diinginkan
+        String formatLengthNumerator = "%0" + LibInspira.getShared(global.datapreferences, global.data.salesorder_length_kode, "") + "d";
         //prefix-[2digit cabang]/[2 digit tahun][2 digit bulan]/[nomor urut]
         String kodeHeaderOrderJual = LibInspira.getShared(global.datapreferences, global.data.salesorder_prefix_kode, "") + "-" +
                 String.format("%02d", Integer.parseInt(LibInspira.getShared(global.userpreferences, global.user.cabang, ""))) + "/" +
                 LibInspira.getCurrentDate(LibInspira.getShared(global.datapreferences, global.data.salesorder_formatdate_kode, "")) + "/" +
                 String.format(formatLengthNumerator, Integer.parseInt(LibInspira.getShared(global.datapreferences, global.data.salesorder_nomorurut_kode, "")));
         //LibInspira.ShowShortToast(getContext(), kodeHeaderOrderJual);
+        //Log.d("getAutogenerate: ", kodeHeaderOrderJual);
+        Log.d("length numerator: ", LibInspira.getShared(global.datapreferences, global.data.salesorder_length_kode, ""));
         return kodeHeaderOrderJual;
     }
 }

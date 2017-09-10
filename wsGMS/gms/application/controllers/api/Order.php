@@ -105,11 +105,11 @@ class Order extends REST_Controller {
 
         $this->gcm->send();
     }
-	
+
 	// --- POST insert new order jual --- //
 	//added by Tonny
 	function insertNewOrderJual_post()
-	{     
+	{
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
@@ -141,7 +141,7 @@ class Order extends REST_Controller {
         $jenispenjualan = (isset($jsonObject["jenispenjualan"]) ? $this->clean($jsonObject["jenispenjualan"])     : "");
         $isbarangimport = (isset($jsonObject["isbarangimport"]) ? $this->clean($jsonObject["isbarangimport"])     : "");
         $isppn = (isset($jsonObject["isppn"]) ? $this->clean($jsonObject["isppn"])     : "");
-		
+
 		$this->db->trans_begin();
 
         $query = "INSERT INTO thorderjual (Kode, Tanggal, NomorCustomer, KodeCustomer, NomorBroker, KodeBroker, NomorSales, KodeSales, SubTotal, SubtotalJasa, SubtotalBiaya, Disc, DiscNominal, DPP, PPN,
@@ -200,41 +200,21 @@ class Order extends REST_Controller {
         }
     }
 
-	//untuk menampilkan data di salesorder list
-	function getSalesOrderList_post(){
-		$data['data'] = array();
+    //added by Tonny
+    // untuk mendapatkan format setting untuk sales order
+    //output -> [prefix],[length nomor urut],[format bulan tahun],[header transaksi],[detail transaksi] -> 'SOP,5,YYMM,TTRANSAKSI,TDORDERJUAL'
+    function getFormatSettingSalesOrder_post(){
+        $data['data'] = array();
 
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-		$nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
-        $query = "SELECT a.Kode kode,
-                  a.Tanggal tanggal,
-                  a.NomorCabang nomorcabang,
-                  a.Cabang cabang,
-                  a.NomorCustomer nomorcustomer,
-                  a.KodeCustomer kodecustomer,
-                  b.nama namacustomer
-                  FROM thorderjual a
-                  JOIN tcustomer b
-                    ON b.nomor = a.nomorcustomer
-                  WHERE a.status = 1
-                    AND a.nomorsales = '$nomorsales'
-                    AND a.approve = 0
-                    AND a.kode LIKE "SOP-01%";
-        
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "219");
+        $query = "SELECT formatsetting FROM tformatsetting WHERE nomor = $nomor";
         $result = $this->db->query($query);
-
-        if( $result && $result->num_rows() > 0){
+        if($result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
-
                 array_push($data['data'], array(
-                                                'kode'					=> $r['kode'],
-                                                'tanggal' 			    => $r['tanggal'],
-                                                'nomorcabang' 			=> $r['nomorcabang'],
-                                                'cabang' 			    => $r['cabang'],
-                                                'nomorcustomer' 	    => $r['nomorcustomer'],
-                                                'kodecustomer' 			=> $r['kodecustomer'],
-                                                'namacustomer' 			=> $r['namacustomer']
+                                                'formatsetting'			=> $r['formatsetting']
                                                 )
                 );
             }
@@ -246,92 +226,50 @@ class Order extends REST_Controller {
             // Set the response and exit
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
-	}
+    }
 
     //added by Tonny
-    // TIDAK DIPAKAI ?
-//	function getSalesOrderItemList_post(){
-//        $data['data'] = array();
-//
-//        $value = file_get_contents('php://input');
-//        $jsonObject = (json_decode($value , true));
-//        $nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
-//        $query = "SELECT a.Kode kode,
-//                  a.Tanggal tanggal,
-//                  a.NomorCabang nomorcabang,
-//                  a.Cabang cabang,
-//                  a.NomorCustomer nomorcustomer,
-//                  a.KodeCustomer kodecustomer,
-//                  b.nama namacustomer
-//                  FROM thorderjual a
-//                  JOIN tcustomer b
-//                    ON b.nomor = a.nomorcustomer
-//                  WHERE a.status = 1
-//                    AND a.nomorsales = '$nomorsales'
-//                    AND a.approve = 0 ";
-//
-//        $result = $this->db->query($query);
-//
-//        if( $result && $result->num_rows() > 0){
-//            foreach ($result->result_array() as $r){
-//
-//                array_push($data['data'], array(
-//                                                'kode'					=> $r['kode'],
-//                                                'tanggal' 			    => $r['tanggal'],
-//                                                'nomorcabang' 			=> $r['nomorcabang'],
-//                                                'cabang' 			    => $r['cabang'],
-//                                                'nomorcustomer' 	    => $r['nomorcustomer'],
-//                                                'kodecustomer' 			=> $r['kodecustomer'],
-//                                                'namacustomer' 			=> $r['namacustomer']
-//                                                )
-//                );
-//            }
-//        }else{
-//            array_push($data['data'], array( 'query' => $this->error($query) ));
-//        }
-//
-//        if ($data){
-//            // Set the response and exit
-//            $this->response($data['data']); // OK (200) being the HTTP response code
-//        }
-//    }
-
-    //added by Tonny
-    // untuk mendapatkan format setting untuk sales order
-    //output -> [prefix],[length nomor urut],[format bulan tahun],[header transaksi],[detail transaksi] -> 'SOP,5,YYMM,TTRANSAKSI,TDORDERJUAL'
-    function getFormatSettingSalesOrder_post(){
+    //untuk mendapatkan nomor baru untuk salesorder header
+    function getCounterHeader_post(){
         $data['data'] = array();
 
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-        $nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
-        $query = "SELECT a.Kode kode,
-                  a.Tanggal tanggal,
-                  a.NomorCabang nomorcabang,
-                  a.Cabang cabang,
-                  a.NomorCustomer nomorcustomer,
-                  a.KodeCustomer kodecustomer,
-                  b.nama namacustomer
-                  FROM thorderjual a
-                  JOIN tcustomer b
-                    ON b.nomor = a.nomorcustomer
-                  WHERE a.status = 1
-                    AND a.nomorsales = '$nomorsales'
-                    AND a.approve = 0 ";
-
+        $prefix = (isset($jsonObject["prefix"]) ? $this->clean($jsonObject["prefix"])     : "SOP");  //input merupakan kodetransaksi
+        $query = "SELECT MAX(SUBSTR(kode, LOCATE('/', kode, 8) + 1)) AS counter FROM thorderjual WHERE kode LIKE '%$prefix%'";
+        //$query = "SELECT MAX(kode) as lastkode FROM thorderjual WHERE kode like '%$prefix%''";
         $result = $this->db->query($query);
-
         if( $result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
-
                 array_push($data['data'], array(
-                                                'kode'					=> $r['kode'],
-                                                'tanggal' 			    => $r['tanggal'],
-                                                'nomorcabang' 			=> $r['nomorcabang'],
-                                                'cabang' 			    => $r['cabang'],
-                                                'nomorcustomer' 	    => $r['nomorcustomer'],
-                                                'kodecustomer' 			=> $r['kodecustomer'],
-                                                'namacustomer' 			=> $r['namacustomer']
+                                                'counter'	=> $r['counter']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //added by Tonny
+    //untuk mendapatkan nomor baru untuk salesorder detail
+    function getCounterDetail_post(){
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $kode = (isset($jsonObject["kode"]) ? $this->clean($jsonObject["kode"])     : "tdorderjual");  //input merupakan kodetransaksi
+        $query = "SELECT akhir counter FROM tcount WHERE kode = '$kode'";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'counter'	=> $r['counter']
                                                 )
                 );
             }
