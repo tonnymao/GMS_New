@@ -975,7 +975,7 @@ class Master extends REST_Controller {
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
-        $query = "SELECT nomor, userid as nama FROM whuser_mobile order by nama desc";
+        $query = "SELECT nomor, userid as nama FROM whuser_mobile where tipeuser = 0 order by nama desc";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){

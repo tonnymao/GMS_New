@@ -2,6 +2,7 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -66,6 +67,10 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     /*****************************************************************************/
     //OnAttach dijalankan pada saat fragment ini terpasang pada Activity penampungnya
@@ -97,6 +102,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
             fab = (FloatingActionButton) getView().findViewById(R.id.fab);
             fab.setVisibility(View.VISIBLE);
             fab.setOnClickListener(this);
+            LibInspira.setShared(global.datapreferences, global.data.selectedUsers, "");
         }
 
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -137,7 +143,10 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
         }
         else if(id==R.id.fab)
         {
-
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "New Conversation");
+            LibInspira.setShared(global.datapreferences, global.data.selectedUsers, "");
+            LibInspira.setShared(global.datapreferences, global.data.selectedGroup, "");
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormGroupFragment());  //added by Shodiq @08-Sep-2017
         }
     }
 
@@ -201,11 +210,22 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
     }
 
     private class getData extends AsyncTask<String, Void, String> {
+        private boolean editMode = false;
+        private String nomor;
+
+        protected void setEditMode(String nomor) {
+            editMode = true;
+            this.nomor = nomor;
+        }
+
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
             try {
-                jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                if (editMode)
+                    jsonObject.put("nomor", nomor);
+                else
+                    jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -238,7 +258,15 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
 
                     }
                     Log.d("tempData: ", tempData);
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.groups, "")))
+                    if (editMode) {
+                        LibInspira.setShared(
+                                global.datapreferences,
+                                global.data.selectedUsers,
+                                tempData
+                        );
+                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new FormGroupFragment());
+                    }
+                    else if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.groups, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
@@ -268,7 +296,6 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
 
         private String nomor;
         private String nama;
-        private Boolean isChoosen = false;
 
         public ItemAdapter() {}
 
@@ -277,9 +304,6 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
-
-        public Boolean getChoosen() {return isChoosen;}
-        public void setChoosen(Boolean _param) {this.isChoosen = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -324,25 +348,28 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
             setupItem(holder);
 
             final Holder finalHolder = holder;
-            final View finalRow = row;
+            if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("Conversation")) {
+                row.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        String actionUrl = "Group/getDataGroup/";
+                        getData getdata = new getData();
+                        getdata.setEditMode(finalHolder.adapterItem.getNomor());
+                        getdata.execute(actionUrl);
+                        LibInspira.setShared(global.datapreferences, global.data.selectedGroup, finalHolder.adapterItem.getNomor() + "~" + finalHolder.adapterItem.getNama());
+
+                        return false;
+                    }
+                });
+            }
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     view.startAnimation(GlobalVar.listeffect);
-
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("schedule")) {
                         LibInspira.setShared(global.schedulepreferences, global.schedule.groupIDsch, finalHolder.adapterItem.getNomor());
                         LibInspira.setShared(global.schedulepreferences, global.schedule.groupsch, finalHolder.adapterItem.getNama());
                         LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SummaryScheduleFragment());
-                    }
-                    else if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("Conversation")) {
-                        if(finalHolder.adapterItem.getChoosen()) {
-                            finalHolder.adapterItem.setChoosen(false);
-                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorBackground));
-                        } else {
-                            finalHolder.adapterItem.setChoosen(true);
-                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
-                        }
                     }
                 }
             });
