@@ -163,7 +163,6 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
 
             @Override
             public void afterTextChanged(Editable editable) {
-                LibInspira.formatNumberEditText(etQty, this, true, false);
                 LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, etQty.getText().toString().replace(",", ""));
                 refreshData();
             }

@@ -92,6 +92,12 @@ public class LibInspira {
         _fragmentManager.popBackStack();
     }
 
+    public static void BackFragmentCount(FragmentManager _fragmentManager, Integer _count){
+        for(int i = 0; i < _count; ++i) {
+            _fragmentManager.popBackStack();
+        }
+    }
+
     //added by Tonny @15-Jul-2017
     public static void ShowShortToast(Context _context, String _message){
         Context context = _context;

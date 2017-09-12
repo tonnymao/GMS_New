@@ -122,7 +122,11 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         }
         else if(id==R.id.btnNext)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
+            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "").equals("")){
+                LibInspira.ShowShortToast(getContext(), "No item selected. Please add item to proceed");
+            }else{
+                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
+            }
         }
     }
 
