@@ -57,10 +57,10 @@
 
 
         <RelativeLayout
+            android:id="@+id/rlFooter"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:id="@+id/rlFooter"
             android:visibility="gone">
 
             <TableLayout
@@ -73,43 +73,43 @@
                     android:orientation="horizontal">
 
                     <Button
-                        style="?android:attr/buttonStyleSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:text="left"
                         android:id="@+id/btnLeft"
-                        android:background="@drawable/btnstyle1"
-                        android:textColor="@color/colorWhite"
-                        android:layout_weight="1"
-                        android:layout_margin="0dp"
-                        android:textSize="12dp"
-                        android:visibility="gone"/>
-
-                    <Button
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:text="Center"
+                        android:layout_margin="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btnstyle1"
+                        android:text="left"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+
+                    <Button
                         android:id="@+id/btnCenter"
-                        android:background="@drawable/btnstyle1"
-                        android:textColor="@color/colorWhite"
-                        android:layout_weight="1"
-                        android:layout_margin="0dp"
-                        android:textSize="12dp"
-                        android:visibility="gone"/>
-
-                    <Button
                         style="?android:attr/buttonStyleSmall"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:text="Right"
-                        android:id="@+id/btnRight"
-                        android:background="@drawable/btnstyle1"
-                        android:textColor="@color/colorWhite"
-                        android:layout_weight="1"
                         android:layout_margin="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btnstyle1"
+                        android:text="Center"
+                        android:textColor="@color/colorWhite"
                         android:textSize="12dp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btnRight"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btnstyle1"
+                        android:text="Right"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
                 </TableRow>
             </TableLayout>
         </RelativeLayout>

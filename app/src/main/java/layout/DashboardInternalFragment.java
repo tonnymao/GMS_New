@@ -128,8 +128,8 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
             //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());
         }else if (id==R.id.btnGroup){  //added by Tonny @23-Aug-2017
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "Conversation");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());  //added by ADI @04-Sep-2017
         }
-
     }
 }

@@ -58,10 +58,9 @@ class Group extends REST_Controller {
         
         $user = (isset($jsonObject["user"]) 			? $jsonObject["user"]      	: "");
 
-        $query = "SELECT head.nomor as nomor, head.nama as nama FROM whgroup_mobile head, whtdgroup_mobile detail 
-			where head.nomor = detail.nomorwhgroup and detail.nomorwhuser = $user 
-			and head.status_aktif = true and detail.status_aktif = true 
-			order by head.nama";
+        $query = "select he.nomor, he.nama from whtdgroup_mobile de
+		left join whgroup_mobile he on de.nomorwhgroup = he.nomor
+		where de.nomorwhuser = $user and he.status_aktif = true and de.status_aktif = true";
         
         $result = $this->db->query($query);
 
@@ -83,4 +82,130 @@ class Group extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
+    
+    function getDataGroup_post()
+    {
+		$data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        
+        $nomor = (isset($jsonObject["nomor"]) 			? $jsonObject["nomor"]      	: "");
+
+        $query = "SELECT users.nomor as nomor, users.userid as nama FROM gms_web.whuser_mobile users
+		left join gms_web.whtdgroup_mobile detail on detail.nomorwhuser = users.nomor
+		where detail.nomorwhgroup = $nomor and detail.status_aktif = true";
+        
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'         	=> $r['nomor'],
+                                                'nama' 				=> $r['nama']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
+    
+    function updateGroup_post()
+    {
+		$data['data'] = array();
+		
+		$value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        
+        $creator = (isset($jsonObject["creator"]) 		? $jsonObject["creator"]      	: "");
+        $nomor = (isset($jsonObject["nomor"]) 			? $jsonObject["nomor"]    	  	: "");
+        $nama = (isset($jsonObject["nama"]) 			? $jsonObject["nama"]    	  	: "");
+        $status = (isset($jsonObject["status"]) 		? $jsonObject["status"]     	: "");
+        $users = (isset($jsonObject["users"]) 			? $jsonObject["users"]			: "");
+        
+        $query = "UPDATE whgroup_mobile set 
+			nama = '$nama', 
+			status_aktif = $status 
+			WHERE nomor = $nomor
+        ";
+        $this->db->query($query);
+        
+        $query = "UPDATE whtdgroup_mobile set status_aktif = false, nomorremoveby = $creator WHERE nomorwhgroup = $nomor";
+        $this->db->query($query);
+        
+        $query = "UPDATE whtdgroup_mobile set status_aktif = true, nomorremoveby = 0 WHERE nomorwhgroup = $nomor and nomorwhuser = $creator";
+		$this->db->query($query);
+        
+        $userArray = explode('|', $users);
+        
+        foreach ($userArray as $user) {
+			$query = "UPDATE whtdgroup_mobile set status_aktif = true, nomorremoveby = 0 WHERE nomorwhgroup = $nomor and nomorwhuser = $user";
+			$this->db->query($query);
+			
+			$query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif) 
+			SELECT * FROM (SELECT $nomor, $user, $creator, NOW(), true) AS tmp 
+			WHERE NOT EXISTS (
+				SELECT nomorwhuser FROM whtdgroup_mobile WHERE nomorwhuser = $user and nomorwhgroup = $nomor
+			) LIMIT 1";
+        
+			$this->db->query($query);
+		}
+	}
+    
+    function newGroup_post()
+    {
+		$data['data'] = array();
+		
+		$value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        
+        $creator = (isset($jsonObject["creator"]) 		? $jsonObject["creator"]      	: "");
+        $nama = (isset($jsonObject["nama"]) 			? $jsonObject["nama"]    	  	: "");
+        $status = (isset($jsonObject["status"]) 		? $jsonObject["status"]     	: "");
+        $users = (isset($jsonObject["users"]) 			? $jsonObject["users"]			: "");
+        
+        $this->db->trans_begin();
+        
+        $query = "INSERT INTO whgroup_mobile (nama, nomorwhuser, status_aktif) VALUES('$nama', $creator, $status)";
+        
+        $this->db->query($query);
+        $id = $this->db->insert_id();
+        
+        $query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif) 
+        VALUES($id, $creator, $creator, NOW(), true)";
+        
+		$this->db->query($query);
+        
+        $userArray = explode('|', $users);
+        
+        foreach ($userArray as $user) {
+			$query = "INSERT INTO whtdgroup_mobile (nomorwhgroup, nomorwhuser, nomorinsertby, tgl_buat, status_aktif) 
+			VALUES($id, $user, $creator, NOW(), true)";
+        
+			$this->db->query($query);
+		}
+        
+        if ($this->db->trans_status() === FALSE)
+		{
+			$this->db->trans_rollback();
+			array_push($data['data'], array( 'query' => $this->error($query) ));	
+		}
+		else
+		{
+			$this->db->trans_commit();
+			array_push($data['data'], array( 'success' => 'true' ));
+		}
+		
+		if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
 }

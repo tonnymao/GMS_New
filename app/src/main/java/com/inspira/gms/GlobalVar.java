@@ -225,6 +225,9 @@ public class GlobalVar {
 
             //UNTUK MENYIMPAN DATA SALES ORDER LIST ITEM
             public String salesorder_list_item = "salesorder_list_item";  //kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @01-Sep-2017
+
+            public String selectedUsers = "users"; // nomor~nama //added by Shodiq @8-Sep-2017
+            public String selectedGroup = "group"; // nomor~nama //added by Shodiq @9-Sep-2017
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

@@ -2,16 +2,20 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -43,9 +47,11 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    private String tempSelectedUsers;
 
     public ChooseUserFragment() {
         // Required empty public constructor
+        tempSelectedUsers = LibInspira.getShared(global.datapreferences, global.data.selectedUsers, "");
     }
 
     @Override
@@ -89,6 +95,13 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
+        if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("Conversation")) {
+            ((RelativeLayout) getView().findViewById(R.id.rlFooter)).setVisibility(View.VISIBLE);
+            ((Button) getView().findViewById(R.id.btnCenter)).setVisibility(View.VISIBLE);
+            ((Button) getView().findViewById(R.id.btnCenter)).setText("Invite");
+            ((Button) getView().findViewById(R.id.btnCenter)).setOnClickListener(this);
+        }
+
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -121,10 +134,33 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         int id = view.getId();
 
-        if(id==R.id.ibtnSearch)
-        {
-            search();
+        switch (id) {
+            case R.id.ibtnSearch:
+                search();
+                break;
+            case R.id.btnCenter:
+                LibInspira.setShared(global.datapreferences, global.data.selectedUsers, tempSelectedUsers);
+                LibInspira.BackFragment(getActivity().getSupportFragmentManager());
+                break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("Conversation"))
+                        LibInspira.setShared(global.datapreferences, global.data.selectedUsers, tempSelectedUsers);
+                }
+                return false;
+            }
+        });
     }
 
     private void search()
@@ -177,6 +213,10 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setNama(nama);
+                    if (tempSelectedUsers.contains(nama))
+                        dataItem.setChoosen(true);
+
+
                     list.add(dataItem);
 
                     itemadapter.add(dataItem);
@@ -248,6 +288,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         private String nomor;
         private String nama;
+        private Boolean isChoosen = false;
 
         public ItemAdapter() {}
 
@@ -256,6 +297,9 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         public String getNama() {return nama;}
         public void setNama(String _param) {this.nama = _param;}
+
+        public Boolean getChoosen() {return isChoosen;}
+        public void setChoosen(Boolean _param) {this.isChoosen = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -297,9 +341,10 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
             holder.tvNama = (TextView)row.findViewById(R.id.tvName);
 
             row.setTag(holder);
-            setupItem(holder);
+            setupItem(holder, row);
 
             final Holder finalHolder = holder;
+            final View finalRow = row;
             final String type = LibInspira.getShared(global.schedulepreferences, global.schedule.typesch, "");
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -318,14 +363,38 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                         else
                             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SummaryScheduleFragment());
                     }
+                    else if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").contains("Conversation")) {
+                        if(finalHolder.adapterItem.getChoosen()) {
+                            finalHolder.adapterItem.setChoosen(false);
+                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                            finalHolder.tvNama.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            String remove = finalHolder.adapterItem.getNomor() + "~" + finalHolder.adapterItem.getNama() + "|";
+                            tempSelectedUsers = tempSelectedUsers.replace(remove, "");
+                        } else {
+                            finalHolder.adapterItem.setChoosen(true);
+                            finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
+                            finalHolder.tvNama.setTextColor(Color.WHITE);
+                            tempSelectedUsers += finalHolder.adapterItem.getNomor() + "~" + finalHolder.adapterItem.getNama() + "|";
+                        }
+                    }
                 }
             });
 
             return row;
         }
 
-        private void setupItem(final ChooseUserFragment.ItemListAdapter.Holder holder) {
+        private void setupItem(final Holder holder, final View row) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
+            if(holder.adapterItem.getChoosen())
+            {
+                row.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
+                holder.tvNama.setTextColor(Color.WHITE);
+            }
+            else
+            {
+                row.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                holder.tvNama.setTextColor(getResources().getColor(R.color.colorPrimary));
+            }
         }
     }
 }
