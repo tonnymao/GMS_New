@@ -123,25 +123,28 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
                 jsonObject.put("cabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
                 if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("ppn"))
                 {
+                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
                     jsonObject.put("approve", "0");
                     jsonObject.put("kode", "SOP-");
                 }
                 else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("nonppn"))
                 {
+                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
                     jsonObject.put("approve", "0");
                     jsonObject.put("kode", "OJP-");
                 }
                 else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("ppn"))
                 {
+                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
                     jsonObject.put("approve", "0");
                     jsonObject.put("kode", "SO-");
                 }
                 else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("nonppn"))
                 {
+                    jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
                     jsonObject.put("approve", "0");
                     jsonObject.put("kode", "OJN-");
                 }
