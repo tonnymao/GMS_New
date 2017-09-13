@@ -124,9 +124,10 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }
         else if(id==R.id.btnSalesOrder) //added by ADI @24-Aug-2017
         {
-            //remarked by Tonny @01-Sep-2017
-            //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "");
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
         }else if (id==R.id.btnGroup){  //added by Tonny @23-Aug-2017
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "Conversation");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());  //added by ADI @04-Sep-2017

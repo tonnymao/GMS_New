@@ -227,7 +227,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
                             String nama = (obj.getString("nama"));
                             String lat = "0";
                             String lon = "0";
-                            String hp = "";
+                            String hp = (obj.getString("telp"));
                             String location = "";
 
                             if(nomor.equals("")) nomor = "null";
@@ -347,10 +347,11 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase() + " " + holder.adapterItem.getHp());
             holder.tvLocation.setVisibility(View.VISIBLE);
             holder.tvLocation.setText("Location: " + holder.adapterItem.getLocation());
-            if(!holder.adapterItem.getHp().equals(""))
-            {
-                holder.ivCall.setVisibility(View.VISIBLE);
-            }
+            holder.ivCall.setVisibility(View.VISIBLE);
+//            if(!holder.adapterItem.getHp().equals(""))
+//            {
+//                holder.ivCall.setVisibility(View.VISIBLE);
+//            }
 
         }
     }

@@ -166,7 +166,8 @@ class Master extends REST_Controller {
 						a.nomor AS `nomor`,
 						a.nomortuser AS `nomorTUser`,
 						a.nomorthsales AS `nomorTHSales`,
-						b.kode AS `nama`
+						b.kode AS `nama`,
+						IFNULL(a.telp, '') AS telp
 					FROM whuser_mobile a
 					JOIN tuser b
 						ON b.nomor = a.nomortuser
@@ -181,7 +182,8 @@ class Master extends REST_Controller {
                 								'nomor'					=> $r['nomor'],
 												'nomorTUser' 			=> $r['nomorTUser'],
                                                 'nomorTHSales'         	=> $r['nomorTHSales'], 
-                								'nama' 					=> $r['nama']
+                								'nama' 					=> $r['nama'],
+                								'telp' 					=> $r['telp']
                 								)
                	);
             }

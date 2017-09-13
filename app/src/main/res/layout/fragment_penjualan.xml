@@ -16,14 +16,15 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/line1"
+                android:id="@+id/ll1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btnPPN"
@@ -66,6 +67,69 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnProyek"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Proyek"
+                    android:textSize="30dp"
+                    android:textStyle="bold"/>
+                <Button
+                    android:id="@+id/btnNonProyek"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Non Proyek"
+                    android:textSize="30dp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btnSalesOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Sales Order"
+                    android:textSize="30dp"
+                    android:textStyle="bold"/>
+                <Button
+                    android:id="@+id/btnDeliveryOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Delivery Order"
+                    android:textSize="30dp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
 </FrameLayout>

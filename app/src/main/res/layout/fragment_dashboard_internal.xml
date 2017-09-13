@@ -35,7 +35,7 @@
                     <ImageButton
                         android:id="@+id/ibtnContact"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:src="@drawable/contact"
@@ -43,7 +43,10 @@
                         android:elevation="10dp"
                         android:backgroundTint="@color/colorBackground"
                         android:scaleType="fitCenter"
-                        android:tint="@color/colorGMS" />
+                        android:adjustViewBounds="true"
+                        android:tint="@color/colorGMS"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
 
                     <TextView
                         android:id="@+id/tvContact"
@@ -66,7 +69,7 @@
                     <ImageButton
                         android:id="@+id/ibtnGroup"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:clickable="false"
@@ -74,6 +77,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/groupmessage"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -97,7 +101,7 @@
                     <ImageButton
                         android:id="@+id/ibtnNFC"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:clickable="false"
@@ -105,6 +109,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/nfctools"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -138,7 +143,7 @@
                     <ImageButton
                         android:id="@+id/ibtnSalesOrder"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:clickable="false"
@@ -146,6 +151,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/salesorder"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -169,7 +175,7 @@
                     <ImageButton
                         android:id="@+id/ibtnStockMonitoring"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
                         android:layout_marginLeft="8dp"
@@ -179,6 +185,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/stockreport"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -202,7 +209,7 @@
                     <ImageButton
                         android:id="@+id/ibtnPriceList"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:clickable="false"
@@ -210,6 +217,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/pricelist"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -244,7 +252,7 @@
                     <ImageButton
                         android:id="@+id/ibtnScheduleTask"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:clickable="false"
@@ -252,6 +260,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/scheduletask"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -275,7 +284,7 @@
                     <ImageButton
                         android:id="@+id/ibtnOmzet"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:clickable="false"
@@ -283,6 +292,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/omzet"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView
@@ -307,7 +317,7 @@
                     <ImageButton
                         android:id="@+id/ibtnReport"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:clickable="false"
@@ -315,6 +325,7 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/report"
                         android:backgroundTint="@color/colorBackground"
+                        android:adjustViewBounds="true"
                         android:tint="@color/colorGMS" />
 
                     <TextView

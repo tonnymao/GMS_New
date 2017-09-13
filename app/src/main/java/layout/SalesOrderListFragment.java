@@ -61,7 +61,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_sales_order_detail_item_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_choose, container, false);
         getActivity().setTitle("Sales Order List");
         return v;
     }
@@ -95,6 +95,15 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
 
         refreshList();
 
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") || LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval"))
+        {
+            fab.setVisibility(View.GONE);
+        }
+        else
+        {
+            fab.setVisibility(View.VISIBLE);
+        }
+
         checkData = new CheckData();
         checkData.execute( actionUrl );
     }
@@ -115,6 +124,49 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_sales, ""));
+                jsonObject.put("cabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("ppn"))
+                {
+                    jsonObject.put("approve", "0");
+                    jsonObject.put("kode", "SOP-");
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("nonppn"))
+                {
+                    jsonObject.put("approve", "0");
+                    jsonObject.put("kode", "OJP-");
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("ppn"))
+                {
+                    jsonObject.put("approve", "0");
+                    jsonObject.put("kode", "SO-");
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("nonppn"))
+                {
+                    jsonObject.put("approve", "0");
+                    jsonObject.put("kode", "OJN-");
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval"))
+                {
+                    jsonObject.put("approve", "0");
+                    jsonObject.put("kode", "OJP-|SOP-");
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval"))
+                {
+                    jsonObject.put("approve", "1");
+                    jsonObject.put("kode", "OJP-|SOP-");
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval"))
+                {
+                    jsonObject.put("approve", "0");
+                    jsonObject.put("kode", "OJN-|SO-");
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval"))
+                {
+                    jsonObject.put("approve", "1");
+                    jsonObject.put("kode", "OJN-|SO-");
+                }
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -192,7 +244,7 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
 
         if(id==R.id.fab)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderHeaderFragment());
         }
     }
 

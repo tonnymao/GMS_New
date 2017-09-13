@@ -99,6 +99,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.hash, obj.getString("user_hash"));
             LibInspira.setShared(global.userpreferences, global.user.cabang, obj.getString("user_cabang"));
             LibInspira.setShared(global.userpreferences, global.user.namacabang, obj.getString("user_nama_cabang"));
+            LibInspira.setShared(global.userpreferences, global.user.telp, obj.getString("user_telp"));
 
             LibInspira.setShared(global.userpreferences, global.user.role_isowner, obj.getString("role_isowner"));
             LibInspira.setShared(global.userpreferences, global.user.role_issales, obj.getString("role_issales"));
@@ -164,10 +165,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
                             LibInspira.hideLoading();
 
-                            Intent intent = new Intent(Login.this, IndexInternal.class);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-                            finish();
+                            if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
+                            {
+                                Intent intent = new Intent(Login.this, IndexInternal.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                                finish();
+                            }
+                            else if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("1"))
+                            {
+                                Intent intent = new Intent(Login.this, IndexExternal.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                                finish();
+                            }
                         }
                         else
                         {
@@ -226,10 +237,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             if(success.equals("true")){
                                 setdatauser(obj);
 
-                                Intent intent = new Intent(Login.this, IndexInternal.class);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-                                finish();
+                                if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0"))
+                                {
+                                    Intent intent = new Intent(Login.this, IndexInternal.class);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                                    finish();
+                                }
+                                else if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("1"))
+                                {
+                                    Intent intent = new Intent(Login.this, IndexExternal.class);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                                    finish();
+                                }
                             }
                             else
                             {

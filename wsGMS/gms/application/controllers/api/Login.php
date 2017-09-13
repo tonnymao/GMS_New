@@ -192,7 +192,8 @@ class Login extends REST_Controller {
 						a.tipeuser AS tipe,
 						a.nomorrole AS role,
 						a.hash AS `hash`,
-						c.nomorcabang AS cabang,
+						IFNULL(a.telp, '') AS telp,
+						a.nomorcabang AS cabang,
 						e.cabang AS namacabang,
 						b.isowner AS isowner,
 						b.issales AS issales,
@@ -208,11 +209,10 @@ class Login extends REST_Controller {
 						b.creategroup AS creategroup
 					FROM whuser_mobile a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
-					JOIN tuser c ON a.nomortuser = c.nomor
-					JOIN thsales d ON a.nomorthsales = d.nomor
-					JOIN tcabang e ON c.nomorcabang = e.nomor
+					LEFT JOIN tuser c ON a.nomortuser = c.nomor
+					LEFT JOIN thsales d ON a.nomorthsales = d.nomor
+					JOIN tcabang e ON a.nomorcabang = e.nomor
 					WHERE a.status_aktif = 1
-					AND c.status = 1
 					AND a.userid = '$user'
 					AND BINARY a.password = '$pass'";
         $result = $this->db->query($query, array($user, $pass));
@@ -229,7 +229,8 @@ class Login extends REST_Controller {
                 								'user_nama' 					=> $r['nama'], 
 												'user_tipe' 					=> $r['tipe'], 
 												'user_role' 					=> $r['role'], 
-												'user_hash' 					=> $r['hash'], 
+												'user_hash' 					=> $r['hash'],
+												'user_telp' 					=> $r['telp'],
 												'user_cabang' 					=> $r['cabang'],
 												'user_nama_cabang' 				=> $r['namacabang'],
 												'role_isowner'					=> $r['isowner'],
@@ -302,35 +303,35 @@ class Login extends REST_Controller {
 		
         $query = "	SELECT 
 						a.nomor AS nomor_android,
-						a.nomortuser AS nomor,
-						a.nomorthsales AS nomor_sales,
-						d.kode AS kode_sales,
-						a.password AS password,
-						a.userid AS nama,
-						a.tipeuser AS tipe,
-						a.nomorrole AS role,
-						a.hash AS hash,
-						c.nomorcabang AS cabang,
-						e.cabang AS namacabang,
-						b.isowner AS isowner,
-						b.issales AS issales,
-						b.setting AS setting,
-						b.settingtarget AS settingtarget,
-						b.salesorder AS salesorder,
-						b.stockmonitoring AS stockmonitoring,
-						b.pricelist AS pricelist,
-						b.addscheduletask AS addscheduletask,
-						b.salestracking AS salestracking,
-						b.hpp AS hpp,
+                        a.nomortuser AS nomor,
+                        a.password AS `password`,
+                        a.nomorthsales AS nomor_sales,
+                        d.kode AS kode_sales,
+                        a.userid AS nama,
+                        a.tipeuser AS tipe,
+                        a.nomorrole AS role,
+                        a.hash AS `hash`,
+                        IFNULL(a.telp, '') AS telp,
+                        a.nomorcabang AS cabang,
+                        e.cabang AS namacabang,
+                        b.isowner AS isowner,
+                        b.issales AS issales,
+                        b.setting AS setting,
+                        b.settingtarget AS settingtarget,
+                        b.salesorder AS salesorder,
+                        b.stockmonitoring AS stockmonitoring,
+                        b.pricelist AS pricelist,
+                        b.addscheduletask AS addscheduletask,
+                        b.salestracking AS salestracking,
+                        b.hpp AS hpp,
                         b.crossbranch AS crossbranch,
                         b.creategroup AS creategroup
-					FROM whuser_mobile a
-					JOIN whrole_mobile b ON a.nomorrole = b.nomor
-					JOIN tuser c ON a.nomortuser = c.nomor
-					JOIN thsales d ON a.nomorthsales = d.nomor
-					JOIN tcabang e ON c.nomorcabang = e.nomor
-					WHERE a.status_aktif = 1
-						AND c.status = 1		
+                    FROM whuser_mobile a
+                    JOIN whrole_mobile b ON a.nomorrole = b.nomor
+                    LEFT JOIN tuser c ON a.nomortuser = c.nomor
+                    LEFT JOIN thsales d ON a.nomorthsales = d.nomor
+                    JOIN tcabang e ON a.nomorcabang = e.nomor
+                    WHERE a.status_aktif = 1
 						AND hash = '$hash'";
         $result = $this->db->query($query);
 
@@ -348,7 +349,8 @@ class Login extends REST_Controller {
 													'user_nama' 					=> $r['nama'], 
 													'user_tipe' 					=> $r['tipe'], 
 													'user_role' 					=> $r['role'], 
-													'user_hash' 					=> $r['hash'], 
+													'user_hash' 					=> $r['hash'],
+													'user_telp' 					=> $r['telp'],
 													'user_cabang' 					=> $r['cabang'],
 													'user_nama_cabang' 				=> $r['namacabang'],  //added by Tonny
 													'role_isowner'					=> $r['isowner'],

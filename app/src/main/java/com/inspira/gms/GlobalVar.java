@@ -84,6 +84,7 @@ public class GlobalVar {
             public String tahun = "tahun"; //added by Tonny @07-Aug-2017 digunakan pada SalesTargetMonthly
         }
 
+        //untuk shared preferences yang boleh di clean tiap saat
         public class Temp
         {
             public String scheduletask_date = "scheduletask_date";
@@ -92,6 +93,9 @@ public class GlobalVar {
             public String scheduletask_description = "scheduletask_description";
             public String scheduletask_type = "scheduletask_type";
 
+            public String salesorder_type_proyek = "salesorder_type_proyek"; //added by ADI @13-Sep-2017
+            public String salesorder_type_task = "salesorder_type_task"; //added by ADI @13-Sep-2017
+            public String salesorder_type = "salesorder_type"; //added by ADI @13-Sep-2017
 
             public String salesorder_disc = "salesorder_disc"; //added by Tonny @06-Sep-2017
             public String salesorder_disc_nominal = "salesorder_disc_nominal"; //added by Tonny @06-Sep-2017
@@ -102,7 +106,6 @@ public class GlobalVar {
             public String salesorder_subtotal_fee = "salesorder_subtotal_fee";  //added by Tonny @06-Sep-2017
             public String salesorder_import = "salesorder_import"; //added by Tonny @06-Sep-2017
             public String salesorder_total = "salesorder_total"; //added by Tonny @06-Sep-2017
-
 
             public String salesorder_customer_nomor = "salesorder_customer_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_customer_kode = "salesorder_customer_kode"; //added by Tonny @05-Sep-2017
@@ -161,6 +164,7 @@ public class GlobalVar {
             public String token = "token";
             public String cabang = "cabang"; //added by ADI @07-Aug-2017
             public String namacabang = "namacabang"; //added by Tonny @06-Sep-2017
+            public String telp = "telp"; //added by ADI @12-Sep-2017
             public String role_isowner = "role_isowner"; //role untuk mengetahui user termasuk owner atau tidak (0/1)
             public String role_issales = "role_issales"; //role untuk mengetahui user termasuk sales atau tidak (0/1)
             public String role_setting = "role_setting"; //role apakah user dapat melakukan setting atau tidak (0/1)

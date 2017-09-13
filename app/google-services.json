@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1068687723844-qmv3hjkc5l739711snmsep1nfi6q3t6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inspira.gms",
+            "certificate_hash": "1223532cef4bebe01f7df7a277e60ab46384346e"
+          }
+        },
+        {
           "client_id": "1068687723844-5laeor32ilpl8bu8b47qqjpm0gd1o0im.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
