@@ -454,10 +454,12 @@ class Order extends REST_Controller {
 
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-		$nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "%");
+		$nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
 		$approve = (isset($jsonObject["approve"]) ? $this->clean($jsonObject["approve"])     : "0");
 		$kode = (isset($jsonObject["kode"]) ? $jsonObject["kode"]     : "");
 		$cabang = (isset($jsonObject["cabang"]) ? $this->clean($jsonObject["cabang"])     : "");
+
+        if($nomorsales!="") $nomorsales = " AND a.nomorsales = '" . $nomorsales . "'";
 
         $query = "SELECT a.Kode kode,
                   a.Tanggal tanggal,
@@ -470,7 +472,7 @@ class Order extends REST_Controller {
                   JOIN tcustomer b
                     ON b.nomor = a.nomorcustomer
                   WHERE a.status = 1
-                    AND a.nomorsales LIKE '$nomorsales'
+                    $nomorsales
                     AND a.approve = $approve
                     AND a.NomorCabang = $cabang
                     AND a.kode REGEXP '$kode'";
