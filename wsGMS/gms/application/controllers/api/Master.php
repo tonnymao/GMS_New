@@ -212,7 +212,9 @@ class Master extends REST_Controller {
 						a.nama AS `nama`,
 						a.NamaJual AS `namajual`,
 						b.satuan AS `satuan`,
-						a.HargaJualIDR AS `hargajual`
+						a.HargaJualIDR AS `hargajual`,
+						b.BarangTambang AS `tambang`,
+						b.BarangImport AS `import`
 					FROM tbarang a
 					JOIN vwbarang b ON a.nomor = b.nomor
 					WHERE a.aktif = 1
@@ -229,6 +231,8 @@ class Master extends REST_Controller {
                 								'namajual' 				=> $r['namajual'],
                 								'satuan' 				=> $r['satuan'],
                 								'hargajual' 			=> $r['hargajual'],
+                								'tambang' 	    		=> $r['tambang'],
+                								'import' 	    		=> $r['import'],
                 								)
                	);
             }
