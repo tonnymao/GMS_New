@@ -33,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.inspira.gms.GlobalVar;
@@ -184,9 +185,11 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
         this.googleMap = googleMap;
         addresses = new ArrayList<>();
         datetime = new ArrayList<>();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
         googleMap.clear();
         if (dateLocation != null) {
             for (int i = 0; i < dateLocation.size(); i++) {
+                builder.include(new LatLng(latitude.get(i), longitude.get(i)));
                 String[] dateTime = dateLocation.get(i).split(" ");
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 try {
@@ -236,7 +239,9 @@ public class SalesNavigationFragment extends Fragment implements OnMapReadyCallb
                     }
                 });
             }
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude.get(dateLocation.size() - 1), longitude.get(dateLocation.size() - 1)), 16);
+            LatLngBounds bounds = builder.build();
+            int padding = 50;
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             googleMap.animateCamera(cameraUpdate);
             googleMap.moveCamera(cameraUpdate);
             Log.i("SalesNavigationFragment", "map updated");
