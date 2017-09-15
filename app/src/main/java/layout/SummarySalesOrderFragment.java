@@ -95,7 +95,13 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
         tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
         tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
 
-        btnSave.setOnClickListener(this);
+        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide btnSave
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+        LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            btnSave.setVisibility(View.GONE);
+        }else{
+            btnSave.setOnClickListener(this);
+        }
         etDisc.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

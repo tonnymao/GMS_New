@@ -17,8 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
@@ -71,18 +74,26 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         super.onActivityCreated(bundle);
         list = new ArrayList<ItemAdapter>();
 
-        fab = (FloatingActionButton) getView().findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-
         itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item_salesorder, new ArrayList<ItemAdapter>());
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
 
+        fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         btnBack = (Button) getView().findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(this);
         btnNext = (Button) getView().findViewById(R.id.btnNext);
-        btnNext.setOnClickListener(this);
+
+        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide btnBack dan btnNext
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+                LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            btnBack.setVisibility(View.GONE);
+            btnNext.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
+        }else{
+            fab.setOnClickListener(this);
+            btnBack.setOnClickListener(this);
+            btnNext.setOnClickListener(this);
+        }
 
         refreshList();
         Log.d("onActivityCreated: ", "created");
@@ -366,12 +377,18 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
                 }
             });
 
-            holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                deleteSelectedItem(finalHolder.adapterItem.getIndex());
-                }
-            });
+            //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
+            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+                holder.ibtnDelete.setVisibility(View.GONE);
+            }else{
+                holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteSelectedItem(finalHolder.adapterItem.getIndex());
+                    }
+                });
+            }
             return row;
         }
 

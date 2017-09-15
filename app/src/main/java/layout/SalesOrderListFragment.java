@@ -168,7 +168,8 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
                     jsonObject.put("approve", "1");
                     jsonObject.put("kode", "OJN-|SO-");
                 }
-
+                Log.d("Tipe Proyek: ", LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, ""));
+                Log.d("Tipe Task: ", LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, ""));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -376,6 +377,10 @@ public class SalesOrderListFragment extends Fragment implements View.OnClickList
                 @Override
                 public void onClick(View view) {
                     //LibInspira.ShowLongToast(context, "coba");
+                    //pengecekan jika fragment ini pada menu approval atau disapproval
+                    if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") || LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+                        LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new SalesOrderApprovalFragment());
+                    }
                 }
             });
 
