@@ -8,6 +8,7 @@ package layout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -25,19 +26,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import static com.inspira.gms.IndexInternal.global;
-
+import static com.inspira.gms.IndexInternal.jsonObject;
 //import android.app.Fragment;
 
 public class FormSalesOrderDetailItemListFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
     protected ItemListAdapter itemadapter;
     protected ArrayList<ItemAdapter> list;
+    protected String jenisDetail;  //added by Tonny @16-Sep-2017
     private Button btnBack, btnNext;
     private FloatingActionButton fab;
-    protected String strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
+    protected String strData;
 
     public FormSalesOrderDetailItemListFragment() {
         // Required empty public constructor
@@ -54,7 +61,10 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sales_order_detail_item_list, container, false);
-        getActivity().setTitle("Sales Order - List Item");
+        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") &&
+                !LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            getActivity().setTitle("Sales Order - List Item");
+        }
         return v;
     }
 
@@ -95,8 +105,9 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
             btnNext.setOnClickListener(this);
         }
 
-        refreshList();
-        Log.d("onActivityCreated: ", "created");
+        //refreshList();
+        getStrData();
+        Log.d("onActivityCreated: ", "list item created");
     }
 
     @Override
@@ -151,7 +162,7 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
     {
         itemadapter.clear();
         list.clear();
-        getStrData();  //added by Tonny @07-Sep-2017
+        //getStrData();  //added by Tonny @07-Sep-2017
         if (strData.equals("")){
             return;
         }
@@ -242,10 +253,97 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
 
     protected void getStrData(){
         strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
+        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+                LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            String ActionUrl = "Order/getSalesOrderItemList/";
+            if(jenisDetail.equals("jasa")){
+                ActionUrl = "Order/getSalesOrderJasaList/";
+            }
+            GetList getList = new GetList();
+            getList.execute(ActionUrl);
+        }else{
+            refreshList();
+        }
+    }
+
+    protected class GetList extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            try {
+                //"nomor" == nomor header
+                jsonObject.put("nomor", LibInspira.getShared(global.temppreferences, global.temp.salesorder_selected_list_nomor, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try
+            {
+                String tempData= "";
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+                            //nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
+                            String nomorbarang = (obj.getString("nomorbarang"));
+                            String kodebarang = (obj.getString("kodebarang"));
+                            String namabarang = (obj.getString("namabarang"));
+                            String satuan = (obj.getString("satuan"));
+                            String price = (obj.getString("price"));
+                            String qty = (obj.getString("qty"));
+                            String fee = (obj.getString("fee"));
+                            String disc = (obj.getString("disc"));
+                            String subtotal = (obj.getString("subtotal"));
+                            String notes = (obj.getString("notes"));
+
+                            if(nomorbarang.equals("")) nomorbarang = "null";
+                            if(kodebarang.equals("")) kodebarang = "null";
+                            if(namabarang.equals("")) namabarang = "null";
+                            if(satuan.equals("")) satuan = "null";
+                            if(price.equals("")) price = "null";
+                            if(qty.equals("")) qty = "null";
+                            if(fee.equals("")) fee = "null";
+                            if(disc.equals("")) disc = "null";
+                            if(subtotal.equals("")) subtotal= "null";
+                            if(notes.equals("")) notes = "null";
+
+                            tempData = tempData + nomorbarang + "~" + kodebarang + "~" + namabarang + "~"
+                                    + satuan + "~" + price + "~" + qty + "~" + fee + "~" + disc + "~" + subtotal + "~" + notes + "|";
+                        }
+                    }
+                    if(!tempData.equals(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "")))
+                    {
+                        //added by Tonny @16-Sep-2017
+                        setStrData(tempData);
+                        refreshList();
+                    }
+                }
+                //tvInformation.animate().translationYBy(-80);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                //tvInformation.animate().translationYBy(-80);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //tvInformation.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void setStrData(String newdata){
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, newdata);
+        strData = newdata;
     }
 
     protected void setEditData(String index, String nomor, String nama, String kode, String satuan, String price, String qty, String fee, String disc, String notes){
@@ -259,7 +357,6 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, fee);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, disc);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_notes, notes);
-
         LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemFragment());
     }
 
@@ -359,29 +456,28 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
             row.setTag(holder);
             setupItem(holder);
 
-            final Holder finalHolder = holder;
-            row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    setEditData(String.valueOf(finalHolder.adapterItem.getIndex()),
-                            finalHolder.adapterItem.getNomor(),
-                            finalHolder.adapterItem.getNama(),
-                            finalHolder.adapterItem.getKode(),
-                            finalHolder.adapterItem.getSatuan(),
-                            finalHolder.adapterItem.getPrice(),
-                            finalHolder.adapterItem.getQty(),
-                            finalHolder.adapterItem.getFee(),
-                            finalHolder.adapterItem.getDisc(),
-                            finalHolder.adapterItem.getNotes()
-                            );
-                }
-            });
-
-            //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
+            //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete dan hilangkan listener click
             if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
                 holder.ibtnDelete.setVisibility(View.GONE);
             }else{
+                final Holder finalHolder = holder;
+                row.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setEditData(String.valueOf(finalHolder.adapterItem.getIndex()),
+                                finalHolder.adapterItem.getNomor(),
+                                finalHolder.adapterItem.getNama(),
+                                finalHolder.adapterItem.getKode(),
+                                finalHolder.adapterItem.getSatuan(),
+                                finalHolder.adapterItem.getPrice(),
+                                finalHolder.adapterItem.getQty(),
+                                finalHolder.adapterItem.getFee(),
+                                finalHolder.adapterItem.getDisc(),
+                                finalHolder.adapterItem.getNotes()
+                        );
+                    }
+                });
                 holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

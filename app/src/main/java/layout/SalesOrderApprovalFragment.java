@@ -1,43 +1,22 @@
 /******************************************************************************
  Author           : Tonny
- Description      : untuk menampilkan preview salesorder sebelum melakukan insert data
+ Description      : untuk menampilkan menu approval
  History          :
 
  ******************************************************************************/
 package layout;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTabHost;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TabHost;
-import android.widget.TextView;
-
-import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
 
 public class SalesOrderApprovalFragment extends Fragment implements View.OnClickListener{
 
@@ -71,14 +50,16 @@ public class SalesOrderApprovalFragment extends Fragment implements View.OnClick
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    SummarySalesOrderFragment tab1 = new SummarySalesOrderFragment();
-                    return tab1;
+                    SummarySalesOrderFragment tab0 = new SummarySalesOrderFragment();
+                    return tab0;
                 case 1:
-                    FormSalesOrderDetailItemListFragment tab2 = new FormSalesOrderDetailItemListFragment();
-                    return tab2;
+                    FormSalesOrderDetailItemListFragment tab1 = new FormSalesOrderDetailItemListFragment();
+                    tab1.jenisDetail = "item";
+                    return tab1;
                 case 2:
-                    FormSalesOrderDetailJasaListFragment tab3 = new FormSalesOrderDetailJasaListFragment();
-                    return tab3;
+                    FormSalesOrderDetailJasaListFragment tab2 = new FormSalesOrderDetailJasaListFragment();
+                    tab2.jenisDetail = "jasa";
+                    return tab2;
                 default:
                     return null;
             }
@@ -101,12 +82,10 @@ public class SalesOrderApprovalFragment extends Fragment implements View.OnClick
     //added by Tonny @15-Jul-2017
     //untuk mapping UI pada fragment, jangan dilakukan pada OnCreate, tapi dilakukan pada onActivityCreated
     @Override
-    public void onActivityCreated(Bundle bundle){
+    public void onActivityCreated(final Bundle bundle){
         super.onActivityCreated(bundle);
 
         TabLayout tabLayout = (TabLayout) getView().findViewById(R.id.tabLayout);
-        //tabLayout.addTab(tabLayout.newTab().setText("1"));
-        //tabLayout.addTab(tabLayout.newTab().setText("2"));
         final ViewPager viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
 
         viewPager.setAdapter(new PagerAdapter
@@ -119,6 +98,17 @@ public class SalesOrderApprovalFragment extends Fragment implements View.OnClick
 
             @Override
             public void onPageSelected(int position) {
+//                switch (position) {
+//                    case 0:
+//                        SummarySalesOrderFragment summary = new SummarySalesOrderFragment();
+//                        summary.onActivityCreated(null);
+//                    case 1:
+//                        FormSalesOrderDetailItemListFragment item = new FormSalesOrderDetailItemListFragment();
+//                        item.onActivityCreated(null);
+//                    case 2:
+//                        FormSalesOrderDetailItemListFragment jasa = new FormSalesOrderDetailItemListFragment();
+//                        jasa.onActivityCreated(null);
+//                }
             }
 
             @Override

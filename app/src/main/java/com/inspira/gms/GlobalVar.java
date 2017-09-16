@@ -146,8 +146,11 @@ public class GlobalVar {
             //added by Tonny @04-Sep-2017 untuk mengecek apakah salesorder yg akan diinputkan termasuk ppn atau bukan
             public String salesorder_isPPN = "salesorder_isPPN";
 
-            //added by Tonny @04-Sep-2017 untuk mengecek apakah salesorder yg akan diinputkan sudah diapprove atau tidak
-            public String salesorder_isApproved = "salesorder_isApproved";
+            //added by Tonny @16-Sep-2017 untuk menampung nomor sales order yang dipilih dari list (digunakan pada approval)
+            public String salesorder_selected_list_nomor = "salesorder_selected_list_nomor";
+
+            //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total
+            public String salesorder_summary = "salesorder_summary";
         }
 
         public class User

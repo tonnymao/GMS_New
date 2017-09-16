@@ -37,8 +37,11 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_sales_order_detail_item_list, container, false);
-        getActivity().setTitle("Sales Order - List Pekerjaan");
+        View v = inflater.inflate(R.layout.fragment_sales_order_detail_jasa_list, container, false);
+        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") &&
+                !LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            getActivity().setTitle("Sales Order - List Pekerjaan");
+        }
         return v;
     }
 
@@ -56,7 +59,7 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
-
+        Log.d("onActivityCreated: ", "list jasa created");
     }
 
     @Override
@@ -73,7 +76,7 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
     protected void refreshList(){
         itemadapter.clear();
         list.clear();
-        getStrData();  //added by Tonny @07-Sep-2017
+        //getStrData();  //added by Tonny @07-Sep-2017
         if (strData.equals("")){
             return;
         }
@@ -144,10 +147,20 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
     @Override
     protected void getStrData(){
         strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
+//        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
+//        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+//                LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+//            String ActionUrl = "Order/getSalesOrderPekerjaanList/";
+//            GetList getList = new GetList();
+//            getList.execute(ActionUrl);
+//        }else{
+//            refreshList();
+//        }
     }
     @Override
     protected void setStrData(String newdata){
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, newdata);
+        strData = newdata;
     }
 
     @Override

@@ -461,7 +461,9 @@ class Order extends REST_Controller {
 
         if($nomorsales!="") $nomorsales = " AND a.nomorsales = '" . $nomorsales . "'";
 
-        $query = "SELECT a.Kode kode,
+        $query = "SELECT
+                  a.Nomor nomor,
+                  a.Kode kode,
                   a.Tanggal tanggal,
                   a.NomorCabang nomorcabang,
                   a.Cabang cabang,
@@ -483,6 +485,7 @@ class Order extends REST_Controller {
             foreach ($result->result_array() as $r){
 
                 array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
                                                 'kode'					=> $r['kode'],
                                                 'tanggal' 			    => $r['tanggal'],
                                                 'nomorcabang' 			=> $r['nomorcabang'],
@@ -577,28 +580,132 @@ class Order extends REST_Controller {
     function getHeader_get(){
         $this->response($this->getNomorHeader('ttransaksi'));
     }
-//    function getCounterDetail_post(){
-//        $data['data'] = array();
-//
-//        $value = file_get_contents('php://input');
-//        $jsonObject = (json_decode($value , true));
-//        $kode = (isset($jsonObject["kode"]) ? $this->clean($jsonObject["kode"])     : "tdorderjual");  //input merupakan kodetransaksi
-//        $query = "SELECT akhir counter FROM tcount WHERE kode = '$kode'";
-//        $result = $this->db->query($query);
-//        if( $result && $result->num_rows() > 0){
-//            foreach ($result->result_array() as $r){
-//                array_push($data['data'], array(
-//                                                'counter'	=> $r['counter']
-//                                                )
-//                );
-//            }
-//        }else{
-//            array_push($data['data'], array( 'query' => $this->error($query) ));
-//        }
-//
-//        if ($data){
-//            // Set the response and exit
-//            $this->response($data['data']); // OK (200) being the HTTP response code
-//        }
-//    }
+
+    //added by Tonny
+    //untuk mendapatkan list item berdasarkan nomor thorderjual
+    function getSalesOrderItemList_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //data yang diperlukan
+        //nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
+        $query = "SELECT a.nomorbarang, a.kodebarang, b.nama namabarang, b.satuan, a.harga price, a.qty, a.fee, a.disc1 disc, a.subtotal, a.keterangandetail AS notes
+                  FROM tdorderjual a
+                  JOIN vwbarang b ON a.nomorbarang = b.nomor
+                  WHERE
+                    a.nomorheader = $nomor
+                    AND a.nomorpekerjaan = ''
+                    AND a.kodepekerjaan = '' ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomorbarang'	=> $r['nomorbarang'],
+                                                'kodebarang'	=> $r['kodebarang'],
+                                                'namabarang'	=> $r['namabarang'],
+                                                'satuan'    	=> $r['satuan'],
+                                                'price'     	=> $r['price'],
+                                                'qty'       	=> $r['qty'],
+                                                'fee'	        => $r['fee'],
+                                                'disc'	        => $r['disc'],
+                                                'subtotal'  	=> $r['subtotal'],
+                                                'notes'     	=> $r['notes']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //added by Tonny
+    //untuk mendapatkan list pekerjaan berdasarkan nomor thorderjual
+    function getSalesOrderPekerjaanList_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //data yang diperlukan
+        //nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
+        $query = "SELECT a.nomorpekerjaan AS nomorbarang, a.kodepekerjaan AS kodebarang, b.nama namabarang, b.satuan, a.harga price, a.qty, a.fee, a.disc1 disc, a.subtotal, a.keterangandetail AS notes
+                  FROM tdorderjual a
+                  JOIN vwpekerjaan b ON a.nomorpekerjaan = b.nomor
+                  WHERE
+                    a.nomorheader = $nomor
+                    AND a.nomorbarang is null
+                    AND a.kodebarang is null ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomorbarang'	=> $r['nomorbarang'],
+                                                'kodebarang'	=> $r['kodebarang'],
+                                                'namabarang'	=> $r['namabarang'],
+                                                'satuan'    	=> $r['satuan'],
+                                                'price'     	=> $r['price'],
+                                                'qty'       	=> $r['qty'],
+                                                'fee'	        => $r['fee'],
+                                                'disc'	        => $r['disc'],
+                                                'subtotal'  	=> $r['subtotal'],
+                                                'notes'     	=> $r['notes']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //added by Tonny
+    //untuk mendapatkan summary dari thorderjual
+    function getSalesOrderSummary_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //data yang diperlukan
+        //tanggal~customer~broker~valuta~subtotal~grandtotal
+        $query = "SELECT a.tanggal, b.nama namacustomer, c.nama namabroker, a.valuta, a.subtotal, a.disc, a.discnominal, a.ppn, a.ppnnominal, a.total
+                  FROM thorderjual a
+                      JOIN tcustomer b ON a.nomorcustomer = b.nomor
+                      JOIN thbroker c ON a.nomorbroker = c.nomor
+                  WHERE
+                    a.nomor = $nomor";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'tanggal'   	=> $r['tanggal'],
+                                                'namacustomer'	=> $r['namacustomer'],
+                                                'namabroker'	=> $r['namabroker'],
+                                                'valuta'    	=> $r['valuta'],
+                                                'subtotal'     	=> $r['subtotal'],
+                                                'disc'       	=> $r['disc'],
+                                                'discnominal'	=> $r['discnominal'],
+                                                'ppn'	        => $r['ppn'],
+                                                'ppnnominal'  	=> $r['ppnnominal'],
+                                                'total'     	=> $r['total']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
 }

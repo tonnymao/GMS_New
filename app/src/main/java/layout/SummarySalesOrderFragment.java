@@ -35,6 +35,7 @@ import static com.inspira.gms.IndexInternal.jsonObject;
 
 public class SummarySalesOrderFragment extends Fragment implements View.OnClickListener{
     private TextView tvCustomer, tvBroker, tvValuta, tvDate, tvSubtotal, tvGrandTotal, tvDiscNominal, tvPPNNominal;
+    private TextView tvPPN, tvDisc; //added by Tonny @17-Sep-2017  //untuk tampilan pada approval
     private EditText etDisc, etPPN;
     private Button btnSave;
     private RequestFormatSetting requestFormatSetting;
@@ -56,7 +57,13 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_summary_sales_order, container, false);
-        getActivity().setTitle("Sales Order Summary");
+        //tidak ganti title jika dipanggil pada saat approval atau disapproval
+        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") &&
+                !LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")) {
+            getActivity().setTitle("Sales Order Summary");
+        }else{  //added by Tonny @17-Sep-2017  //jika dipakai untuk approval, maka layout menggunakan fragment_summary_sales_order_approval untuk view saja
+            v = inflater.inflate(R.layout.fragment_summary_sales_order_approval, container, false);
+        }
         return v;
     }
 
@@ -82,68 +89,77 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
         tvGrandTotal = (TextView) getView().findViewById(R.id.tvGrandTotal);
         tvDiscNominal = (TextView) getView().findViewById(R.id.tvDiscNominal);
         tvPPNNominal = (TextView) getView().findViewById(R.id.tvPPNNominal);
-        etPPN = (EditText) getView().findViewById(R.id.etPPN);
-        etDisc = (EditText) getView().findViewById(R.id.etDisc);
         btnSave = (Button) getView().findViewById(R.id.btnSave);
 
-        etDisc.setText("0");
-        etPPN.setText("0");
         tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_date, ""));
         tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, ""));
         tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, ""));
         tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, ""));
-        tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
-        tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
 
-        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide btnSave
-        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
-        LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
-            btnSave.setVisibility(View.GONE);
-        }else{
+        if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") &&
+                !LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            etPPN = (EditText) getView().findViewById(R.id.etPPN);
+            etDisc = (EditText) getView().findViewById(R.id.etDisc);
+            etDisc.setText("0");
+            etPPN.setText("0");
             btnSave.setOnClickListener(this);
+            etDisc.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    LibInspira.formatNumberEditText(etDisc, this, true, false);
+                    tvDiscNominal.setText(LibInspira.delimeter(getNominalDiskon().toString()));
+                    tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
+                    tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc, etDisc.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc_nominal, tvDiscNominal.getText().toString().replace(",", ""));
+                }
+            });
+
+            etPPN.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    LibInspira.formatNumberEditText(etPPN, this, true, false);
+                    tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
+                    tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn, etPPN.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn_nominal, tvPPNNominal.getText().toString().replace(",", ""));
+                }
+            });
+
+            tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
+            tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
+        }else{  //added by Tonny @17-Sep-2017  jika untuk approval, beberapa property dihilangkan/diganti
+            tvPPN = (TextView) getView().findViewById(R.id.tvPPN);
+            tvDisc = (TextView) getView().findViewById(R.id.tvDisc);
+            btnSave.setVisibility(View.GONE);
+            tvSubtotal.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal, "")));
+            tvGrandTotal.setText("Rp. " + LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, "")));
+            tvDisc.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc, "")));
+            tvDiscNominal.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc_nominal, "")));
+            tvPPN.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn, "")));
+            tvPPNNominal.setText(LibInspira.delimeter(LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn_nominal, "")));
         }
-        etDisc.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                LibInspira.formatNumberEditText(etDisc, this, true, false);
-                tvDiscNominal.setText(LibInspira.delimeter(getNominalDiskon().toString()));
-                tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
-                tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
-                LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc, etDisc.getText().toString().replace(",", ""));
-                LibInspira.setShared(global.temppreferences, global.temp.salesorder_disc_nominal, tvDiscNominal.getText().toString().replace(",", ""));
-            }
-        });
-
-        etPPN.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                LibInspira.formatNumberEditText(etPPN, this, true, false);
-                tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
-                tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
-                LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn, etPPN.getText().toString().replace(",", ""));
-                LibInspira.setShared(global.temppreferences, global.temp.salesorder_ppn_nominal, tvPPNNominal.getText().toString().replace(",", ""));
-            }
-        });
 
     }
 
