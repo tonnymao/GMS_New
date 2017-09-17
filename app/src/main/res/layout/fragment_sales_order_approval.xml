@@ -23,7 +23,20 @@
                         android:background="@drawable/btnstyle1"
                         android:text="Approve"
                         android:textColor="@color/colorWhite"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:visibility="gone"/>
+
+                    <Button
+                        android:id="@+id/btnDisapprove"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:background="@drawable/btnstyle1"
+                        android:text="Disapprove"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp"
+                        android:visibility="gone"/>
 
             </RelativeLayout>
 

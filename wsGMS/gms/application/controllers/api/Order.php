@@ -708,4 +708,70 @@ class Order extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
+
+    // by Tonny
+    //Untuk insert data customer prospecting ke tabel tcustomerprospecting
+    function setApprove_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //$nomor = '253';
+        $query = "SELECT approve FROM thorderjual WHERE nomor = $nomor ";
+        $result = $this->db->query($query);
+//        echo $result->row()->approve;
+        $approve = 1;
+        $errormsg = '';
+        //cek jika sudah diapprove atau belum
+        if($result && $result->num_rows() > 0){
+            $approve = $result->row()->approve;
+            if($approve == 0){
+                //jika belum diapprove, maka lanjutkan untuk memastikan hargajual barang > hpp
+                $query = "SELECT a.hpp, a.hargajualidr
+                          FROM tbarang a
+                          JOIN tdorderjual b
+                            ON a.nomor = b.nomorbarang
+                          WHERE b.nomorheader = $nomor";
+                $result = $this->db->query($query);
+                $hpp = 0;
+                if($result && $result->num_rows() > 0){
+                    $iserror = false;
+                    //pengecekan jika harga jual barang melebihi hpp
+                    foreach ($result->result_array() as $row){
+                        if($row['hpp'] >= $row['hargajualidr']){
+                            $iserror = true;
+                            $errormsg = 'harga jual value must be more than hpp value';
+                        }elseif($row['hpp'] <= 0){  //pengecekan jika hpp = 0
+                            $iserror = true;
+                            $errormsg = 'hpp value must be more than 0';
+                        }
+                    }
+                    if($iserror){
+                        array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+                    }else{
+                        $query = "UPDATE thorderjual set approve = 1 WHERE nomor = $nomor ";
+                        $result = $this->db->query($query);
+                        if($result){
+                            array_push($data['data'], array( 'success' => 'true' ));
+                        }else{
+                            array_push($data['data'], array( 'error' => $this->error($query) ));
+                        }
+                        if ($data){
+                            // Set the response and exit
+                            $this->response($data['data']); // OK (200) being the HTTP response code
+                        }
+                    }
+				}else{
+				    $errormsg = 'data not found';
+				    array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+				}
+            }else{
+                $errormsg = 'data has been already approved';
+                array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+            }
+        }else{
+            $errormsg = 'data not found';
+            array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+        }
+    }
 }

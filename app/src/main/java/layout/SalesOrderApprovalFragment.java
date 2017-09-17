@@ -7,18 +7,33 @@
 package layout;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import static com.inspira.gms.IndexExternal.global;
+import static com.inspira.gms.IndexExternal.jsonObject;
+
 public class SalesOrderApprovalFragment extends Fragment implements View.OnClickListener{
+    private Button btnApprove, btnDisapprove;
+    private SetApproval setApproval;
+    private boolean isApproving;
 
     public SalesOrderApprovalFragment() {
         // Required empty public constructor
@@ -85,6 +100,18 @@ public class SalesOrderApprovalFragment extends Fragment implements View.OnClick
     public void onActivityCreated(final Bundle bundle){
         super.onActivityCreated(bundle);
 
+        btnApprove = (Button) getView().findViewById(R.id.btnApprove);
+        btnDisapprove = (Button) getView().findViewById(R.id.btnDisapprove);
+
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){
+            btnApprove.setVisibility(View.VISIBLE);
+            btnDisapprove.setVisibility(View.GONE);
+            btnApprove.setOnClickListener(this);
+        }else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            btnApprove.setVisibility(View.GONE);
+            btnDisapprove.setVisibility(View.VISIBLE);
+        }
+
         TabLayout tabLayout = (TabLayout) getView().findViewById(R.id.tabLayout);
         final ViewPager viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
 
@@ -145,7 +172,77 @@ public class SalesOrderApprovalFragment extends Fragment implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        //int id = view.getId();
+        int id = view.getId();
+        if(id == R.id.btnApprove){
+            isApproving = true;
+            String actionUrl = "Order/setApprove/";
+            setApproval = new SetApproval();
+            setApproval.execute(actionUrl);
+        }else if(id == R.id.btnDisapprove){
+            isApproving = false;
+            String actionUrl = "Order/setDisapprove/";
+            setApproval = new SetApproval();
+            setApproval.execute(actionUrl);
+        }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        setApproval.cancel(true);
+    }
+
+    private class SetApproval extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            try {
+                jsonObject.put("nomor", LibInspira.getShared(global.temppreferences, global.temp.salesorder_selected_list_nomor, ""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try
+            {
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("error")){
+                            LibInspira.hideLoading();
+                            LibInspira.ShowShortToast(getContext(), "Data has been successfully approved");
+                        }else{
+                            LibInspira.hideLoading();
+                            LibInspira.alertbox("Approving data", obj.getString("error"), getActivity(), new Runnable(){
+                                public void run() {
+                                    LibInspira.BackFragment(getFragmentManager());
+                                }
+                            }, null);
+                        }
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                LibInspira.hideLoading();
+                LibInspira.alertbox("Approving data", e.getMessage(), getActivity(), new Runnable(){
+                    public void run() {
+                        LibInspira.BackFragment(getFragmentManager());
+                    }
+                }, null);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            LibInspira.showLoading(getContext(), "Approving data", "Loading...");
+        }
+    }
 }
