@@ -771,6 +771,45 @@ class Master extends REST_Controller {
         }
     }
 
+    // --- POST get proyek --- //
+    function getProyek_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+
+        $query = "	SELECT
+                        a.nomor AS `nomor`,
+                        a.kode AS `kode`,
+                        a.nama AS `nama`,
+                        a.alamat AS `alamat`
+                    FROM tproyek a
+                    WHERE a.status = 1
+                    ORDER BY a.nama;";
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama'      		   	=> $r['nama'],
+                                                'alamat'      		   	=> $r['alamat']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
     // --- POST get lokasi --- //
     function getLokasi_post()
     {
@@ -907,7 +946,8 @@ class Master extends REST_Controller {
                     FROM tdharga a
                     JOIN tbarang b ON a.NomorBarang = b.nomor
                     WHERE b.Aktif = 1
-                     AND a.nomorheader = $cabang";
+                     AND a.nomorheader = $cabang
+                    ORDER BY b.NamaJual DESC";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
@@ -948,7 +988,8 @@ class Master extends REST_Controller {
                     FROM tdharga a
                     JOIN tbarang b ON a.NomorBarang = b.nomor
                     WHERE b.Aktif = 1
-                     AND a.nomorheader = $cabang";
+                     AND a.nomorheader = $cabang
+                    ORDER BY b.NamaJual DESC";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){

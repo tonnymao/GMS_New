@@ -45,7 +45,7 @@ class Order extends REST_Controller {
     }
 
     function error($string) {
-        return str_replace( array("\t", "\n") , "", $string);
+        return str_replace( array("\t", "\n", "\r") , "", $string);
     }
 
     public function send_gcm($registrationId,$message,$title,$fragment,$nomor,$nama)
@@ -128,175 +128,6 @@ class Order extends REST_Controller {
         }
     }
 
-//	// --- POST insert new order jual --- //
-//	//added by Tonny
-//	function insertNewOrderJual_post()
-//	{
-//        $data['data'] = array();
-//
-//        $value = file_get_contents('php://input');
-//		$jsonObject = (json_decode($value , true));
-//        ////////////////////////////////////////////////////////////////////////////////HEADER/////////////////////////////////////////////////////////////////////////////
-//		$headerkode = (isset($jsonObject["headerkode"]) ? $this->clean($jsonObject["headerkode"])     : "");  // berisi string 'ttransaksi'
-//        //$nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
-//        $nomor = $this->getNomorHeader($headerkode);
-//		$kode = (isset($jsonObject["kode"]) ? $this->clean($jsonObject["kode"]) : "");
-//        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "");
-//        $nomorcustomer = (isset($jsonObject["nomorcustomer"]) ? $this->clean($jsonObject["nomorcustomer"])     : "");
-//        $kodecustomer = (isset($jsonObject["kodecustomer"]) ? $this->clean($jsonObject["kodecustomer"])     : "");
-//        $nomorbroker = (isset($jsonObject["nomorbroker"]) ? $this->clean($jsonObject["nomorbroker"])     : "");
-//        $kodebroker = (isset($jsonObject["kodebroker"]) ? $this->clean($jsonObject["kodebroker"])     : "");
-//        $nomorsales  = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
-//        $kodesales = (isset($jsonObject["kodesales"]) ? $this->clean($jsonObject["kodesales"])     : "");
-//        $subtotal = (isset($jsonObject["subtotal"]) ? $this->clean($jsonObject["subtotal"])     : "");
-//        $subtotaljasa = (isset($jsonObject["subtotaljasa"]) ? $this->clean($jsonObject["subtotaljasa"])     : "");
-//        $subtotalbiaya = (isset($jsonObject["subtotalbiaya"]) ? $this->clean($jsonObject["subtotalbiaya"])     : "");
-//        $disc = (isset($jsonObject["disc"]) ? $this->clean($jsonObject["disc"])     : "0");
-//        $discnominal = (isset($jsonObject["discnominal"]) ? $this->clean($jsonObject["discnominal"])     : "0");
-//        $dpp = (isset($jsonObject["dpp"]) ? $this->clean($jsonObject["dpp"])     : "0");
-//        $ppn = (isset($jsonObject["ppn"]) ? $this->clean($jsonObject["ppn"])     : "0");
-//        $ppnnominal = (isset($jsonObject["ppnnominal"]) ? $this->clean($jsonObject["ppnnominal"])     : "");
-//        $total = (isset($jsonObject["total"]) ? $this->clean($jsonObject["total"])     : "");
-//        $totalrp = (isset($jsonObject["totalrp"]) ? $this->clean($jsonObject["totalrp"])     : "");
-//        $pembuat = (isset($jsonObject["pembuat"]) ? $this->clean($jsonObject["pembuat"])     : "");
-//        $nomorcabang = (isset($jsonObject["nomorcabang"]) ? $this->clean($jsonObject["nomorcabang"])     : "");
-//        $cabang = (isset($jsonObject["cabang"]) ? $this->clean($jsonObject["cabang"])     : "");
-//        $valuta = (isset($jsonObject["valuta"]) ? $this->clean($jsonObject["valuta"])     : "");
-//        $kurs = (isset($jsonObject["kurs"]) ? $this->clean($jsonObject["kurs"])     : "");
-//        $jenispenjualan = (isset($jsonObject["jenispenjualan"]) ? $this->clean($jsonObject["jenispenjualan"])     : "");
-//        $isbarangimport = (isset($jsonObject["isbarangimport"]) ? $this->clean($jsonObject["isbarangimport"])     : "");
-//        $isppn = (isset($jsonObject["isppn"]) ? $this->clean($jsonObject["isppn"])     : "");
-//
-//		$this->db->trans_begin();
-//
-//        $query = "INSERT INTO thorderjual (Nomor, Kode, Tanggal, NomorCustomer, KodeCustomer, NomorBroker, KodeBroker, NomorSales, KodeSales, SubTotal, SubtotalJasa, SubtotalBiaya, Disc, DiscNominal, DPP, PPN,
-//                  PPNNominal, Total, TotalRp, Pembuat, NomorCabang, Cabang, Valuta, Kurs, JenisPenjualan, IsBarangImport, IsPPN)
-//                  VALUES ($nomor, '$kode', '$tanggal', $nomorcustomer, '$kodecustomer', $nomorbroker, '$kodebroker', $nomorsales, '$kodesales', $subtotal, $subtotaljasa, $subtotalbiaya, $disc, $discnominal, $dpp, $ppn,
-//                  $ppnnominal, $total, $totalrp, '$pembuat', $nomorcabang, '$cabang', '$valuta', $kurs, '$jenispenjualan', $isbarangimport, $isppn)";
-//
-//        $this->db->query($query);
-//
-//        if ($this->db->trans_status() === FALSE)
-//        {
-//            $this->db->trans_rollback();
-//            array_push($data['data'], array( 'query' => $this->error($query) ));
-//        }else{
-//            //counter ttransaksi + 1 jika insert berhasil dilakukan
-//            $query = "UPDATE tcount set akhir = akhir + 1 WHERE kode = '$headerkode' ";
-//            $this->db->query($query);
-//            if ($this->db->trans_status() === FALSE)
-//            {
-//                $this->db->trans_rollback();
-//                array_push($data['data'], array( 'query' => $this->error($query) ));
-//                die();
-//            }
-//        }
-//
-//        ////////////////////////////////////////////////////////////////////////////////DETAIL/////////////////////////////////////////////////////////////////////////////
-//        $dataitemdetail = (isset($jsonObject["dataitemdetail"]) ? $this->clean($jsonObject["dataitemdetail"])     : "");
-//        $datapekerjaandetail = (isset($jsonObject["datapekerjaandetail"]) ? $this->clean($jsonObject["datapekerjaandetail"])     : "");
-//        $detailkode = (isset($jsonObject["detailkode"]) ? $this->clean($jsonObject["detailkode"])     : "");  // berisi string 'tdorderjual'
-//
-//        $pieces = explode('|', $dataitemdetail);
-//        if (count($pieces) > 1){
-//            for ($i = 0; $i < count($pieces); $i++) {
-//                $parts = explode("~", $pieces[i]);  //nomorbarang~kodebarang~namabarang~satuan~harga~qty~fee~disc~subtotal~notes
-//                //tambah count +1
-//                $nomordetail = $this->getNomorDetail($detailkode);
-//                $nomorheader = $nomor;
-//                $nomorbarang = $parts[0];
-//                $kodebarang = $parts[1];
-//                $qty = $parts[5];
-//                $jumlah = $parts[5];
-//                $harga = $parts[4];
-//                $fee = $parts[6];
-//                $hargamandor = parts[6];
-//                $disc1 = parts[7];
-//                $disc1nominal = $harga * $disc1 / 100 ;
-//                $netto = $harga - $disc1nominal + $fee;
-//                $subtotald = parts[8];
-//                $nomorbarangjual = $nomorbarang;
-//                $kodebarangjual = $kodebarang;
-//                $keterangandetail = parts[9];
-//
-//                //insert barang
-//                $query = "INSERT INTO tdorderjual (Nomor, NomorHeader, NomorBarang, KodeBarang, Qty, Jumlah, Harga, Fee,
-//                          HargaMandor, Disc1, DiscNominal, Netto, Subtotal, NomorBarangJual, KodeBarangJual, KeteranganDetail)
-//                          VALUES ($nomordetail, $nomorheader, $nomorbarang, '$kodebarang', $qty, $jumlah, $harga, $fee, $hargamandor, $disc1, $disc1nominal, $netto, $subtotald,
-//                          $nomorbarangjual, '$kodebarangjual', '$keterangandetail')";
-//
-//                $this->db->query($query);
-//
-//                if ($this->db->trans_status() === FALSE)
-//                {
-//                    $this->db->trans_rollback();
-//                    array_push($data['data'], array( 'query' => $this->error($query) ));
-//                }else{
-//                    //count + 1 jika insert berhasil dilakukan
-//                    $query = "UPDATE tcount set akhir = akhir + 1 WHERE kode = '$detailkode' ";
-//                    $this->db->query($query);
-//                    if ($this->db->trans_status() === FALSE)
-//                    {
-//                        $this->db->trans_rollback();
-//                        array_push($data['data'], array( 'query' => $this->error($query) ));
-//                    }
-//                }
-//            }
-//        }
-//
-//        $pieces = explode('|', $datapekerjaandetail);
-//        if (count($pieces) > 1){
-//            for ($i = 0; $i < count($pieces); $i++) {
-//                $parts = explode("~", $pieces[i]);  //nomorbarang~kodebarang~namabarang~satuan~harga~qty~fee~disc~subtotal~notes
-//                //tambah count +1
-//                $nomordetail = $this->getNomorDetail($detailkode);
-//                $nomorheader = $nomor;
-//                $nomorpekerjaan = $parts[0];
-//                $kodepekerjaan = $parts[1];
-//                $qty = $parts[5];
-//                $jumlah = $parts[5];
-//                $harga = $parts[4];
-//                $fee = $parts[6];
-//                $hargamandor = parts[6];
-//                $disc1 = parts[7];
-//                $disc1nominal = $harga * $disc1 / 100 ;
-//                $netto = $harga - $disc1nominal + $fee;
-//                $subtotald = parts[8];
-//                $keterangandetail = parts[9];
-//
-//                //insert pekerjaan
-//                $query = "INSERT INTO tdorderjual (Nomor, NomorHeader, NomorPekerjaan, KodePekerjaan, Qty, Jumlah, Harga, Fee,
-//                          HargaMandor, Disc1, DiscNominal, Netto, Subtotal, KeteranganDetail)
-//                          VALUES ($nomordetail, $nomorheader, $nomorpekerjaan, '$kodepekerjaan', $qty, $jumlah, $harga, $fee, $hargamandor, $disc1, $disc1nominal, $netto, $subtotald, '$keterangandetail')";
-//
-//                $this->db->query($query);
-//
-//                if ($this->db->trans_status() === FALSE)
-//                {
-//                    $this->db->trans_rollback();
-//                    array_push($data['data'], array( 'query' => $this->error($query) ));
-//                }else{
-//                    //count + 1 jika insert berhasil dilakukan
-//                    $query = "UPDATE tcount set akhir = akhir + 1 WHERE kode = '$detailkode' ";
-//
-//                    $this->db->query($query);
-//                    if ($this->db->trans_status() === FALSE)
-//                    {
-//                        $this->db->trans_rollback();
-//                        array_push($data['data'], array( 'query' => $this->error($query) ));
-//                    }else{
-//                        $this->db->trans_commit();
-//                        array_push($data['data'], array( 'success' => 'true' ));
-//                    }
-//                }
-//            }
-//        }
-//        if ($data){
-//            // Set the response and exit
-//            $this->response($data['data']); // OK (200) being the HTTP response code
-//        }
-//    }
-
 	// --- POST insert new order jual --- //
 	//added by Tonny
 	function insertNewOrderJual_post()
@@ -305,12 +136,8 @@ class Order extends REST_Controller {
 
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
+
         ////////////////////////////////////////////////////////////////////////////////HEADER/////////////////////////////////////////////////////////////////////////////
-		$headerkode = (isset($jsonObject["headerkode"]) ? $this->clean($jsonObject["headerkode"])     : "");  // berisi string 'ttransaksi'
-        //$nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
-        $nomor = $this->getNomorHeader($headerkode);
-		$kode = (isset($jsonObject["kode"]) ? $this->clean($jsonObject["kode"]) : "");
-        $tanggal = (isset($jsonObject["tanggal"]) ? $this->clean($jsonObject["tanggal"])     : "");
         $nomorcustomer = (isset($jsonObject["nomorcustomer"]) ? $this->clean($jsonObject["nomorcustomer"])     : "");
         $kodecustomer = (isset($jsonObject["kodecustomer"]) ? $this->clean($jsonObject["kodecustomer"])     : "");
         $nomorbroker = (isset($jsonObject["nomorbroker"]) ? $this->clean($jsonObject["nomorbroker"])     : "");
@@ -335,100 +162,220 @@ class Order extends REST_Controller {
         $jenispenjualan = (isset($jsonObject["jenispenjualan"]) ? $this->clean($jsonObject["jenispenjualan"])     : "");
         $isbarangimport = (isset($jsonObject["isbarangimport"]) ? $this->clean($jsonObject["isbarangimport"])     : "");
         $isppn = (isset($jsonObject["isppn"]) ? $this->clean($jsonObject["isppn"])     : "");
+        $proyek = (isset($jsonObject["proyek"]) ? $this->clean($jsonObject["proyek"])     : "");
+        $user = (isset($jsonObject["user"]) ? $this->clean($jsonObject["user"])     : "");
 
 		$this->db->trans_begin();
 
-        $query = "INSERT INTO thorderjual (Nomor, Kode, Tanggal, NomorCustomer, KodeCustomer, NomorBroker, KodeBroker, NomorSales, KodeSales, SubTotal, SubtotalJasa, SubtotalBiaya, Disc, DiscNominal, DPP, PPN,
-                  PPNNominal, Total, TotalRp, Pembuat, NomorCabang, Cabang, Valuta, Kurs, JenisPenjualan, IsBarangImport, IsPPN)
-                  VALUES ($nomor, '$kode', '$tanggal', $nomorcustomer, '$kodecustomer', $nomorbroker, '$kodebroker', $nomorsales, '$kodesales', $subtotal, $subtotaljasa, $subtotalbiaya, $disc, $discnominal, $dpp, $ppn,
-                  $ppnnominal, $total, $totalrp, '$pembuat', $nomorcabang, '$cabang', '$valuta', $kurs, '$jenispenjualan', $isbarangimport, $isppn)";
+        $query = "INSERT INTO thorderjual (
+                    Tanggal,
+                    NomorCustomer,
+                    KodeCustomer,
+                    NomorBroker,
+                    KodeBroker,
+                    NomorSales,
+                    KodeSales,
+                    SubTotal,
+                    SubtotalJasa,
+                    SubtotalBiaya,
+                    Disc,
+                    DiscNominal,
+                    DPP,
+                    PPN,
+                    PPNNominal,
+                    Total,
+                    TotalRp,
+                    Pembuat,
+                    NomorCabang,
+                    Cabang,
+                    Booking,
+                    Valuta,
+                    Kurs,
+                    JenisPenjualan,
+                    Proyek,
+                    IsBarangImport,
+                    IsPPN,
+                    status,
+                    dibuat_oleh,
+                    dibuat_pada)
+                  VALUES (
+                    NOW(),
+                    $nomorcustomer,
+                    '$kodecustomer',
+                    $nomorbroker,
+                    '$kodebroker',
+                    $nomorsales,
+                    '$kodesales',
+                    $subtotal,
+                    $subtotaljasa,
+                    $subtotalbiaya,
+                    $disc,
+                    $discnominal,
+                    $dpp,
+                    $ppn,
+                    $ppnnominal,
+                    $total,
+                    $totalrp,
+                    '$pembuat',
+                    $nomorcabang,
+                    '$cabang',
+                    0,
+                    '$valuta',
+                    $kurs,
+                    '$jenispenjualan',
+                    $proyek,
+                    $isbarangimport,
+                    $isppn,
+                    1,
+                    $user,
+                    NOW())";
         $this->db->query($query);
 
-        $query = "UPDATE tcount set akhir = akhir + 1 WHERE kode = '$headerkode' ";
-        $this->db->query($query);
+        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
+        $rows =  $this->db->insert_id();
+        array_push($data['data'], array( 'query' => $rows ));
+        $nomor = $rows['nomor'];
 
         ////////////////////////////////////////////////////////////////////////////////DETAIL/////////////////////////////////////////////////////////////////////////////
         $noitem = FALSE;
-        $detailkode = (isset($jsonObject["detailkode"]) ? $this->clean($jsonObject["detailkode"])     : "");  // berisi string 'tdorderjual'
-        $dataitemdetail = (isset($jsonObject["dataitemdetail"]) ? $this->clean($jsonObject["dataitemdetail"])     : "");
-        $datapekerjaandetail = (isset($jsonObject["datapekerjaandetail"]) ? $this->clean($jsonObject["datapekerjaandetail"])     : "");
+        $dataitemdetail = (isset($jsonObject["dataitemdetail"]) ? $jsonObject["dataitemdetail"]     : "");
+        $datapekerjaandetail = (isset($jsonObject["datapekerjaandetail"]) ? $jsonObject["datapekerjaandetail"]     : "");
 
         $pieces = explode('|', $dataitemdetail);
         if (count($pieces) > 1){
             for ($i = 0; $i < count($pieces); $i++) {
-                $parts = explode("~", $pieces[i]);  //nomorbarang~kodebarang~namabarang~satuan~harga~qty~fee~disc~subtotal~notes
-                //tambah count +1
-                $nomordetail = $this->getNomorDetail($detailkode);
-                $nomorheader = $nomor;
-                $nomorbarang = $parts[0];
-                $kodebarang = $parts[1];
-                $qty = $parts[5];
-                $jumlah = $parts[5];
-                $harga = $parts[4];
-                $fee = $parts[6];
-                $hargamandor = parts[6];
-                $disc1 = parts[7];
-                $disc1nominal = $harga * $disc1 / 100 ;
-                $netto = $harga - $disc1nominal + $fee;
-                $subtotald = parts[8];
-                $nomorbarangjual = $nomorbarang;
-                $kodebarangjual = $kodebarang;
-                $keterangandetail = parts[9];
-
-                //insert barang
-                $query = "INSERT INTO tdorderjual (Nomor, NomorHeader, NomorBarang, KodeBarang, Qty, Jumlah, Harga, Fee,
-                          HargaMandor, Disc1, DiscNominal, Netto, Subtotal, NomorBarangJual, KodeBarangJual, KeteranganDetail)
-                          VALUES ($nomordetail, $nomorheader, $nomorbarang, '$kodebarang', $qty, $jumlah, $harga, $fee, $hargamandor, $disc1, $disc1nominal, $netto, $subtotald,
-                          $nomorbarangjual, '$kodebarangjual', '$keterangandetail')";
-                $this->db->query($query);
-
-                if ($this->db->trans_status() === FALSE)
+                if($pieces[$i]!="")
                 {
-                    $this->db->trans_rollback();
-                    array_push($data['data'], array( 'query' => $this->error($query) ));
-                }else{
-                    $query = "UPDATE tcount set akhir = akhir + 1 WHERE kode = '$detailkode' ";
+                    $parts = explode("~", $pieces[$i]);
+                    //nomorbarang~kodebarang~namabarang~nomorbarangreal~kodebarangreal~namabarangreal~satuan~harga~qty~fee~disc~subtotal~notes
+                    $nomorheader = $nomor;
+                    $nomorbarang = $parts[0];
+                    $kodebarang = $parts[1];
+                    $nomorbarangreal = $parts[3];
+                    $kodebarangreal = $parts[4];
+                    $qty = $parts[8];
+                    $jumlah = $parts[8];
+                    $harga = $parts[7];
+                    $fee = $parts[9];
+                    $hargamandor = $parts[9];
+                    $disc1 = $parts[10];
+                    $disc1nominal = $harga * $disc1 / 100 ;
+                    $netto = $harga - $disc1nominal + $fee;
+                    $subtotald = $parts[11];
+                    $nomorbarangjual = $nomorbarang;
+                    $kodebarangjual = $kodebarang;
+                    $keterangandetail = $parts[12];
+
+                    //insert barang
+                    $query = "INSERT INTO tdorderjual (
+                                NomorHeader,
+                                NomorBarang,
+                                KodeBarang,
+                                Qty,
+                                Jumlah,
+                                Harga,
+                                Fee,
+                                HargaMandor,
+                                Disc1,
+                                Disc1Nominal,
+                                Disc2,
+                                Disc2Nominal,
+                                Netto,
+                                Subtotal,
+                                NomorPekerjaan,
+                                KodePekerjaan,
+                                NomorBarangJual,
+                                KodeBarangJual,
+                                KeteranganDetail,
+                                dibuat_oleh,
+                                dibuat_pada)
+                              VALUES (
+                                $nomorheader,
+                                $nomorbarangreal,
+                                '$kodebarangreal',
+                                $qty,
+                                $jumlah,
+                                $harga,
+                                $fee,
+                                $hargamandor,
+                                $disc1,
+                                $disc1nominal,
+                                0,
+                                0,
+                                $netto,
+                                $subtotald,
+                                0,
+                                '',
+                                $nomorbarangjual,
+                                '$kodebarangjual',
+                                '$keterangandetail',
+                                $user,
+                                NOW())";
                     $this->db->query($query);
                 }
             }
-        }else{  //jika tidak ada item yg diinputkan maka lakukan rollback dan error
-            $noitem = TRUE;
-            $this->db->trans_rollback();
-            array_push($data['data'], array( 'query' => $this->error($query) ));
         }
 
         $pieces = explode('|', $datapekerjaandetail);
-        if (count($pieces) > 1 && $noitem == FALSE){
+        if (count($pieces) > 1){
             for ($i = 0; $i < count($pieces); $i++) {
-                $parts = explode("~", $pieces[i]);  //nomorbarang~kodebarang~namabarang~satuan~harga~qty~fee~disc~subtotal~notes
-                //tambah count +1
-                $nomordetail = $this->getNomorDetail($detailkode);
-                $nomorheader = $nomor;
-                $nomorpekerjaan = $parts[0];
-                $kodepekerjaan = $parts[1];
-                $qty = $parts[5];
-                $jumlah = $parts[5];
-                $harga = $parts[4];
-                $fee = $parts[6];
-                $hargamandor = parts[6];
-                $disc1 = parts[7];
-                $disc1nominal = $harga * $disc1 / 100 ;
-                $netto = $harga - $disc1nominal + $fee;
-                $subtotald = parts[8];
-                $keterangandetail = parts[9];
-
-                //insert pekerjaan
-                $query = "INSERT INTO tdorderjual (Nomor, NomorHeader, NomorPekerjaan, KodePekerjaan, Qty, Jumlah, Harga, Fee,
-                          HargaMandor, Disc1, DiscNominal, Netto, Subtotal, KeteranganDetail)
-                          VALUES ($nomordetail, $nomorheader, $nomorpekerjaan, '$kodepekerjaan', $qty, $jumlah, $harga, $fee, $hargamandor, $disc1, $disc1nominal, $netto, $subtotald, '$keterangandetail')";
-                $this->db->query($query);
-
-                if ($this->db->trans_status() === FALSE)
+                if($pieces[$i]!="")
                 {
-                    $this->db->trans_rollback();
-                    array_push($data['data'], array( 'query' => $this->error($query) ));
-                }else{
-                    $query = "UPDATE tcount set akhir = akhir + 1 WHERE kode = '$detailkode' ";
+                    $parts = explode("~", $pieces[$i]);  //nomorbarang~kodebarang~namabarang~satuan~harga~qty~fee~disc~subtotal~notes
+                    array_push($data['data'], array( 'query' => $parts ));
+                    $nomorheader = $nomor;
+                    $nomorpekerjaan = $parts[0];
+                    $kodepekerjaan = $parts[1];
+                    $qty = $parts[5];
+                    $jumlah = $parts[5];
+                    $harga = $parts[4];
+                    $fee = 0;
+                    $hargamandor = 0;
+                    $disc1 = 0;
+                    $disc1nominal = 0;
+                    $subtotald = $parts[8];
+                    $keterangandetail = $parts[9];
+                    $netto = $harga - $disc1nominal + $fee;
+
+                    //insert pekerjaan
+                    $query = "INSERT INTO tdorderjual (
+                                NomorHeader,
+                                NomorPekerjaan,
+                                KodePekerjaan,
+                                Qty,
+                                Jumlah,
+                                Harga,
+                                Fee,
+                                HargaMandor,
+                                Disc1,
+                                Disc1Nominal,
+                                Disc2,
+                                Disc2Nominal,
+                                Netto,
+                                Subtotal,
+                                KeteranganDetail,
+                                Jasa,
+                                dibuat_oleh,
+                                dibuat_pada)
+                              VALUES (
+                                $nomorheader,
+                                $nomorpekerjaan,
+                                '$kodepekerjaan',
+                                $qty,
+                                $jumlah,
+                                $harga,
+                                $fee,
+                                $hargamandor,
+                                $disc1,
+                                $disc1nominal,
+                                0,
+                                0,
+                                $netto,
+                                $subtotald,
+                                '$keterangandetail',
+                                1,
+                                $user,
+                                NOW())";
                     $this->db->query($query);
                 }
             }
