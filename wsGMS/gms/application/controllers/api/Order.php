@@ -703,22 +703,79 @@ class Order extends REST_Controller {
                         }else{
                             array_push($data['data'], array( 'error' => $this->error($query) ));
                         }
-                        if ($data){
-                            // Set the response and exit
-                            $this->response($data['data']); // OK (200) being the HTTP response code
-                        }
                     }
 				}else{
 				    $errormsg = 'data not found';
 				    array_push($data['data'], array( 'error' => $this->error($errormsg) ));
 				}
             }else{
-                $errormsg = 'data has been already approved';
+                $errormsg = 'data has already been approved';
                 array_push($data['data'], array( 'error' => $this->error($errormsg) ));
             }
         }else{
             $errormsg = 'data not found';
             array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // by Tonny
+    //Untuk insert data customer prospecting ke tabel tcustomerprospecting
+    function setDisapprove_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //$nomor = '343';  //untuk percobaan function _get()
+        $query = "SELECT approve FROM thorderjual WHERE nomor = $nomor ";
+        $result = $this->db->query($query);
+        $iserror = false;
+        $approve = 0;
+        $errormsg = '';
+        //cek jika sudah di disapprove atau belum
+        if($result && $result->num_rows() > 0){
+            $approve = $result->row()->approve;
+            if($approve == 0){
+                $iserror = true;
+                $errormsg = 'Data has already been disapproved';
+            }
+            //pengecekan jika data sudah tertulis pada tabel thspk, thdeliveryorder, thnotajual, thopnameproyek maka batalkan disapprove
+            if(!$iserror){
+                $query = "SELECT * FROM thorderjual WHERE approve = 1
+                          and nomor not in (select NomorTHOrderJual from thspk where NomorTHOrderJual is not null)
+                          and nomor not in (select NomorTHOrderJual from thdeliveryorder where NomorTHOrderJual is not null)
+                          and nomor not in (select NomorTHOrderJual from thnotajual where NomorTHOrderJual is not null)
+                          and nomor not in (select NomorTHOrderJual from thopnameproyek where NomorTHOrderJual is not null)
+                          and nomor = $nomor ";
+                $result = $this->db->query($query);
+                //jika data valid, maka data boleh disapprove
+                if($result && $result->num_rows() > 0){
+                    $query = "UPDATE thorderjual
+                              SET approve = 0
+                              WHERE nomor = $nomor";
+                    $result = $this->db->query($query);
+                    if($result){
+                        array_push($data['data'], array( 'success' => 'true' ));
+                    }else{
+                        $errormsg = 'Disapprove failed, no data found';
+                        array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+                    }
+                }else{
+                    $iserror = true;
+                    $errormsg = 'Data not found';
+                }
+            }
+        }else{
+            $errormsg = 'Data not found';
+            array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
 }

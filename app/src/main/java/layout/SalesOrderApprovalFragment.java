@@ -103,13 +103,16 @@ public class SalesOrderApprovalFragment extends Fragment implements View.OnClick
         btnApprove = (Button) getView().findViewById(R.id.btnApprove);
         btnDisapprove = (Button) getView().findViewById(R.id.btnDisapprove);
 
-        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){  //jika approve, hide dan remove listener pada btnDisapprove
             btnApprove.setVisibility(View.VISIBLE);
-            btnDisapprove.setVisibility(View.GONE);
             btnApprove.setOnClickListener(this);
-        }else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            btnDisapprove.setVisibility(View.GONE);
+            btnDisapprove.setOnClickListener(null);
+        }else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){  //jika approve, hide dan remove listener pada btnApprove
             btnApprove.setVisibility(View.GONE);
+            btnApprove.setOnClickListener(null);
             btnDisapprove.setVisibility(View.VISIBLE);
+            btnDisapprove.setOnClickListener(this);
         }
 
         TabLayout tabLayout = (TabLayout) getView().findViewById(R.id.tabLayout);
@@ -189,7 +192,7 @@ public class SalesOrderApprovalFragment extends Fragment implements View.OnClick
     @Override
     public void onDestroy() {
         super.onDestroy();
-        setApproval.cancel(true);
+        if(setApproval != null) setApproval.cancel(true);
     }
 
     private class SetApproval extends AsyncTask<String, Void, String> {
