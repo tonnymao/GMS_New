@@ -141,11 +141,16 @@ public class LibInspira {
     //added by ADI @26-Jul-2017
     public static String delimeter(String _strNumber)
     {
-        DecimalFormat format=new DecimalFormat("#,###");
+        String result;
+        if(_strNumber.equals("")){  //modified by Tonny @24-Sep-2017
+            result = "0";
+        }else{
+            DecimalFormat format=new DecimalFormat("#,###");
 
-        if(_strNumber.equals("null")) return "-";
-        Double Raw = Double.parseDouble(_strNumber);
-        String result = String.valueOf(format.format(Raw));
+            if(_strNumber.equals("null")) return "-";
+            Double Raw = Double.parseDouble(_strNumber);
+            result = String.valueOf(format.format(Raw));
+        }
         return result;
     }
 

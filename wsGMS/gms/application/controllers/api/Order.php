@@ -657,7 +657,7 @@ class Order extends REST_Controller {
     }
 
     // by Tonny
-    //Untuk insert data customer prospecting ke tabel tcustomerprospecting
+    //Untuk approve sales order
     function setApprove_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
@@ -723,7 +723,7 @@ class Order extends REST_Controller {
     }
 
     // by Tonny
-    //Untuk insert data customer prospecting ke tabel tcustomerprospecting
+    //Untuk disapprove sales order
     function setDisapprove_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
@@ -771,6 +771,117 @@ class Order extends REST_Controller {
         }else{
             $errormsg = 'Data not found';
             array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // by Tonny
+    //Untuk approve delivery order
+    function setApproveDO_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //$nomor = '343';  //untuk percobaan function _get()
+        $query = "SELECT approve FROM thorderjual WHERE nomor = $nomor ";
+        $result = $this->db->query($query);
+    }
+
+    //by Tonny
+    //Untuk mendapatkan list DO
+    function getDeliveryOrderList_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
+        $approve = (isset($jsonObject["approve"]) ? $this->clean($jsonObject["approve"])     : "0");
+        $kode = (isset($jsonObject["kode"]) ? $jsonObject["kode"]     : "");
+        $cabang = (isset($jsonObject["cabang"]) ? $this->clean($jsonObject["cabang"])     : "");
+
+        if($nomorsales!="") $nomorsales = " AND a.nomorsales = '" . $nomorsales . "'";
+
+        $query = "SELECT
+                  a.Nomor nomor,
+                  a.Kode kode,
+                  a.Tanggal tanggal,
+                  a.NomorCabang nomorcabang,
+                  a.Cabang cabang,
+                  a.NomorCustomer nomorcustomer,
+                  a.KodeCustomer kodecustomer,
+                  b.nama namacustomer
+                  FROM thdeliveryorder a
+                  JOIN tcustomer b
+                    ON b.nomor = a.nomorcustomer
+                  WHERE a.status = 1
+                    $nomorsales
+                    AND a.approve = $approve
+                    AND a.NomorCabang = $cabang";
+
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode'					=> $r['kode'],
+                                                'tanggal' 			    => $r['tanggal'],
+                                                'nomorcabang' 			=> $r['nomorcabang'],
+                                                'cabang' 			    => $r['cabang'],
+                                                'nomorcustomer' 	    => $r['nomorcustomer'],
+                                                'kodecustomer' 			=> $r['kodecustomer'],
+                                                'namacustomer' 			=> $r['namacustomer']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //added by Tonny
+    //untuk mendapatkan list item berdasarkan nomor thdeliveryorder
+    function getDeliveryOrderItemList_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //data yang diperlukan
+        //nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
+        //$query = "SELECT a.nomorbarang, a.kodebarang, b.nama namabarang, b.satuan, a.harga price, a.qty, a.fee, a.disc1 disc, a.subtotal, a.keterangandetail AS notes
+        $query = "SELECT a.nomorbarang, a.kodebarang, b.nama namabarang, b.satuan, a.jumlah as qty
+                  FROM tddeliveryorder a
+                  JOIN vwbarang b ON a.nomorbarang = b.nomor
+                  WHERE
+                    a.nomorheader = $nomor ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomorbarang'	=> $r['nomorbarang'],
+                                                'kodebarang'	=> $r['kodebarang'],
+                                                'namabarang'	=> $r['namabarang'],
+                                                'satuan'    	=> $r['satuan'],
+                                                'price'     	=> '',
+                                                'qty'       	=> $r['qty'],
+                                                'fee'	        => '',
+                                                'disc'	        => '',
+                                                'subtotal'  	=> '',
+                                                'notes'     	=> ''
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
         }
 
         if ($data){

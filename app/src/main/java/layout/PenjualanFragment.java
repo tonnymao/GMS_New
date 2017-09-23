@@ -152,8 +152,9 @@ public class PenjualanFragment extends Fragment implements View.OnClickListener{
         }
         else if(id==R.id.btnDeliveryOrder)
         {
-//            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "deliveryorder");
-//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderHeaderFragment());
+            //added by Tonny @24-Sep-2017
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "deliveryorder");
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new DeliveryOrderListFragment());
         }
     }
 

@@ -143,14 +143,25 @@ public class GlobalVar {
             public String salesorder_item_subtotal = "salesorder_item_subtotal"; //added by Tonny @05-Sep-2017
             public String salesorder_item_notes = "salesorder_item_notes"; //added by Tonny @01-Sep-2017
 
+            //added by Tonny @24-Sep-2017
+            public String deliveryorder_item = "deliveryorder_item";
+            public String deliveryorder_item_index = "deliveryorder_item_index";
+            public String deliveryorder_item_nomor = "deliveryorder_item_nomor";
+            public String deliveryorder_item_nama = "deliveryorder_item_nama";
+            public String deliveryorder_item_kode = "deliveryorder_item_kode";
+            public String deliveryorder_item_satuan = "deliveryorder_item_satuan";
+            public String deliveryorder_item_price = "deliveryorder_item_price";
+            public String deliveryorder_item_qty = "deliveryorder_item_qty";
+            public String deliveryorder_item_fee = "deliveryorder_item_fee";
+            public String deliveryorder_item_disc = "deliveryorder_item_disc";
+            public String deliveryorder_item_subtotal = "deliveryorder_item_subtotal";
+            public String deliveryorder_item_notes = "deliveryorder_item_notes";
+
             //added by Tonny @04-Sep-2017 untuk mengecek apakah salesorder yg akan diinputkan termasuk ppn atau bukan
             public String salesorder_isPPN = "salesorder_isPPN";
 
             //added by Tonny @16-Sep-2017 untuk menampung nomor sales order yang dipilih dari list (digunakan pada approval)
             public String salesorder_selected_list_nomor = "salesorder_selected_list_nomor";
-
-            //added by Tonny @17-Sep-2017 untuk menampung data summary sementara  //tanggal~namacustomer~namabroker~valuta~subtotal~disc~discnominal~ppn~ppnnominal~total
-            public String salesorder_summary = "salesorder_summary";
         }
 
         public class User
@@ -232,6 +243,9 @@ public class GlobalVar {
 
             //UNTUK MENYIMPAN DATA SALES ORDER LIST ITEM
             public String salesorder_list_item = "salesorder_list_item";  //kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @01-Sep-2017
+
+            //UNTUK MENYIMPAN DATA DELIVERY ORDER LIST ITEM
+            public String deliveryorder_list_item = "deliveryorder_list_item";  //kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @24-Sep-2017
 
             public String selectedUsers = "users"; // nomor~nama //added by Shodiq @8-Sep-2017
             public String selectedGroup = "group"; // nomor~nama //added by Shodiq @9-Sep-2017
