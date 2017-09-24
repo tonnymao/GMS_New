@@ -40,10 +40,9 @@ public class FormDODetailItemListFragment extends Fragment implements View.OnCli
     private ListView lvSearch;
     protected ItemListAdapter itemadapter;
     protected ArrayList<ItemAdapter> list;
-    protected String jenisDetail;  //added by Tonny @16-Sep-2017
     private Button btnBack, btnNext;
     private FloatingActionButton fab;
-    protected String strData;
+    private String strData;
 
     public FormDODetailItemListFragment() {
         // Required empty public constructor
@@ -257,10 +256,6 @@ public class FormDODetailItemListFragment extends Fragment implements View.OnCli
         if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
                 LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
             String ActionUrl = "Order/getDeliveryOrderItemList/";
-            //DO tidak memiliki pekerjaan
-//            if(jenisDetail.equals("jasa")){
-//                ActionUrl = "Order/getSalesOrderJasaList/";
-//            }
             GetList getList = new GetList();
             getList.execute(ActionUrl);
         }else{
@@ -323,8 +318,8 @@ public class FormDODetailItemListFragment extends Fragment implements View.OnCli
                     {
                         //added by Tonny @16-Sep-2017
                         setStrData(tempData);
-                        refreshList();
                     }
+                    refreshList();
                 }
                 //tvInformation.animate().translationYBy(-80);
             }

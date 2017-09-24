@@ -780,15 +780,50 @@ class Order extends REST_Controller {
     }
 
     // by Tonny
-    //Untuk approve delivery order
+    // Untuk approve delivery order
     function setApproveDO_post(){
         $data['data'] = array();
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thdeliveryorder
+        $username = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "");  //input merupakan nama user
         //$nomor = '343';  //untuk percobaan function _get()
-        $query = "SELECT approve FROM thorderjual WHERE nomor = $nomor ";
+        $query = "CALL SP_APPROVE_DO($nomor, '$username') ";
         $result = $this->db->query($query);
+        if($result){
+            array_push($data['data'], array( 'success' => 'true' ));
+        }else{
+            $errormsg = 'Approve failed';
+            //array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+            array_push($data['data'], array( 'error' => $this->error($query) ));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    // by Tonny
+    // Untuk disapprove delivery order
+    function setDisapproveDO_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thdeliveryorder
+        $username = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "");  //input merupakan nama user
+        //$nomor = '343';  //untuk percobaan function _get()
+        $query = "CALL SP_DISAPPROVE_DO($nomor, '$username') ";
+        $result = $this->db->query($query);
+        if($result){
+            array_push($data['data'], array( 'success' => 'true' ));
+        }else{
+            $errormsg = 'Disapprove failed';
+            array_push($data['data'], array( 'error' => $this->error($errormsg) ));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
     }
 
     //by Tonny

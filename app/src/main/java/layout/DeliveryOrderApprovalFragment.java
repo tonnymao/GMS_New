@@ -49,7 +49,11 @@ public class DeliveryOrderApprovalFragment extends Fragment implements View.OnCl
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_delivery_order_approval, container, false);
-        getActivity().setTitle("Approval Delivery Order");
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){
+            getActivity().setTitle("Approval Delivery Order");
+        }else{
+            getActivity().setTitle("Disapproval Delivery Order");
+        }
         return v;
     }
 
@@ -66,7 +70,7 @@ public class DeliveryOrderApprovalFragment extends Fragment implements View.OnCl
             switch (position) {
                 case 0:
                     FormDODetailItemListFragment tab0 = new FormDODetailItemListFragment();
-                    tab0.jenisDetail = "item";
+//                    tab0.jenisDetail = "item";
                     return tab0;
                 default:
                     return null;
@@ -130,7 +134,7 @@ public class DeliveryOrderApprovalFragment extends Fragment implements View.OnCl
             }
         });
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText("Item");
+        tabLayout.getTabAt(0).setText("Item List");
     }
 
     @Override
@@ -166,6 +170,7 @@ public class DeliveryOrderApprovalFragment extends Fragment implements View.OnCl
             jsonObject = new JSONObject();
             try {
                 jsonObject.put("nomor", LibInspira.getShared(global.temppreferences, global.temp.salesorder_selected_list_nomor, ""));
+                jsonObject.put("username", LibInspira.getShared(global.userpreferences, global.user.nama, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -183,10 +188,21 @@ public class DeliveryOrderApprovalFragment extends Fragment implements View.OnCl
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("error")){
                             LibInspira.hideLoading();
-                            LibInspira.ShowShortToast(getContext(), "Data has been successfully approved");
+                            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){
+                                LibInspira.ShowShortToast(getContext(), "Data has been successfully approved");
+                            }else{
+                                LibInspira.ShowShortToast(getContext(), "Data has been successfully disapproved");
+                            }
+                            LibInspira.BackFragment(getFragmentManager());
                         }else{
                             LibInspira.hideLoading();
-                            LibInspira.alertbox("Approving data", obj.getString("error"), getActivity(), new Runnable(){
+                            String strAlert;
+                            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){
+                                strAlert = "Approving data";
+                            }else{
+                                strAlert = "Disapproving data";
+                            }
+                            LibInspira.alertbox(strAlert, obj.getString("error"), getActivity(), new Runnable(){
                                 public void run() {
                                     LibInspira.BackFragment(getFragmentManager());
                                 }
