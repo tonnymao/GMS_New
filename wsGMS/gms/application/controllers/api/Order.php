@@ -851,10 +851,13 @@ class Order extends REST_Controller {
                   FROM thdeliveryorder a
                   JOIN tcustomer b
                     ON b.nomor = a.nomorcustomer
+                  JOIN thorderjual c
+                    ON c.nomor = a.nomorthorderjual
                   WHERE a.status = 1
                     $nomorsales
                     AND a.approve = $approve
-                    AND a.NomorCabang = $cabang";
+                    AND a.NomorCabang = $cabang
+                    AND c.kode REGEXP '$kode' ";
 
         $result = $this->db->query($query);
 

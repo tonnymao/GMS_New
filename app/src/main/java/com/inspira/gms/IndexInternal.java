@@ -251,6 +251,9 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_customer_prospecting){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
         } else if (id == R.id.nav_salesorder){
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "");  //added by Tonny @25-Sep-2017
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "");
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
