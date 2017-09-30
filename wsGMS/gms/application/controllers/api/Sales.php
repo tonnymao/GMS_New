@@ -272,14 +272,13 @@ class Sales extends REST_Controller {
         $jsonObject = (json_decode($value , true));
         
         $nomortuser		= (isset($jsonObject["nomortuser"])		? $jsonObject["nomortuser"]		: "0");
-        $nomorthsales	= (isset($jsonObject["nomorthsales"])	? $jsonObject["nomorthsales"]	: "0");
         $latitude		= (isset($jsonObject["latitude"])		? $jsonObject["latitude"]		: "0");
         $longitude		= (isset($jsonObject["longitude"])		? $jsonObject["longitude"]		: "0");
         $fakeGPS		= (isset($jsonObject["fakeGPS"])		? $jsonObject["fakeGPS"]		: "0");
         
         $this->db->trans_begin();
         
-        $query = "INSERT INTO `whtracking_mobile`(`nomortuser`,`nomorthsales`,`latitude`,`longitude`,`trackingDate`,`fakeGPS`) VALUES ($nomortuser, $nomorthsales, $latitude, $longitude, NOW(), $fakeGPS)";
+        $query = "INSERT INTO `whtracking_mobile`(`nomortuser`,`latitude`,`longitude`,`trackingDate`,`fakeGPS`) VALUES ($nomortuser, $latitude, $longitude, NOW(), $fakeGPS)";
 		
         $this->db->query($query);
         

@@ -20,7 +20,7 @@ public class GlobalVar {
     public static SharedPreferences salestargetpreferences;  //added by Tonny @07-Aug-2017
     public static SharedPreferences stockmonitoringpreferences;  //added by Tonny @18-Aug-2017
     public static SharedPreferences omzetpreferences;  //added by Tonny @18-Aug-2017
-    public static SharedPreferences schedulepreferences;
+    public static SharedPreferences schedulepreferences; //added by shodiq @1-sep-2017
 
     public static User user;
     public static Sales sales;  //added by Tonny @01-Aug-2017
@@ -249,6 +249,9 @@ public class GlobalVar {
 
             public String selectedUsers = "users"; // nomor~nama //added by Shodiq @8-Sep-2017
             public String selectedGroup = "group"; // nomor~nama //added by Shodiq @9-Sep-2017
+
+            public String latitude = "latitude";
+            public String longitude = "longitude";
         }
 
         public class Sales  //added by Tonny @01-Aug-2017

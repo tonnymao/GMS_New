@@ -35,12 +35,13 @@ import java.util.Date;
  */
 
 public class GMSbackgroundTask extends Service implements LocationListener {
+    private static final int TWO_MINUTES = 1000 * 60 * 2;
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
     private LocationManager locationManager;
     private String GPSprovider;
     private String Networkprovider;
-    private Location oldLocation;
+//    private Location oldLocation;
     private GlobalVar globalVar;
     private static Double oldLatitude;
     private static Double oldLongitude;
@@ -49,13 +50,13 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     private static double trackingRadius;
     private static long trackingInterval;
     private static String TAG;
-    private static boolean GpsStopped;
     private static String trackingType;
+    private Message message;
 
     @Override
     public void onCreate() {
-        if(!globalVar.settingpreferences.getString("jam_awal", "").equals(""))
-        {
+//        if(!globalVar.settingpreferences.getString("jam_awal", "").equals(""))
+//        {
             globalVar = new GlobalVar(this);
             HandlerThread thread = new HandlerThread("ServiceStartArguments",
                     Process.THREAD_PRIORITY_BACKGROUND);
@@ -64,39 +65,39 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             Log.i("GMSbackgroundTask", "starting background service");
             mServiceLooper = thread.getLooper();
             mServiceHandler = new ServiceHandler(mServiceLooper);
-            GpsStopped = false;
 
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        Criteria criteria = new Criteria();
-//        locationManager.getBestProvider(criteria, true);
 
             Networkprovider = LocationManager.NETWORK_PROVIDER;
             GPSprovider = LocationManager.GPS_PROVIDER;
 
-            trackingType = globalVar.settingpreferences.getString("tracking", "");
-            String[] stateTime = globalVar.settingpreferences.getString("jam_awal", "").split(":");
+            trackingType = LibInspira.getShared(globalVar.settingpreferences, globalVar.settings.tracking, "");
+            String[] stateTime = LibInspira.getShared(globalVar.settingpreferences, globalVar.settings.jam_awal, "").split(":");
             String stateTimeValue = stateTime[0] + stateTime[1];
             startState = Integer.valueOf(stateTimeValue);
-            stateTime = globalVar.settingpreferences.getString("jam_akhir", "").split(":");
+            stateTime = LibInspira.getShared(globalVar.settingpreferences, globalVar.settings.jam_akhir, "").split(":");
             stateTimeValue = stateTime[0] + stateTime [1];
             endState = Integer.valueOf(stateTimeValue);
-            trackingRadius = Double.valueOf(globalVar.settingpreferences.getString("radius", ""));
-            trackingInterval = Long.valueOf(globalVar.settingpreferences.getString("interval", ""));
+            trackingRadius = Double.valueOf(LibInspira.getShared(globalVar.settingpreferences, globalVar.settings.radius, ""));
+            trackingInterval = Long.valueOf(LibInspira.getShared(globalVar.settingpreferences, globalVar.settings.interval, ""));
 
-            if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                Location location = locationManager.getLastKnownLocation(GPSprovider);
-                if (location != null) {
-                    oldLocation = location;
-                }
-                else if (trackingType.equals("GPS and Network")) {
-                    location = locationManager.getLastKnownLocation(Networkprovider);
-                    oldLocation = location;
-                }
+            if (LibInspira.getShared(globalVar.datapreferences, globalVar.data.latitude, null) != null) {
+                oldLatitude = Double.valueOf(LibInspira.getShared(globalVar.datapreferences, globalVar.data.latitude, ""));
+                oldLongitude = Double.valueOf(LibInspira.getShared(globalVar.datapreferences, globalVar.data.longitude, ""));
             }
+//            else if(ContextCompat.checkSelfPermission(GMSbackgroundTask.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                Location location = locationManager.getLastKnownLocation(GPSprovider);
+//                if (location == null && trackingType.equals("GPS and Network"))
+//                    location = locationManager.getLastKnownLocation(Networkprovider);
+//
+//                oldLatitude = location.getLatitude();
+//                oldLongitude = location.getLongitude();
+//
+//
+//            }
 
             foregroundNotif("GMS Inspira", "Background Service Works Fine!"); // you can change the title and desc of the notification
-        }
+//        }
     }
 
     @Override
@@ -124,89 +125,35 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Log.i("GMSbackgroundTask", "current time: " + currentTimeValue + " start: " + startState + " end: " + endState);
             if (Integer.valueOf(currentTimeValue) >= startState && Integer.valueOf(currentTimeValue) <= endState) {
-//            if (GpsStopped)
-//                requestPassivelocation();
-                requestGPSlocation();
+                if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                    locationManager.requestLocationUpdates(GPSprovider, 0, 0, GMSbackgroundTask.this);
                 if (trackingType.equals("GPS and Network"))
-                    requestNetworklocation();
-//                LibInspira.ShowLongToast(getApplicationContext(), "location requested");
+                    locationManager.requestLocationUpdates(Networkprovider, 0, 0, GMSbackgroundTask.this);
             }
 //            LibInspira.ShowLongToast(getApplicationContext(), LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
-            if (LibInspira.getShared(global.userpreferences, global.user.nomor, "") == "")
+            if (LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, "").equals(""))
                 stopSelf(msg.arg1);
+            message = msg;
             //stopSelf(msg.arg1); <- don't use, ur gonna kill this
         }
-    }
-
-    private void requestGPSlocation() {
-        Thread thread = new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        if (ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                            locationManager.requestLocationUpdates(GPSprovider, 400, 1, GMSbackgroundTask.this);
-                        Log.i("GMSbackgroundTask", "GPS location request");
-                        Looper.loop();
-                    }
-                },
-                "GPSLocationThread"
-        );
-        thread.start();
-    }
-
-    private void requestPassivelocation() {
-        Thread thread = new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        if (ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                            locationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 400, 1, GMSbackgroundTask.this);
-                        Log.i("GMSbackgroundTask", "Passive location request");
-                        Looper.loop();
-                    }
-                },
-                "PassiveLocationThread"
-        );
-        thread.start();
-    }
-
-    private void requestNetworklocation() {
-        Thread thread = new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        if (ContextCompat.checkSelfPermission(GMSbackgroundTask.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                            locationManager.requestLocationUpdates(Networkprovider, 400, 1, GMSbackgroundTask.this);
-                        Log.i("GMSbackgroundTask", "network location request");
-                        Looper.loop();
-                    }
-                },
-                "NetworkLocationThread"
-        );
-        thread.start();
     }
 
     private class pushTrackingGPStoDB extends AsyncTask<String, Void, String> {
         private JSONObject jsonObject;
         private String nomortuser;
-        private String nomorthsales;
         private boolean gpsFakeStatus = false;
         private Location location;
 
-        public pushTrackingGPStoDB(String nomortuser, String nomorthsales, Location location) {
+        public pushTrackingGPStoDB(String nomortuser, Location location) {
             super();
             this.nomortuser = nomortuser;
-            this.nomorthsales = nomorthsales;
             this.location = location;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (LibInspira.isMockSettingsON(getApplicationContext())) gpsFakeStatus = true;
+            gpsFakeStatus = LibInspira.isMockSettingsON(getApplicationContext());
         }
 
         @Override
@@ -214,13 +161,11 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("nomortuser", nomortuser);
-                jsonObject.put("nomorthsales", nomorthsales);
                 jsonObject.put("latitude", location.getLatitude());
                 jsonObject.put("longitude", location.getLongitude());
                 jsonObject.put("fakeGPS", String.valueOf(gpsFakeStatus));
 
                 Log.i("GMSbackgroundTask", "user number: " + nomortuser);
-                Log.i("GMSbackgroundTask", "sales number: " + nomorthsales);
                 Log.i("GMSbackgroundTask", "latitude: " + location.getLatitude());
                 Log.i("GMSbackgroundTask", "longitude: " + location.getLongitude());
                 Log.i("GMSbackgroundTask", "fakeGPS status: " + gpsFakeStatus);
@@ -234,41 +179,58 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         @Override
         protected void onPostExecute(String s) {
             Log.i("GMSbackgroundTask", s);
-//            LibInspira.ShowLongToast(getApplicationContext(), "location inserted " + s);
+            LibInspira.setShared(globalVar.datapreferences, globalVar.data.latitude, location.getLatitude() + "");
+            LibInspira.setShared(globalVar.datapreferences, globalVar.data.longitude, location.getLongitude() + "");
+            LibInspira.makeNotification(getApplicationContext(), 2, "Insert Location", s, null);
+            LibInspira.ShowLongToast(getApplicationContext(), "location inserted " + s);
             super.onPostExecute(s);
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.i("GMSbackgroundTask", "provider: " + location.getProvider());
         Log.i("GMSbackgroundTask", "latitude: " + location.getLatitude());
         Log.i("GMSbackgroundTask", "longitude: " + location.getLongitude());
+        Log.i("GMSbackgroundTask", "Accuracy: " + location.getAccuracy());
         Log.i("GMSbackgroundTask", "old latitude: " + oldLatitude);
         Log.i("GMSbackgroundTask", "old longitude: " + oldLongitude);
-        if(oldLatitude != null)
+
+        if(oldLatitude == null)
         {
+            String actionUrl = "Sales/pushTrackingData/";
+            new pushTrackingGPStoDB(LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, ""), location).execute(actionUrl);
+            return;
+        } else {
             boolean currentDistranceState = distanceOverRadius(oldLatitude, oldLongitude, location.getLatitude(), location.getLongitude(), trackingRadius);
+//            boolean goodLocation = isBetterLocation(location, oldLocation);
+//            Log.i("GMSbackgroundTask", "Good Location: " + goodLocation);
             Log.i("GMSbackgroundTask", "Distance value: " + currentDistranceState);
+            LibInspira.ShowLongToast(getApplicationContext(), location.getProvider() + " | " + location.getAccuracy());
+            LibInspira.makeNotification(getApplicationContext(), 1, "Location",
+                    "provider: " + location.getProvider() + "\naccuracy: " + location.getAccuracy() + "\nin radius: " + currentDistranceState,
+                    null);
 //            LibInspira.ShowLongToast(getApplicationContext(), "location value: " + currentDistranceState);
-            if(currentDistranceState)
-            {
+            if (currentDistranceState) {
                 oldLatitude = location.getLatitude();
                 oldLongitude = location.getLongitude();
                 String actionUrl = "Sales/pushTrackingData/";
-                new pushTrackingGPStoDB(globalVar.userpreferences.getString("user_nomor", ""), globalVar.userpreferences.getString("nomor_sales", ""), location).execute(actionUrl);
+                new pushTrackingGPStoDB(LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, ""), location).execute(actionUrl);
                 Log.d("GMSbackgroundTask", "Location on radius");
             }
         }
-        else
-        {
-            oldLatitude = location.getLatitude();
-            oldLongitude = location.getLongitude();
+//        }
+//        else
+//        {
+//            oldLatitude = location.getLatitude();
+//            oldLongitude = location.getLongitude();
             Log.d("GMSbackgroundTask", "Location updated");
-        }
+//        }
+//        oldLocation = location;
         try {
 //            LibInspira.ShowLongToast(getApplicationContext(), LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
-            if (LibInspira.getShared(global.userpreferences, global.user.nomor, "") == "")
-                locationManager.removeUpdates(this);
+            if (LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, "").equals(""))
+                stopSelf(message.arg1);
 //            LibInspira.ShowLongToast(getApplicationContext(), "sleeps " + trackingInterval);
             Thread.sleep(trackingInterval);
         } catch (InterruptedException e) {
@@ -319,7 +281,47 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
     }
 
+    protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+        if (currentBestLocation == null) {
+            return true;
+        }
 
+        long timeDelta = location.getTime() - currentBestLocation.getTime();
+        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+        boolean isNewer = timeDelta > 0;
+
+        if (isSignificantlyNewer) {
+            return true;
+        } else if (isSignificantlyOlder) {
+            return false;
+        }
+
+        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+        boolean isLessAccurate = accuracyDelta > 0;
+        boolean isMoreAccurate = accuracyDelta < 0;
+        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+        boolean isFromSameProvider = isSameProvider(location.getProvider(),
+                currentBestLocation.getProvider());
+
+        if (isMoreAccurate) {
+            return true;
+        } else if (isNewer && !isLessAccurate) {
+            return true;
+        } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+            return true;
+        }
+        return false;
+    }
+
+    /** Checks whether two providers are the same */
+    private boolean isSameProvider(String provider1, String provider2) {
+        if (provider1 == null) {
+            return provider2 == null;
+        }
+        return provider1.equals(provider2);
+    }
 
     @Nullable
     @Override
@@ -330,12 +332,14 @@ public class GMSbackgroundTask extends Service implements LocationListener {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         // AlarmManager for background service
-        Intent service = new Intent(getApplicationContext(), trackerBroadcastReciver.class);
-        final PendingIntent pIntent = PendingIntent.getBroadcast(this, 88088, service, PendingIntent.FLAG_UPDATE_CURRENT);
-        long firstMillis = System.currentTimeMillis();
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
-        Log.v(TAG, "Task Removed, restarting service");
+        if (!LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, "").equals("")) {
+            Intent service = new Intent(getApplicationContext(), trackerBroadcastReciver.class);
+            final PendingIntent pIntent = PendingIntent.getBroadcast(this, 88088, service, PendingIntent.FLAG_UPDATE_CURRENT);
+            long firstMillis = System.currentTimeMillis();
+            AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+            alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis, 5000, pIntent);
+            Log.v(TAG, "Task Removed, restarting service");
+        }
     }
 
     private void foregroundNotif(String title, String text) {

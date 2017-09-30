@@ -85,28 +85,6 @@ public class IndexInternal extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
-
-        //added by Shodiq @01-Aug-2017
-        // Permission for enabling location feature only for SDK Marshmallow | Android 6
-        if (Build.VERSION.SDK_INT >= 23)
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
-
-        // made by Shodiq @8-aug-2017
-        // check GPS status and ask to activate if GPS is disabled
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
-        } else {
-            Runnable commandOk = new Runnable() {
-                @Override
-                public void run() {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                }
-            };
-            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
-        }
     }
 
     @Override

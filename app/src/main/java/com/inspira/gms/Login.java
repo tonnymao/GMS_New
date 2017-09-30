@@ -1,11 +1,14 @@
 package com.inspira.gms;
 
 import android.*;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -169,6 +172,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             {
                                 Intent intent = new Intent(Login.this, IndexInternal.class);
                                 startActivity(intent);
+                                startService();
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                                 finish();
                             }
@@ -176,6 +180,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             {
                                 Intent intent = new Intent(Login.this, IndexExternal.class);
                                 startActivity(intent);
+                                startService();
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                                 finish();
                             }
@@ -241,6 +246,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                                 {
                                     Intent intent = new Intent(Login.this, IndexInternal.class);
                                     startActivity(intent);
+                                    startService();
                                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                                     finish();
                                 }
@@ -248,6 +254,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                                 {
                                     Intent intent = new Intent(Login.this, IndexExternal.class);
                                     startActivity(intent);
+                                    startService();
                                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
                                     finish();
                                 }
@@ -288,6 +295,30 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         protected void onPreExecute() {
             super.onPreExecute();
             LibInspira.showLoading(Login.this, "Login", "Loading");
+        }
+    }
+
+    private void startService() {
+        //added by Shodiq @01-Aug-2017
+        // Permission for enabling location feature only for SDK Marshmallow | Android 6
+        if (Build.VERSION.SDK_INT >= 23)
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1600);
+
+        // made by Shodiq @8-aug-2017
+        // check GPS status and ask to activate if GPS is disabled
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
+            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
+        } else {
+            Runnable commandOk = new Runnable() {
+                @Override
+                public void run() {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            };
+            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
         }
     }
 }
