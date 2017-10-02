@@ -81,7 +81,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             trackingRadius = Double.valueOf(LibInspira.getShared(globalVar.settingpreferences, globalVar.settings.radius, ""));
             trackingInterval = Long.valueOf(LibInspira.getShared(globalVar.settingpreferences, globalVar.settings.interval, ""));
 
-            if (LibInspira.getShared(globalVar.datapreferences, globalVar.data.latitude, null) != null) {
+            if (!LibInspira.getShared(globalVar.datapreferences, globalVar.data.latitude, "").equals("")) {
                 oldLatitude = Double.valueOf(LibInspira.getShared(globalVar.datapreferences, globalVar.data.latitude, ""));
                 oldLongitude = Double.valueOf(LibInspira.getShared(globalVar.datapreferences, globalVar.data.longitude, ""));
             }
@@ -181,7 +181,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             Log.i("GMSbackgroundTask", s);
             LibInspira.setShared(globalVar.datapreferences, globalVar.data.latitude, location.getLatitude() + "");
             LibInspira.setShared(globalVar.datapreferences, globalVar.data.longitude, location.getLongitude() + "");
-            LibInspira.makeNotification(getApplicationContext(), 2, "Insert Location", s, null);
+            LibInspira.makeNotification(getApplication(), 2, "Insert Location", s, null);
             LibInspira.ShowLongToast(getApplicationContext(), "location inserted " + s);
             super.onPostExecute(s);
         }
@@ -200,7 +200,8 @@ public class GMSbackgroundTask extends Service implements LocationListener {
         {
             String actionUrl = "Sales/pushTrackingData/";
             new pushTrackingGPStoDB(LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, ""), location).execute(actionUrl);
-            return;
+            oldLatitude = location.getLatitude();
+            oldLongitude = location.getLongitude();
         } else {
             boolean currentDistranceState = distanceOverRadius(oldLatitude, oldLongitude, location.getLatitude(), location.getLongitude(), trackingRadius);
 //            boolean goodLocation = isBetterLocation(location, oldLocation);
