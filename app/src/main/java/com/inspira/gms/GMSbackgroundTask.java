@@ -208,7 +208,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 //            Log.i("GMSbackgroundTask", "Good Location: " + goodLocation);
             Log.i("GMSbackgroundTask", "Distance value: " + currentDistranceState);
             LibInspira.ShowLongToast(getApplicationContext(), location.getProvider() + " | " + location.getAccuracy());
-            LibInspira.makeNotification(getApplicationContext(), 1, "Location",
+            LibInspira.makeNotification(getApplication(), 1, "Location",
                     "provider: " + location.getProvider() + "\naccuracy: " + location.getAccuracy() + "\nin radius: " + currentDistranceState,
                     null);
 //            LibInspira.ShowLongToast(getApplicationContext(), "location value: " + currentDistranceState);
