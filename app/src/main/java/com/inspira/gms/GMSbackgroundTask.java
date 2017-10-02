@@ -220,14 +220,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
                 Log.d("GMSbackgroundTask", "Location on radius");
             }
         }
-//        }
-//        else
-//        {
-//            oldLatitude = location.getLatitude();
-//            oldLongitude = location.getLongitude();
-            Log.d("GMSbackgroundTask", "Location updated");
-//        }
-//        oldLocation = location;
+        Log.d("GMSbackgroundTask", "Location updated");
         try {
 //            LibInspira.ShowLongToast(getApplicationContext(), LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
             if (LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, "").equals(""))
