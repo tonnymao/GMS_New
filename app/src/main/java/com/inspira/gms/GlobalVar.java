@@ -116,6 +116,11 @@ public class GlobalVar {
             public String salesorder_valuta_nomor = "salesorder_valuta_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_valuta_nama = "salesorder_valuta_nama"; //added by ADI @24-Aug-2017
             public String salesorder_valuta_kurs = "salesorder_valuta_kurs"; //added by ADI @24-Aug-2017
+            public String salesorder_proyek_nomor = "salesorder_proyek_nomor"; //added by ADI @24-Aug-2017
+            public String salesorder_proyek_nama = "salesorder_proyek_nama"; //added by ADI @24-Aug-2017
+            public String salesorder_proyek_kode = "salesorder_proyek_kode"; //added by ADI @24-Aug-2017
+            public String salesorder_jenis = "salesorder_jenis"; //added by ADI @14-Sep-2017
+            public String salesorder_perhitungan_barang_custom = "salesorder_perhitungan_barang_custom"; //added by ADI @14-Sep-2017
 
             public String salesorder_pekerjaan = "salesorder_pekerjaan"; //added by Tonny @02-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
             public String salesorder_pekerjaan_index = "salesorder_pekerjaan_index"; //added by Tonny @02-Sep-2017
@@ -132,6 +137,9 @@ public class GlobalVar {
 
             public String salesorder_item = "salesorder_item"; //added by Tonny @01-Sep-2017 nomorbarang~kodebarang~namabarang~satuan~price~qty~fee~disc~subtotal~notes
             public String salesorder_item_index = "salesorder_item_index"; //added by ADI @24-Aug-2017
+            public String salesorder_item_nomor_real = "salesorder_item_nomor_real"; //added by ADI @24-Aug-2017
+            public String salesorder_item_nama_real = "salesorder_item_nama_real"; //added by ADI @24-Aug-2017
+            public String salesorder_item_kode_real = "salesorder_item_kode_real"; //added by ADI @24-Aug-2017
             public String salesorder_item_nomor = "salesorder_item_nomor"; //added by ADI @24-Aug-2017
             public String salesorder_item_nama = "salesorder_item_nama"; //added by ADI @24-Aug-2017
             public String salesorder_item_kode = "salesorder_item_kode"; //added by ADI @24-Aug-2017
@@ -196,7 +204,7 @@ public class GlobalVar {
         public class Data
         {
             public String user = "user"; // nomor~nama~location~hp
-            public String barang = "barang"; // nomor~nama~namajual~kode~satuan~hargajual
+            public String barang = "barang"; // nomor~nama~namajual~kode~satuan~hargajual~tambang~import
             public String pekerjaan = "pekerjaan";  // nomor~kode~nama~kodesatuan~satuan~hargacustomer~hargamandor  //added by Tonny @02-Sep-2017
             public String users = "users"; // nomor~nama //added by Shodiq @3-Sep-2017
             public String groups = "groups"; // nomor~nama //added by Shodiq @3-Sep-2017
@@ -206,6 +214,7 @@ public class GlobalVar {
             public String broker = "broker"; // nomor~nama~kode
             public String valuta = "valuta"; // nomor~nama~kurs~kode
             public String kota = "kota"; // nomor~nama~nomorpropinsi~kode
+            public String proyek = "proyek"; // nomor~nama~alamat~kode
             public String lokasi = "lokasi"; // nomor~nama~gudang~kode //added by ADI @08-Sep-2017
 
             public String kategori = "kategori"; // nomor~nama~kode

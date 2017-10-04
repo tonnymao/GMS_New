@@ -25,7 +25,7 @@ import static com.inspira.gms.IndexInternal.global;
 
 public class FormSalesOrderDetailItemFragment extends Fragment implements View.OnClickListener{
 
-    protected TextView tvItem, tvCode, tvSatuan, tvDisc, tvNetto, tvSubtotal;
+    protected TextView tvItemReal, tvCodeReal, tvItem, tvCode, tvSatuan, tvDisc, tvNetto, tvSubtotal;
     protected EditText etQty, etDisc, etNotes, etFee, etPrice;
     protected Button btnAdd;
 
@@ -62,6 +62,8 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
 
+        tvItemReal = (TextView) getView().findViewById(R.id.tvItemReal);
+        tvCodeReal = (TextView) getView().findViewById(R.id.tvCodeReal);
         tvItem = (TextView) getView().findViewById(R.id.tvItem);
         tvCode = (TextView) getView().findViewById(R.id.tvCode);
         tvSatuan = (TextView) getView().findViewById(R.id.tvSatuan);
@@ -86,7 +88,18 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
         etFee = (EditText) getView().findViewById(R.id.etFee);
         etPrice = (EditText) getView().findViewById(R.id.etPrice);
 
+        if(tvItemReal!=null) tvItemReal.setOnClickListener(this);
         tvItem.setOnClickListener(this);
+
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek"))
+        {
+            getView().findViewById(R.id.trNotes).setVisibility(View.GONE);
+            getView().findViewById(R.id.trDisc).setVisibility(View.GONE);
+            getView().findViewById(R.id.trFee).setVisibility(View.GONE);
+            getView().findViewById(R.id.trPrice).setVisibility(View.GONE);
+            getView().findViewById(R.id.trNetto).setVisibility(View.GONE);
+            getView().findViewById(R.id.trSubtotal).setVisibility(View.GONE);
+        }
 
         init();
     }
@@ -178,6 +191,8 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
 
     protected void refreshData()
     {
+        tvItemReal.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama_real, ""));
+        tvCodeReal.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode_real, ""));
         tvItem.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, ""));
         tvCode.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode, ""));
         tvSatuan.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_satuan, ""));
@@ -231,8 +246,14 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
 
         if(id==R.id.tvItem)
         {
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangImportFragment());
-        }else if (id==R.id.btnAdd){  //modified by Tonny @01-Sep-2017
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment("item"));
+        }
+        else if(id==R.id.tvItemReal)
+        {
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseBarangFragment("itemreal"));
+        }
+        else if (id==R.id.btnAdd) //modified by Tonny @01-Sep-2017
+        {
             //urutannya: nomor~kode~nama~satuan~price~qty~fee~disc
             String strData = "";
             if (etNotes.getText().toString().equals("")){
@@ -246,11 +267,19 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
             {
                 //MODE ADD
                 strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "") + //salesorderitem di bagian depan
-                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode, "") + "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_satuan, "") + "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "") + "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "") + "~" +
-                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_subtotal, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_notes, "_") + "|";
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor_real, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode_real, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama_real, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_satuan, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_subtotal, "") + "~" +
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_notes, "_") + "|";
                 Log.d("strData add", strData);
             }
             else
@@ -265,11 +294,19 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
                     else
                     {
                         strData = strData +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_satuan, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "") + "~" +
-                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_subtotal, "") + "~" + LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_notes, "_") + "|";
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor_real, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_kode_real, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nama_real, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_satuan, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_price, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_qty, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_fee, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_disc, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_subtotal, "") + "~" +
+                                LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_notes, "_") + "|";
                         Log.d("strData edit", strData);
                     }
                 }

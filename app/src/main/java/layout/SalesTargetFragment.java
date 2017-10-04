@@ -63,7 +63,7 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
         spBulan = (Spinner) getView().findViewById(R.id.spBulan);
         spTahun = (Spinner) getView().findViewById(R.id.spTahun);
         edtTarget = (EditText) getView().findViewById(R.id.edtTarget);
-        tvSales = (TextView) getView().findViewById(R.id.tvTarget);
+        tvSales = (TextView) getView().findViewById(R.id.tvSales);
         btnAdd = (Button) getView().findViewById(R.id.btnAdd);
         btnSet = (Button) getView().findViewById(R.id.btnSet);
         lvGridSales = (ListView) getView().findViewById(R.id.lvGridSales);
@@ -103,7 +103,7 @@ public class SalesTargetFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         int id = v.getId();
         LibInspira.setShared(global.sharedpreferences, global.shared.position, "sales target");
-        if(id == R.id.tvTarget){
+        if(id == R.id.tvSales){
             //tampilkan browse sales
             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());
         }else if (id == R.id.btnAdd){

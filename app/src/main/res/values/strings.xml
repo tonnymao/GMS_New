@@ -18,6 +18,16 @@
         <item>Group Meeting</item>
     </string-array>
 
+    <string-array name="list_jenissalesorder">
+        <item>BARANG TRADING</item>
+        <item>BARANG TAMBANG</item>
+    </string-array>
+
+    <string-array name="list_perhitunganbarangcustom">
+        <item>M2</item>
+        <item>Unit</item>
+    </string-array>
+
     <!-- added by Tonny @03-Aug-2017 -->
     <string-array name="list_tracking">
         <item>GPS Only</item>

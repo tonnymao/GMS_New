@@ -10,12 +10,14 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.inspira.gms.GlobalVar;
@@ -32,10 +34,11 @@ import static com.inspira.gms.IndexInternal.global;
 
 public class FormSalesOrderHeaderFragment extends Fragment implements View.OnClickListener{
 
-    private TextView tvDate, tvCustomer, tvBroker, tvValuta;
+    private TextView tvDate, tvCustomer, tvBroker, tvValuta, tvProyek;
     private Button btnNext;
     private DatePickerDialog dp;
     private CheckBox chkBarangImport;
+    private Spinner spJenis, spPerhitunganBarangCustom;
 
     public FormSalesOrderHeaderFragment() {
         // Required empty public constructor
@@ -73,13 +76,17 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         tvCustomer = (TextView) getView().findViewById(R.id.tvCustomer);
         tvBroker = (TextView) getView().findViewById(R.id.tvBroker);
         tvValuta = (TextView) getView().findViewById(R.id.tvValuta);
+        tvProyek = (TextView) getView().findViewById(R.id.tvProyek);
         tvDate = (TextView) getView().findViewById(R.id.tvDate); //added by Tonny @30-Aug-2017
         btnNext = (Button) getView().findViewById(R.id.btnNext);
         chkBarangImport = (CheckBox) getView().findViewById(R.id.chkBarangImport);
+        spJenis = (Spinner) getView().findViewById(R.id.spJenis);
+        spPerhitunganBarangCustom = (Spinner) getView().findViewById(R.id.spPerhitunganBarangCustom);
 
         tvCustomer.setOnClickListener(this);
         tvBroker.setOnClickListener(this);
         tvValuta.setOnClickListener(this);
+        tvProyek.setOnClickListener(this);
         tvDate.setOnClickListener(this);  //added by Tonny @30-Aug-2017
         btnNext.setOnClickListener(this);
         chkBarangImport.setOnClickListener(this);  //added by Tonny @07-Sep-2017
@@ -87,6 +94,7 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, "").toUpperCase());
         tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, "").toUpperCase());
         tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, "").toUpperCase());
+        tvProyek.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_proyek_nama, "").toUpperCase());
 
         //added by Tonny @08-Sep-2017 jika preferences import, maka centang chkBarangImport
         if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "0").equals("1")){
@@ -118,6 +126,17 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
                 }
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek"))
+        {
+            getView().findViewById(R.id.trProyek).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.trJenis).setVisibility(View.GONE);
+            getView().findViewById(R.id.trImport).setVisibility(View.GONE);
+
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_jenis, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "0");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
+        }
     }
 
     @Override
@@ -148,6 +167,10 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseValutaFragment());
         }
+        else if(id==R.id.tvProyek)
+        {
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseProyekFragment());
+        }
         else if(id==R.id.tvDate) {  //added by Tonny @30-Aug-2017
             dp.show();
         }
@@ -168,10 +191,27 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
             else
             {
                 if (chkBarangImport.isChecked()){
-                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "1");
+                    if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals("1"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "1");
+                    }
                 }else{
-                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "0");
+                    if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals("0"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
+                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "0");
+                    }
                 }
+
+                if(!LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals(spJenis.getSelectedItemPosition()))
+                {
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_item, "");
+                    LibInspira.setShared(global.temppreferences, global.temp.salesorder_jenis, String.valueOf(spJenis.getSelectedItemPosition()));
+                }
+
+                LibInspira.setShared(global.temppreferences, global.temp.salesorder_perhitungan_barang_custom, String.valueOf(spPerhitunganBarangCustom.getSelectedItemPosition()));
+
                 LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailItemListFragment());
             }
         }

@@ -49,10 +49,17 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+
+    protected String itemType;
+
     protected String actionUrl = "Master/getBarang/";
 
     public ChooseBarangFragment() {
         // Required empty public constructor
+    }
+
+    public ChooseBarangFragment(String type) {
+        itemType = type;
     }
 
     @Override
@@ -165,46 +172,79 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         String data = LibInspira.getShared(global.datapreferences, global.data.barang, "");
         String[] pieces = data.trim().split("\\|");
 
-        if(pieces.length==1)
+        try
         {
-            tvNoData.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            tvNoData.setVisibility(View.GONE);
-            for(int i=0 ; i < pieces.length ; i++){
-                Log.d("item", pieces[i] + "a");
-                if(!pieces[i].equals(""))
-                {
-                    String[] parts = pieces[i].trim().split("\\~");
+            if(pieces.length==1)
+            {
+                tvNoData.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                tvNoData.setVisibility(View.GONE);
+                for(int i=0 ; i < pieces.length ; i++){
+                    Log.d("item", pieces[i] + "a");
+                    if(!pieces[i].equals(""))
+                    {
+                        String[] parts = pieces[i].trim().split("\\~");
 
-                    String nomor = parts[0];
-                    String nama = parts[1];
-                    String namajual = parts[2];
-                    String kode = parts[3];
-                    String satuan = parts[4];
-                    String hargajual = parts[5];
+                        String nomor = parts[0];
+                        String nama = parts[1];
+                        String namajual = parts[2];
+                        String kode = parts[3];
+                        String satuan = parts[4];
+                        String hargajual = parts[5];
+                        String barangtambang = parts[6];
+                        String barangimport = parts[7];
 
-                    if(nomor.equals("null")) nomor = "";
-                    if(nama.equals("null")) nama = "";
-                    if(namajual.equals("null")) namajual = "";
-                    if(kode.equals("null")) kode = "";
-                    if(satuan.equals("null")) satuan = "";
-                    if(hargajual.equals("null")) hargajual = "";
+                        if(nomor.equals("null")) nomor = "";
+                        if(nama.equals("null")) nama = "";
+                        if(namajual.equals("null")) namajual = "";
+                        if(kode.equals("null")) kode = "";
+                        if(satuan.equals("null")) satuan = "";
+                        if(hargajual.equals("null")) hargajual = "";
+                        if(barangtambang.equals("null")) barangtambang = "";
+                        if(barangimport.equals("null")) barangimport = "";
 
-                    ItemAdapter dataItem = new ItemAdapter();
-                    dataItem.setNomor(nomor);
-                    dataItem.setNama(nama);
-                    dataItem.setNamajual(namajual);
-                    dataItem.setKode(kode);
-                    dataItem.setSatuan(satuan);
-                    dataItem.setHargajual(hargajual);
-                    list.add(dataItem);
+                        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals("") && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(""))
+                        {
+                            ItemAdapter dataItem = new ItemAdapter();
+                            dataItem.setNomor(nomor);
+                            dataItem.setNama(nama);
+                            dataItem.setNamajual(namajual);
+                            dataItem.setKode(kode);
+                            dataItem.setSatuan(satuan);
+                            dataItem.setHargajual(hargajual);
+                            list.add(dataItem);
 
-                    itemadapter.add(dataItem);
-                    itemadapter.notifyDataSetChanged();
+                            itemadapter.add(dataItem);
+                            itemadapter.notifyDataSetChanged();
+                        }
+                        else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_jenis, "").equals(barangtambang) && LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "").equals(barangimport))
+                        {
+                            ItemAdapter dataItem = new ItemAdapter();
+                            dataItem.setNomor(nomor);
+                            dataItem.setNama(nama);
+                            dataItem.setNamajual(namajual);
+                            dataItem.setKode(kode);
+                            dataItem.setSatuan(satuan);
+                            dataItem.setHargajual(hargajual);
+                            list.add(dataItem);
+
+                            itemadapter.add(dataItem);
+                            itemadapter.notifyDataSetChanged();
+                        }
+                    }
                 }
             }
+
+            if(itemadapter.getCount()==0)
+            {
+                tvNoData.setVisibility(View.VISIBLE);
+            }
+        }
+        catch (Exception e)
+        {
+            tvNoData.setVisibility(View.VISIBLE);
         }
     }
 
@@ -232,6 +272,8 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                             String kode = (obj.getString("kode"));
                             String satuan = (obj.getString("satuan"));
                             String hargajual = (obj.getString("hargajual"));
+                            String barangtambang = (obj.getString("tambang"));
+                            String barangimport = (obj.getString("import"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(nama.equals("")) nama = "null";
@@ -239,8 +281,10 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                             if(kode.equals("")) kode = "null";
                             if(satuan.equals("")) satuan = "null";
                             if(hargajual.equals("")) hargajual = "null";
+                            if(barangtambang.equals("")) barangtambang = "null";
+                            if(barangimport.equals("")) barangimport = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "~" + satuan + "~" + hargajual + "|";
+                            tempData = tempData + nomor + "~" + nama + "~" + namajual + "~" + kode + "~" + satuan + "~" + hargajual + "~" + barangtambang + "~" + barangimport + "|";
                         }
                     }
                     if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.barang, "")))
@@ -277,6 +321,8 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
         private String kode;
         private String satuan;
         private String hargajual;
+        private String barangtambang;
+        private String barangimport;
 
         public ItemAdapter() {}
 
@@ -297,6 +343,12 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
 
         public String getHargajual() {return hargajual;}
         public void setHargajual(String _param) {this.hargajual = _param;}
+
+        public String getBarangtambang() {return barangtambang;}
+        public void setBarangtambang(String _param) {this.barangtambang = _param;}
+
+        public String getBarangimport() {return barangimport;}
+        public void setBarangimport(String _param) {this.barangimport = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -348,14 +400,40 @@ public class ChooseBarangFragment extends Fragment implements View.OnClickListen
                 public void onClick(View view) {
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("salesorder"))
                     {
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, finalHolder.adapterItem.getNomor());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, finalHolder.adapterItem.getNama());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, finalHolder.adapterItem.getKode());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, finalHolder.adapterItem.getSatuan());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, finalHolder.adapterItem.getHargajual());
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "0");
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "0");
-                        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "0");
+                        if(itemType.equals("itemreal"))
+                        {
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor_real, finalHolder.adapterItem.getNomor());
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama_real, finalHolder.adapterItem.getNama());
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode_real, finalHolder.adapterItem.getKode());
+                            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor, "").equals(""))
+                            {
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, finalHolder.adapterItem.getNomor());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, finalHolder.adapterItem.getNama());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, finalHolder.adapterItem.getKode());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, finalHolder.adapterItem.getSatuan());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, finalHolder.adapterItem.getHargajual());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "0");
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "0");
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "0");
+                            }
+                        }
+                        else if(itemType.equals("item"))
+                        {
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, finalHolder.adapterItem.getNomor());
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, finalHolder.adapterItem.getNama());
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, finalHolder.adapterItem.getKode());
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, finalHolder.adapterItem.getSatuan());
+                            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, finalHolder.adapterItem.getHargajual());
+                            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_nomor_real, "").equals(""))
+                            {
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor_real, finalHolder.adapterItem.getNomor());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama_real, finalHolder.adapterItem.getNama());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode_real, finalHolder.adapterItem.getKode());
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "0");
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_disc, "0");
+                                LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_fee, "0");
+                            }
+                        }
                         LibInspira.BackFragment(getActivity().getSupportFragmentManager());
                     }
                     else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockmutasi") || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("stockkartu"))

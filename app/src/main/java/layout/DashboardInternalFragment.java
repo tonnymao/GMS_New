@@ -92,6 +92,8 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
     public void onClick(View view) {
         int id = view.getId();
 
+        LibInspira.clearShared(global.temppreferences);
+
         if(id==R.id.btnContact)
         {
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());

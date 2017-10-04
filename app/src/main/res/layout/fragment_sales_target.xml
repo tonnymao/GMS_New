@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         android:isScrollContainer="true"
         android:scrollbarStyle="insideOverlay"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <TableLayout
             android:layout_width="match_parent"

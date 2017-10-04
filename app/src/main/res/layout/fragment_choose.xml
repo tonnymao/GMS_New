@@ -153,6 +153,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_input_add"
         android:tint="@color/colorWhite"
-        app:backgroundTint="@color/colorGMSToolbar" />
+        app:backgroundTint="@color/colorGMSToolbar"
+        android:visibility="gone"/>
 </FrameLayout>
 

@@ -38,8 +38,6 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
     private TextView tvPPN, tvDisc; //added by Tonny @17-Sep-2017  //untuk tampilan pada approval
     private EditText etDisc, etPPN;
     private Button btnSave;
-    private RequestFormatSetting requestFormatSetting;
-    private CheckCounter checkCounter;
     private InsertingData insertingData;
 
     public SummarySalesOrderFragment() {
@@ -148,6 +146,12 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
 
             tvSubtotal.setText(LibInspira.delimeter(getSubtotal().toString()));
             tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
+
+            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("nonppn"))
+            {
+                getView().findViewById(R.id.trPPN).setVisibility(View.GONE);
+            }
+
         }else{  //added by Tonny @17-Sep-2017  jika untuk approval, beberapa property dihilangkan/diganti
             tvPPN = (TextView) getView().findViewById(R.id.tvPPN);
             tvDisc = (TextView) getView().findViewById(R.id.tvDisc);
@@ -179,12 +183,10 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                     LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal, getSubtotal().toString());
                     LibInspira.setShared(global.temppreferences, global.temp.salesorder_total, getGrandTotal().toString());
                     sendData();
-                    //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaListFragment());
                 }
             }, new Runnable() {
                 public void run() {}
             });
-            //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new FormSalesOrderDetailJasaFragment());
         }
         else if(id==R.id.btnBack)
         {
@@ -229,7 +231,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
     }
     //untuk mendapatkan nominal subtotal dari item dan pekerjaan
     private Double getSubtotal(){
-        String data = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");;
+        String data = LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, "");
         Double dblSubtotal = 0.0;
         Double dblItemSubtotal = 0.0;
         Double dblPekerjaanSubtotal = 0.0;
@@ -242,8 +244,8 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 if(!pieces[i].equals(""))
                 {
                     String[] parts = pieces[i].trim().split("~");
-                    String fee = parts[6];
-                    String subtotal = parts[8];
+                    String fee = parts[9];
+                    String subtotal = parts[11];
                     if(fee.equals("")) fee = "0";
                     if(subtotal.equals("")) subtotal = "0";
                     dblFeeSubtotal = dblFeeSubtotal+ Double.parseDouble(fee);
@@ -255,7 +257,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_subtotal, dblItemSubtotal.toString());
         }
 
-        data = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");;
+        data = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
         pieces = data.trim().split("\\|");
         if((pieces.length >= 1 && !pieces[0].equals(""))){
             for(int i=0 ; i < pieces.length ; i++){
@@ -272,9 +274,12 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                     dblSubtotal = dblSubtotal + Double.parseDouble(subtotal);
                 }
             }
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, dblPekerjaanSubtotal.toString());
-            LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal_fee, dblFeeSubtotal.toString());
         }
+        else
+        {
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, "0");
+        }
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_subtotal_fee, dblFeeSubtotal.toString());
         return dblSubtotal;
     }
 
@@ -287,160 +292,9 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
     //added by Tonny @02-Sep-2017
     //untuk menjalankan perintah send data ke web service
     private void sendData(){
-        String actionUrl = "Order/getFormatSettingSalesOrder/";
-        requestFormatSetting = new RequestFormatSetting();
-        requestFormatSetting.execute(actionUrl);
-    }
-
-    //added by Tonny @04-Sep-2017
-    //class yang digunakan untuk request format setting untuk autogenerate kode order jual
-    private class RequestFormatSetting extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-
-            String strNomor = "";
-            //jika bukan PPN, maka filter nomor pada formatsetting adalah 319
-            if (LibInspira.getShared(global.temppreferences, global.temp.salesorder_isPPN, "").equals("0")){
-                strNomor = "319";
-            }else{  //jika PPN, maka filter nomor pada formatsetting adalah 320
-                strNomor = "320";
-            }
-            try {
-                jsonObject.put("nomor", strNomor);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("resultQuery", result);
-            try
-            {
-                String formatsetting = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("query")){
-                            formatsetting = (obj.getString("formatsetting"));
-                            if(formatsetting.equals("")) formatsetting = "null";
-                        }
-                    }
-                    if(!formatsetting.equals(LibInspira.getShared(global.datapreferences, global.data.salesorder_formatsetting, "")))
-                    {
-                        LibInspira.setShared(
-                                global.datapreferences,
-                                global.data.salesorder_formatsetting,
-                                formatsetting
-                        );
-                    }
-
-                    String actionUrl = "Order/getCounterHeader/";
-                    checkCounter = new CheckCounter();
-                    checkCounter.execute(actionUrl);
-                }
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //tvInformation.setVisibility(View.VISIBLE);
-        }
-    }
-
-    //added by Tonny @04-Sep-2017
-    //class yang digunakan untuk request nomot urut kode
-    private class CheckCounter extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            //melakukan split pada salesorder_formatsetting berdasarkan char ","
-            String data = LibInspira.getShared(global.datapreferences, global.data.salesorder_formatsetting, "");
-            String[] pieces = data.trim().split(",");
-            jsonObject = new JSONObject();
-            //jika data tidak valid, maka batalkan request
-            if(pieces.length > 1 && !pieces[0].equals(""))
-            {
-                //LibInspira.setShared(global.datapreferences, global.data.salesorder_nomorurut, "1");
-                LibInspira.setShared(global.datapreferences, global.data.salesorder_prefix_kode, pieces[0]);
-                LibInspira.setShared(global.datapreferences, global.data.salesorder_length_kode, pieces[1]);
-                LibInspira.setShared(global.datapreferences, global.data.salesorder_formatdate_kode, pieces[2]);
-                LibInspira.setShared(global.datapreferences, global.data.salesorder_header_kode, pieces[3]);
-                LibInspira.setShared(global.datapreferences, global.data.salesorder_detail_kode, pieces[4]);
-                Log.d("Prefix ", LibInspira.getShared(global.datapreferences, global.data.salesorder_prefix_kode, ""));
-                Log.d("Length Kode ", LibInspira.getShared(global.datapreferences, global.data.salesorder_length_kode, ""));
-                Log.d("FormatDate ", LibInspira.getShared(global.datapreferences, global.data.salesorder_formatdate_kode, ""));
-                Log.d("Header Kode ", LibInspira.getShared(global.datapreferences, global.data.salesorder_header_kode, ""));  //berisi 'ttransaksi'
-                Log.d("Detail Kode ", LibInspira.getShared(global.datapreferences, global.data.salesorder_detail_kode, ""));  //berisi 'tdorderjual'
-
-            }else{
-                this.cancel(true);
-            }
-
-            try {
-                //jsonObject.put("kode", LibInspira.getShared(global.datapreferences, global.data.salesorder_header_kode, ""));  //remarked by Tonny @10-Sep-2017
-                Log.d("sending prefix: ", LibInspira.getShared(global.datapreferences, global.data.salesorder_prefix_kode, "") + "-" +
-                        String.format("%02d", Integer.parseInt(LibInspira.getShared(global.userpreferences, global.user.cabang, ""))) + "/");
-                jsonObject.put("prefix", LibInspira.getShared(global.datapreferences, global.data.salesorder_prefix_kode, "") + "-" +
-                        String.format("%02d", Integer.parseInt(LibInspira.getShared(global.userpreferences, global.user.cabang, ""))) + "/");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("resultQuery", result);
-            try
-            {
-                String counter = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("query")){
-                            counter = (obj.getString("counter"));
-                            if(counter.equals("null")) counter = "0";
-                        }
-                    }
-
-                    String nomorurut = counter.replaceFirst("^0*", "");  //added by Tonny @10-Sep-2017  untuk menghilangkan angka nol di bagian depan
-                    if (nomorurut.isEmpty()) nomorurut = "0";
-                    nomorurut = Integer.toString(Integer.parseInt(nomorurut) + 1); // ditambah 1 untuk data baru
-
-                    if(!nomorurut.equals(LibInspira.getShared(global.datapreferences, global.data.salesorder_nomorurut_kode, "")))
-                    {
-                        LibInspira.setShared(
-                                global.datapreferences,
-                                global.data.salesorder_nomorurut_kode,
-                                nomorurut
-                        );
-                    }
-                    String actionUrl = "Order/insertNewOrderJual/";
-                    insertingData = new InsertingData();
-                    insertingData.execute(actionUrl);
-                }
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //tvInformation.setVisibility(View.VISIBLE);
-        }
+        String actionUrl = "Order/insertNewOrderJual/";
+        insertingData = new InsertingData();
+        insertingData.execute(actionUrl);
     }
 
     //added by Tonny @04-Sep-2017
@@ -451,9 +305,6 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
             jsonObject = new JSONObject();
                 //---------------------------------------------HEADER-----------------------------------------------------//
             try {
-                jsonObject.put("headerkode", LibInspira.getShared(global.datapreferences, global.data.salesorder_header_kode, ""));  //mengirimkan 'ttransaksi'
-                jsonObject.put("kode", getAutogenerate());
-                jsonObject.put("tanggal", LibInspira.getCurrentDate());
                 jsonObject.put("nomorcustomer", LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, ""));
                 jsonObject.put("kodecustomer", LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_kode, ""));
                 jsonObject.put("nomorbroker", LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nomor, ""));
@@ -463,13 +314,12 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 jsonObject.put("subtotal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal, ""));
                 jsonObject.put("subtotaljasa", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_subtotal, ""));
                 jsonObject.put("subtotalbiaya", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal_fee, ""));
-                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc, ""));
-                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc_nominal, ""));
-                //jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.salesorder_subtotal, ""));
+                jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc, "0"));
+                jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_disc_nominal, "0"));
                 jsonObject.put("dpp", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, ""));
-                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn, ""));
-                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn_nominal, ""));
-                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, ""));
+                jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn, "0"));
+                jsonObject.put("ppnnominal", LibInspira.getShared(global.temppreferences, global.temp.salesorder_ppn_nominal, "0"));
+                jsonObject.put("total", LibInspira.getShared(global.temppreferences, global.temp.salesorder_total, "0"));
                 jsonObject.put("totalrp", Double.toString(getGrandTotal() * Double.parseDouble(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_kurs, ""))));
                 jsonObject.put("pembuat", LibInspira.getShared(global.userpreferences, global.user.nama, ""));
                 jsonObject.put("nomorcabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
@@ -479,9 +329,19 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 jsonObject.put("jenispenjualan", "Material");
                 jsonObject.put("isbarangimport", LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, ""));
                 jsonObject.put("isppn", LibInspira.getShared(global.temppreferences, global.temp.salesorder_isPPN, ""));
+                if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek"))
+                {
+                    jsonObject.put("proyek", 1);
+                }
+                else if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("nonproyek"))
+                {
+                    jsonObject.put("proyek", 0);
+                }
+                jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+
+
                 //-------------------------------------------------------------------------------------------------------//
                 //---------------------------------------------DETAIL----------------------------------------------------//
-                jsonObject.put("detailkode", LibInspira.getShared(global.datapreferences, global.data.salesorder_detail_kode, ""));  //mengirimkan 'tdorderjual'
                 jsonObject.put("dataitemdetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, ""));  //mengirimkan data item
                 jsonObject.put("datapekerjaandetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, ""));  //mengirimkan data pekerjaan
                 Log.d("detailitemdetail", LibInspira.getShared(global.temppreferences, global.temp.salesorder_item, ""));
@@ -503,7 +363,7 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                         if(!obj.has("query")){
                             LibInspira.hideLoading();
                             LibInspira.ShowShortToast(getContext(), "Data has been successfully added");
-                            //LibInspira.clearShared(global.temppreferences); //hapus cache jika data berhasil ditambahkan
+                            LibInspira.clearShared(global.temppreferences); //hapus cache jika data berhasil ditambahkan
                             LibInspira.BackFragmentCount(getFragmentManager(), 6);  //kembali ke menu depan sales order
                         }
                         else
@@ -528,19 +388,5 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
             LibInspira.showLoading(getContext(), "Inserting Data", "Loading");
             //tvInformation.setVisibility(View.VISIBLE);
         }
-    }
-
-    private String getAutogenerate(){
-        //format numerator yang diinginkan
-        String formatLengthNumerator = "%0" + LibInspira.getShared(global.datapreferences, global.data.salesorder_length_kode, "") + "d";
-        //prefix-[2digit cabang]/[2 digit tahun][2 digit bulan]/[nomor urut]
-        String kodeHeaderOrderJual = LibInspira.getShared(global.datapreferences, global.data.salesorder_prefix_kode, "") + "-" +
-                String.format("%02d", Integer.parseInt(LibInspira.getShared(global.userpreferences, global.user.cabang, ""))) + "/" +
-                LibInspira.getCurrentDate(LibInspira.getShared(global.datapreferences, global.data.salesorder_formatdate_kode, "")) + "/" +
-                String.format(formatLengthNumerator, Integer.parseInt(LibInspira.getShared(global.datapreferences, global.data.salesorder_nomorurut_kode, "")));
-        //LibInspira.ShowShortToast(getContext(), kodeHeaderOrderJual);
-        //Log.d("getAutogenerate: ", kodeHeaderOrderJual);
-        Log.d("length numerator: ", LibInspira.getShared(global.datapreferences, global.data.salesorder_length_kode, ""));
-        return kodeHeaderOrderJual;
     }
 }

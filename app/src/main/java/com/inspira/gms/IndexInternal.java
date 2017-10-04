@@ -83,6 +83,14 @@ public class IndexInternal extends AppCompatActivity
         LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setNavigationItemSelectedListener(this);
+        Menu navmenu = navigationView.getMenu();
+        if(LibInspira.getShared(global.userpreferences, global.user.role_settingtarget, "0").equals("0"))
+        {
+            navmenu.findItem(R.id.nav_target).setVisible(false);
+        }
+
         LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
     }
@@ -173,6 +181,12 @@ public class IndexInternal extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_index_internal_settings, menu);
+
+        if(LibInspira.getShared(global.userpreferences, global.user.role_setting, "0").equals("0"))
+        {
+            menu.findItem(R.id.action_settings).setVisible(false);
+        }
+
         return true;
     }
 
@@ -185,7 +199,6 @@ public class IndexInternal extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {  //added by Tonny @30-Jul-2017
-            // Handle the camera action
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SettingFragment());  //added by Tonny @04-Aug-2017
         } else if (id == R.id.action_changepassword) {  //added by Tonny @30-Jul-2017
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
@@ -207,6 +220,8 @@ public class IndexInternal extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        LibInspira.clearShared(global.temppreferences);
 
         if (id == R.id.nav_dashboard) {
             // Handle the camera action

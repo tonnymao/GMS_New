@@ -129,6 +129,9 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, "");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, "");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor_real, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama_real, "");
+            LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode_real, "");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, "");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, "");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, "");
@@ -184,17 +187,23 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
                         String nomor = parts[0];
                         String kode = parts[1];
                         String nama = parts[2];
-                        String satuan = parts[3];
-                        String price = parts[4];
-                        String qty = parts[5];
-                        String fee = parts[6];
-                        String disc = parts[7];
-                        //String subtotal = parts[8];
-                        String notes = parts[9];
+                        String nomorreal = parts[3];
+                        String kodereal = parts[4];
+                        String namareal = parts[5];
+                        String satuan = parts[6];
+                        String price = parts[7];
+                        String qty = parts[8];
+                        String fee = parts[9];
+                        String disc = parts[10];
+                        //String subtotal = parts[11];
+                        String notes = parts[12];
 
                         if(nomor.equals("null")) nomor = "";
                         if(kode.equals("null")) kode = "";
                         if(nama.equals("null")) nama = "-";
+                        if(nomorreal.equals("null")) nomor = "";
+                        if(kodereal.equals("null")) kode = "";
+                        if(namareal.equals("null")) nama = "-";
                         if(satuan.equals("null")) satuan = "";
                         if(price.equals("null")) price = "";
                         if(qty.equals("null")) qty = "";
@@ -207,6 +216,9 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
                         dataItem.setNomor(nomor);
                         dataItem.setNama(nama);
                         dataItem.setKode(kode);
+                        dataItem.setNomorReal(nomorreal);
+                        dataItem.setNamaReal(namareal);
+                        dataItem.setKodeReal(kodereal);
                         dataItem.setSatuan(satuan);
                         dataItem.setPrice(price);
                         dataItem.setQty(qty);
@@ -346,11 +358,14 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         strData = newdata;
     }
 
-    protected void setEditData(String index, String nomor, String nama, String kode, String satuan, String price, String qty, String fee, String disc, String notes){
+    protected void setEditData(String index, String nomor, String nama, String kode, String nomorreal, String namareal, String kodereal, String satuan, String price, String qty, String fee, String disc, String notes){
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_index, index);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor, nomor);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama, nama);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode, kode);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nomor_real, nomorreal);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_nama_real, namareal);
+        LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_kode_real, kodereal);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_satuan, satuan);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_price, price);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_item_qty, qty);
@@ -366,6 +381,9 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
         private String nomor;
         private String nama;
         private String kode;
+        private String nomorreal;
+        private String namareal;
+        private String kodereal;
         private String satuan;
         private String price;
         private String qty;
@@ -386,6 +404,15 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
 
         public String getKode() {return kode;}
         public void setKode(String _param) {this.kode = _param;}
+
+        public String getNomorReal() {return nomorreal;}
+        public void setNomorReal(String _param) {this.nomorreal = _param;}
+
+        public String getNamaReal() {return namareal;}
+        public void setNamaReal(String _param) {this.namareal = _param;}
+
+        public String getKodeReal() {return kodereal;}
+        public void setKodeReal(String _param) {this.kodereal = _param;}
 
         public String getSatuan() {return satuan;}
         public void setSatuan(String _param) {this.satuan = _param;}
@@ -469,6 +496,9 @@ public class FormSalesOrderDetailItemListFragment extends Fragment implements Vi
                                 finalHolder.adapterItem.getNomor(),
                                 finalHolder.adapterItem.getNama(),
                                 finalHolder.adapterItem.getKode(),
+                                finalHolder.adapterItem.getNomorReal(),
+                                finalHolder.adapterItem.getNamaReal(),
+                                finalHolder.adapterItem.getKodeReal(),
                                 finalHolder.adapterItem.getSatuan(),
                                 finalHolder.adapterItem.getPrice(),
                                 finalHolder.adapterItem.getQty(),

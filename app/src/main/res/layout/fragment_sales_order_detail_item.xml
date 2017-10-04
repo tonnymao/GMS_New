@@ -101,6 +101,72 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Item Real"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".3"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=" : "
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:id="@+id/tvItemReal"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorPrimaryDark"
+                    />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Real code"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".3"
+                    android:text=" : "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorPrimaryDark" />
+
+                <TextView
+                    android:id="@+id/tvCodeReal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:padding="8dp"
+                    android:textColor="@color/colorPrimaryDark" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Item"
                     android:textSize="18sp"
                     android:textColor="@color/colorPrimaryDark" />
@@ -204,6 +270,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:id="@+id/trPrice"
                 android:layout_marginTop="5dp">
 
                 <TextView
@@ -239,6 +306,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:id="@+id/trFee"
                 android:layout_marginTop="5dp">
 
                 <TextView
@@ -274,6 +342,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:id="@+id/trDisc"
                 android:layout_marginTop="5dp">
 
                 <TextView
@@ -327,6 +396,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:id="@+id/trNetto"
                 android:layout_marginTop="5dp">
 
                 <TextView
@@ -359,6 +429,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:id="@+id/trSubtotal"
                 android:layout_marginTop="5dp">
 
                 <TextView
@@ -391,6 +462,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:id="@+id/trNotes"
                 android:layout_marginTop="5dp">
 
                 <TextView

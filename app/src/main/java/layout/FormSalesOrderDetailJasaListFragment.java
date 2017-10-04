@@ -147,15 +147,15 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
     @Override
     protected void getStrData(){
         strData = LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
-//        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
-//        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
-//                LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
-//            String ActionUrl = "Order/getSalesOrderPekerjaanList/";
-//            GetList getList = new GetList();
-//            getList.execute(ActionUrl);
-//        }else{
-//            refreshList();
-//        }
+        //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete
+        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||
+                LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("disapproval")){
+            String ActionUrl = "Order/getSalesOrderPekerjaanList/";
+            GetList getList = new GetList();
+            getList.execute(ActionUrl);
+        }else{
+            refreshList();
+        }
     }
     @Override
     protected void setStrData(String newdata){
@@ -164,7 +164,7 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
     }
 
     @Override
-    protected void setEditData(String index, String nomor, String nama, String kode, String satuan, String price, String qty, String fee, String disc, String notes){
+    protected void setEditData(String index, String nomor, String nama, String kode, String nomorreal, String namareal, String kodereal, String satuan, String price, String qty, String fee, String disc, String notes){
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_index, index);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_nomor, nomor);
         LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_nama, nama);
