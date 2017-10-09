@@ -94,7 +94,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
             LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
             LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
-            LibInspira.setShared(global.userpreferences, global.user.kode_sales, obj.getString("user_kode_sales"));  //added by Tonny @05-Sep-2017
+            LibInspira.setShared(global.userpreferences, global.user.kode, obj.getString("user_kode_sales"));  //added by Tonny @05-Sep-2017
             LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
             LibInspira.setShared(global.userpreferences, global.user.nama, obj.getString("user_nama"));
             LibInspira.setShared(global.userpreferences, global.user.tipe, obj.getString("user_tipe"));
@@ -148,6 +148,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 jsonObject.put("username", username);
                 jsonObject.put("password", password);
                 jsonObject.put("token", LibInspira.getShared(global.userpreferences,global.user.token, ""));
+                jsonObject.put("tipe", LibInspira.getShared(global.userpreferences,global.user.tipe, ""));  //added by Tonny @09-Oct-2017
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

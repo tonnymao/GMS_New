@@ -1,6 +1,6 @@
 /******************************************************************************
     Author           : ADI
-    Description      : dashboard untuk internal
+    Description      : dashboard untuk eksternal
     History          :
 
 ******************************************************************************/
@@ -79,7 +79,7 @@ public class DashboardExternalFragment extends Fragment implements View.OnClickL
         }
         else if(id==R.id.btnCart)
         {
-
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ShoppingCartFragment());  //added by Tonny @08-Oct-2017
         }
         else if(id==R.id.btnTrackingInformation)
         {

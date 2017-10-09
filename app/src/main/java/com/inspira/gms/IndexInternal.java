@@ -80,10 +80,8 @@ public class IndexInternal extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         context = getApplicationContext();
-        LibInspira.AddFragment(this.getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         navigationView.setNavigationItemSelectedListener(this);
         Menu navmenu = navigationView.getMenu();
         if(LibInspira.getShared(global.userpreferences, global.user.role_settingtarget, "0").equals("0"))
@@ -235,8 +233,6 @@ public class IndexInternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());
         } else if (id == R.id.nav_salesorder) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment()); //added by ADI @24-Aug-2017
-        } else if (id == R.id.nav_stockreport) {
-
         } else if (id == R.id.nav_salestracking){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
         } else if (id == R.id.nav_omzet){

@@ -167,22 +167,34 @@ class Login extends REST_Controller {
         $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "a");
         $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a"));
         $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
+        $tipe = (isset($jsonObject["tipe"]) ? $jsonObject["tipe"]     : "");
 
         $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
         $radius    = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 2 LIMIT 1")->row()->intnilai;
         $tracking  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 3 LIMIT 1")->row()->intnilai;
         $jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
         $jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
-		
-		$query = "	UPDATE whuser_mobile a 
-					SET hash = UUID(),
-					token = '$token'
-					WHERE a.status_aktif > 0 
-					AND a.userid = ? 
-					AND BINARY a.password = ?";
-        $this->db->query($query, array($user, $pass));
-		
-        $query = "	SELECT 
+
+		$query;
+		if($tipe == '0'){
+            $query = "	UPDATE whuser_mobile a
+                SET hash = UUID(),
+                token = '$token'
+                WHERE a.status_aktif > 0
+                AND a.userid = ?
+                AND BINARY a.password = ?";
+            $this->db->query($query, array($user, $pass));
+		}else{
+		    $query = "	UPDATE tcustomer a
+                SET hash = UUID(),
+                token = '$token'
+                WHERE a.aktif > 0
+                AND a.userid = ?
+                AND BINARY a.password = ?";
+            $this->db->query($query, array($user, $pass));
+		}
+
+        $query = "	SELECT
 						a.nomor AS nomor_android,
 						a.nomortuser AS nomor,
 						a.password AS `password`,
@@ -214,7 +226,40 @@ class Login extends REST_Controller {
 					JOIN tcabang e ON a.nomorcabang = e.nomor
 					WHERE a.status_aktif = 1
 					AND a.userid = '$user'
-					AND BINARY a.password = '$pass'";
+					AND BINARY a.password = '$pass'
+					UNION SELECT
+                        a.nomor AS nomor_android,
+                        '' AS nomor,
+                        a.password AS `password`,
+                        '' AS nomor_sales,
+                        '' AS kode_sales,
+                        a.nama,
+                        1 AS tipe,
+                        '' AS role,
+                        a.hash AS hash,
+                        IFNULL(a.telepon, '') AS telp,
+                        '' AS cabang,
+                        '' AS namacabang,
+                        '' AS isowner,
+                        '' AS issales,
+                        '' AS setting,
+                        '' AS settingtarget,
+                        '' AS salesorder,
+                        '' AS stockmonitoring,
+                        '' AS pricelist,
+                        '' AS addscheduletask,
+                        '' AS salestracking,
+                        '' AS hpp,
+                        '' AS crossbranch,
+                        '' AS creategroup
+                    FROM
+                        tcustomer a
+                    WHERE a.aktif = 1
+                        AND a.userid = '$user'
+                        AND BINARY a.password = '$pass'
+                        AND a.userid != ''
+                        AND a.password != ''
+					";
         $result = $this->db->query($query, array($user, $pass));
 
         if( $result && $result->num_rows() > 0){
@@ -300,8 +345,8 @@ class Login extends REST_Controller {
 		$tracking  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 3 LIMIT 1")->row()->intnilai;
 		$jam_awal  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 6 LIMIT 1")->row()->intnilai;
 		$jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
-		
-        $query = "	SELECT 
+
+        $query = "	  SELECT
 						a.nomor AS nomor_android,
                         a.nomortuser AS nomor,
                         a.password AS `password`,
@@ -332,7 +377,37 @@ class Login extends REST_Controller {
                     LEFT JOIN thsales d ON a.nomorthsales = d.nomor
                     JOIN tcabang e ON a.nomorcabang = e.nomor
                     WHERE a.status_aktif = 1
-						AND hash = '$hash'";
+						AND hash = '$hash'
+					UNION SELECT
+					    a.nomor AS nomor_android,
+                        '' AS nomor,
+                        a.password AS `password`,
+                        '' AS nomor_sales,
+                        '' AS kode_sales,
+                        a.nama,
+                        1 AS tipe,
+                        '' AS role,
+                        a.hash AS hash,
+                        IFNULL(a.telepon, '') AS telp,
+                        '' AS cabang,
+                        '' AS namacabang,
+                        '' AS isowner,
+                        '' AS issales,
+                        '' AS setting,
+                        '' AS settingtarget,
+                        '' AS salesorder,
+                        '' AS stockmonitoring,
+                        '' AS pricelist,
+                        '' AS addscheduletask,
+                        '' AS salestracking,
+                        '' AS hpp,
+                        '' AS crossbranch,
+                        '' AS creategroup
+                    FROM
+                        tcustomer a
+                    WHERE aktif = 1
+                        AND a.hash = '$hash'
+                    ";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0)

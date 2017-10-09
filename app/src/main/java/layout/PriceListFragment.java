@@ -47,6 +47,8 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
     private boolean isShowHPP;
+    private Cart cart;
+    private String nomorbarang, hargabarang;
 
     public PriceListFragment() {
         // Required empty public constructor
@@ -369,14 +371,26 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             row.setTag(holder);
             setupItem(holder);
 
+            final Holder finalHolder = holder;
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    LibInspira.showNumericInputDialog("Add to cart", "How many item do you want to buy?", getActivity(), getContext(), new Runnable() {
+                        @Override
+                        public void run() {
+                            //insert ke dalam cart
+                            LibInspira.getNumericValue();
+                            nomorbarang = finalHolder.adapterItem.getNomor();
+                            hargabarang = finalHolder.adapterItem.getHarga();
+                            String actionUrl = "Cart/addtocart";
+                            cart = new Cart();
+                            cart.execute(actionUrl);
+                        }
+                    }, null);
                     //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
                 }
             });
 
-            final Holder finalHolder = holder;
             holder.tvNama.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -397,6 +411,53 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                     hpp = "null";
                 holder.tvLocation.setText(holder.tvLocation.getText() + "\r\nHPP: Rp. " + LibInspira.delimeter(hpp));
             }
+        }
+    }
+
+    private class Cart extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            jsonObject = new JSONObject();
+            try {
+                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
+                jsonObject.put("kodecustomer", LibInspira.getShared(global.userpreferences, global.user.kode, ""));
+                jsonObject.put("nomorbarang", nomorbarang);
+                jsonObject.put("jumlah", LibInspira.getNumericValue());
+                jsonObject.put("harga", hargabarang);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return LibInspira.executePost(getContext(), urls[0], jsonObject);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d("resultQuery", result);
+            try
+            {
+                String tempData = "";
+                JSONArray jsonarray = new JSONArray(result);
+                if(jsonarray.length() > 0){
+                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
+                        JSONObject obj = jsonarray.getJSONObject(i);
+                        if(!obj.has("query")){
+
+                        }
+                    }
+                }
+                tvInformation.animate().translationYBy(-80);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                tvInformation.animate().translationYBy(-80);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            tvInformation.setVisibility(View.VISIBLE);
         }
     }
 }

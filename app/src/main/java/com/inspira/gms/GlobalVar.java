@@ -175,10 +175,10 @@ public class GlobalVar {
         public class User
         {
             public String nomor = "nomor";
+            public String kode = "kode"; //modified by Tonny @09-Oct-2017
             public String password = "password";  //added by Tonny @30-Jul-2017
             public String nomor_android = "nomor_android";
             public String nomor_sales = "nomor_sales";
-            public String kode_sales = "kode_sales"; //added by Tonny @05-Sep-2017
             public String nama = "nama";
             public String tipe = "tipe";
             public String role = "role";
@@ -205,6 +205,7 @@ public class GlobalVar {
         {
             public String user = "user"; // nomor~nama~location~hp
             public String barang = "barang"; // nomor~nama~namajual~kode~satuan~hargajual~tambang~import
+            public String cart = "cart"; // nomor~nama~namajual~kode~satuan~hargajual~tambang~import
             public String pekerjaan = "pekerjaan";  // nomor~kode~nama~kodesatuan~satuan~hargacustomer~hargamandor  //added by Tonny @02-Sep-2017
             public String users = "users"; // nomor~nama //added by Shodiq @3-Sep-2017
             public String groups = "groups"; // nomor~nama //added by Shodiq @3-Sep-2017

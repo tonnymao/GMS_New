@@ -41,6 +41,7 @@ import layout.PriceListFragment;
 import layout.SalesNavigationFragment;
 import layout.SalesOrderListFragment;
 import layout.SettingFragment;
+import layout.ShoppingCartFragment;
 
 
 public class IndexExternal extends AppCompatActivity
@@ -157,7 +158,7 @@ public class IndexExternal extends AppCompatActivity
         } else if (id == R.id.nav_catalogue) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_cart) {
-
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ShoppingCartFragment());  //added by Tonny @04-Oct-2017
         } else if (id == R.id.nav_trackinginformation) {
 
         } else if (id == R.id.nav_accountreceivablereport) {

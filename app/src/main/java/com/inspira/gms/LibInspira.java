@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -65,6 +66,8 @@ public class LibInspira {
     private static String hostUrl;
     private static String inspiraDateTimeFormat = "yyyy-MM-dd hh:mm:ss";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
     private static String inspiraDateFormat = "yyyy-MM-dd";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
+
+    private static String numericValue;
 
 
     public static void GoToActivity(String _activityName){
@@ -451,6 +454,7 @@ public class LibInspira {
         return new DateFormatSymbols().getMonths()[_intMonth-1];
     }
 
+    //added by Tonny
     public static void alertbox(String _title, String _message, final Activity _activity, final Runnable _commandOK, final Runnable _commandCancel) {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
         alertDialog.setTitle(_title);
@@ -468,6 +472,7 @@ public class LibInspira {
         alertDialog.show();
     }
 
+    //added by Tonny
     public static void alertBoxYesNo(String _title, String _message, final Activity _activity, final Runnable _commandYES, final Runnable _commandNO){
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
         alertDialog.setTitle(_title);
@@ -484,6 +489,38 @@ public class LibInspira {
                 } });}
         alertDialog.show();
     }
+
+    public static String getNumericValue() {
+        return numericValue;
+    }
+
+    public static void setNumericValue(String _numericValue) {
+        numericValue = _numericValue;
+    }
+    //added by Tonny @09-Oct-2017
+    //untuk menampilkan dialog untuk input numeric
+    public static void showNumericInputDialog(String _title, String _message, final Activity _activity, final Context _context, final Runnable _commandOK, final Runnable _commandCancel) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
+        final EditText editText = new EditText(_context);
+        editText.setKeyListener(DigitsKeyListener.getInstance());
+        alertDialog.setTitle(_title);
+        alertDialog.setMessage(_message);
+        alertDialog.setView(editText);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (_commandOK != null)
+                    setNumericValue(editText.getText().toString());
+                    _commandOK.run();
+            } });
+        if (_commandCancel != null){
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    _commandCancel.run();
+                } });}
+        alertDialog.show();
+    }
+
+
 
     //added by Tonny @25-Aug-2017  untuk mendapatkan tanggal hari ini format default (yyyy/MM/dd)
     public static String getCurrentDate(){
