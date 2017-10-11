@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -35,8 +34,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
+import static com.inspira.gms.IndexExternal.global;
+import static com.inspira.gms.IndexExternal.jsonObject;
 
 //import android.app.Fragment;
 
@@ -46,9 +45,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
-    private boolean isShowHPP;
-    private Cart cart;
-    private String nomorbarang, hargabarang;
+    private String nomorbarang, kodebarang, namabarang, hargabarang, jumlah, subtotal, satuan;
 
     public PriceListFragment() {
         // Required empty public constructor
@@ -112,19 +109,9 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        //pengecekan jika user boleh melihat HPP
-        if(LibInspira.getShared(global.userpreferences, global.user.role_hpp, "").equals("1")){
-            isShowHPP = true;
-        }else{
-            isShowHPP = false;
-        }
-
         refreshList();
 
-        String actionUrl = "Master/getPrice/";
-        if(isShowHPP){
-            actionUrl = "Master/getPriceHPP/";
-        }
+        String actionUrl = "Master/getPriceList/";
         new getData().execute( actionUrl );
     }
 
@@ -175,9 +162,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         itemadapter.clear();
         list.clear();
 
-        String data = LibInspira.getShared(global.datapreferences, global.data.price, "");
-        if (isShowHPP)
-            data = LibInspira.getShared(global.datapreferences, global.data.pricehpp, "");
+        String data = LibInspira.getShared(global.datapreferences, global.data.priceexternal, "");
         String[] pieces = data.trim().split("\\|");
         if(pieces.length==1 && pieces[0].equals(""))
         {
@@ -195,20 +180,20 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                     String kode = parts[1];
                     String nama = parts[2];
                     String harga = parts[3];
-                    String hpp = parts[4];
+                    String satuan = parts[4];
 
                     if(nomor.equals("null")) nomor = "";
                     if(kode.equals("null")) kode = "";
                     if(nama.equals("null")) nama = "";
                     if(harga.equals("null")) harga = "";
-                    if(hpp.equals("null")) hpp = "";
+                    if(satuan.equals("null")) satuan = "";
 
                     ItemAdapter dataItem = new ItemAdapter();
                     dataItem.setNomor(nomor);
                     dataItem.setKode(kode);
                     dataItem.setNama(nama);
                     dataItem.setHarga(harga);
-                    dataItem.setHpp(hpp);
+                    dataItem.setSatuan(satuan);
                     list.add(dataItem);
 
                     if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
@@ -250,35 +235,25 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                             String nama = (obj.getString("nama"));
                             String kode = (obj.getString("kode"));
                             String harga = (obj.getString("harga"));
-                            String hpp = "";
-                            if(isShowHPP)
-                                hpp = (obj.getString("hpp"));
+                            String satuan = (obj.getString("satuan"));
 
                             if(nomor.equals("")) nomor = "null";
                             if(kode.equals("")) kode = "null";
                             if(nama.equals("")) nama = "null";
                             if(harga.equals("")) harga = "null";
-                            if(hpp.equals("")) hpp = "null";
+                            if(satuan.equals("")) satuan = "null";
 
-                            tempData = tempData + nomor + "~" + kode + "~" + nama + "~" + harga + "~" + hpp + "|";
+                            tempData = tempData + nomor + "~" + kode + "~" + nama + "~" + harga + "~" + satuan + "|";
                         }
                     }
 
                     //pengecekan offline
 
-                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.pricehpp, "")) && isShowHPP)
+                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.priceexternal, "")))
                     {
                         LibInspira.setShared(
                                 global.datapreferences,
-                                global.data.pricehpp,
-                                tempData
-                        );
-                        refreshList();
-                    }else if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.price, "")) && !isShowHPP)
-                    {
-                        LibInspira.setShared(
-                                global.datapreferences,
-                                global.data.price,
+                                global.data.priceexternal,
                                 tempData
                         );
                         refreshList();
@@ -306,7 +281,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         private String nama;
         private String kode;
         private String harga;
-        private String hpp;
+        private String satuan;
 
         public ItemAdapter() {}
 
@@ -322,8 +297,8 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         public String getHarga() {return harga;}
         public void setHarga(String _param) {this.harga = _param;}
 
-        public String getHpp() {return hpp;}
-        public void setHpp(String _param) {this.hpp = _param;}
+        public String getSatuan() {return satuan;}
+        public void setSatuan(String _param) {this.satuan = _param;}
     }
 
     public class ItemListAdapter extends ArrayAdapter<ItemAdapter> {
@@ -378,16 +353,23 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                     LibInspira.showNumericInputDialog("Add to cart", "How many item do you want to buy?", getActivity(), getContext(), new Runnable() {
                         @Override
                         public void run() {
-                            //insert ke dalam cart
-                            LibInspira.getNumericValue();
+                            //insert ke dalam shared
                             nomorbarang = finalHolder.adapterItem.getNomor();
+                            namabarang = finalHolder.adapterItem.getNama();
+                            kodebarang = finalHolder.adapterItem.getKode();
                             hargabarang = finalHolder.adapterItem.getHarga();
-                            String actionUrl = "Cart/addtocart";
-                            cart = new Cart();
-                            cart.execute(actionUrl);
+                            jumlah = LibInspira.getNumericValue();
+                            satuan = finalHolder.adapterItem.getSatuan();
+                            if(Double.parseDouble(jumlah) > 0){
+                                subtotal = Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(hargabarang));  //subtotal untuk tdcart
+                                String tempCart = nomorbarang + "~" + namabarang + "~" + kodebarang + "~" + satuan + "~" + hargabarang + "~" + jumlah + "~" + subtotal + "|";
+                                Log.d("tempcart ", tempCart);
+                                LibInspira.setShared(global.datapreferences, global.data.cart, tempCart);
+                            }else{
+                                LibInspira.showLongToast(getContext(), "Jumlah must be greater than 0");
+                            }
                         }
                     }, null);
-                    //LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
                 }
             });
 
@@ -397,7 +379,6 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                     //String nomeruser = finalHolder.adapterItem.getNomor();
                 }
             });
-
             return row;
         }
 
@@ -405,59 +386,6 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
             holder.tvLocation.setVisibility(View.VISIBLE);
             holder.tvLocation.setText("Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHarga()));
-            String hpp = holder.adapterItem.getHpp();
-            if(isShowHPP){
-                if (hpp.equals(""))
-                    hpp = "null";
-                holder.tvLocation.setText(holder.tvLocation.getText() + "\r\nHPP: Rp. " + LibInspira.delimeter(hpp));
-            }
-        }
-    }
-
-    private class Cart extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            jsonObject = new JSONObject();
-            try {
-                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
-                jsonObject.put("kodecustomer", LibInspira.getShared(global.userpreferences, global.user.kode, ""));
-                jsonObject.put("nomorbarang", nomorbarang);
-                jsonObject.put("jumlah", LibInspira.getNumericValue());
-                jsonObject.put("harga", hargabarang);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d("resultQuery", result);
-            try
-            {
-                String tempData = "";
-                JSONArray jsonarray = new JSONArray(result);
-                if(jsonarray.length() > 0){
-                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
-                        JSONObject obj = jsonarray.getJSONObject(i);
-                        if(!obj.has("query")){
-
-                        }
-                    }
-                }
-                tvInformation.animate().translationYBy(-80);
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-                tvInformation.animate().translationYBy(-80);
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            tvInformation.setVisibility(View.VISIBLE);
         }
     }
 }

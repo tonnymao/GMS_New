@@ -164,12 +164,14 @@ class Cart extends REST_Controller {
 		$jsonObject = (json_decode($value , true));
 		$nomorcustomer = (isset($jsonObject["nomorcustomer"]) ? $this->clean($jsonObject["nomorcustomer"]) : "");
 		$query = "	SELECT 
-						a.nomor AS `nomor`,
-						a.kode AS `kode`,
-						a.nama AS `nama`,
-						a.NamaJual AS `namajual`,
-						b.satuan AS `satuan`,
-						a.HargaJualIDR AS `hargajual`
+						c.nomorbarang AS nomor,
+						c.kodebarang AS kode,
+						a.nama AS nama,
+						a.NamaJual AS namajual,
+					    c.jumlah AS jumlah,
+						b.satuan AS satuan,
+						a.HargaJualIDR AS hargajual,
+						c.subtotal
 					FROM tbarang a
 					JOIN vwbarang b ON a.nomor = b.nomor
 					JOIN tdcart c ON a.nomor = c.nomorbarang
@@ -181,18 +183,17 @@ class Cart extends REST_Controller {
 					ORDER BY a.nama DESC;";
         $result = $this->db->query($query);
 
-        if( $result && $result->num_rows() > 0){
+        if($result && $result->num_rows() > 0){
             foreach ($result->result_array() as $r){
-
                 array_push($data['data'], array(
                 								'nomor'					=> $r['nomor'],
-												'kode' 					=> $r['kode'],
-                                                'nama'      		   	=> $r['nama'], 
                 								'namajual' 				=> $r['namajual'],
+												'kode' 					=> $r['kode'],
                 								'satuan' 				=> $r['satuan'],
-                								'hargajual' 			=> $r['hargajual']
-                								)
-               	);
+                								'hargajual' 			=> $r['hargajual'],
+                								'jumlah' 			    => $r['jumlah'],
+                								'subtotal'   			=> $r['subtotal']
+                								));
             }
         }else{
 			array_push($data['data'], array( 'query' => $this->error($query) ));
@@ -210,14 +211,180 @@ class Cart extends REST_Controller {
         $jsonObject = (json_decode($value , true));
         $nomorcustomer = (isset($jsonObject["nomorcustomer"]) ? $this->clean($jsonObject["nomorcustomer"]) : "");
         $kodecustomer = (isset($jsonObject["kodecustomer"]) ? $this->clean($jsonObject["kodecustomer"]) : "");
-        $nomorbarang = (isset($jsonObject["nomorbarang"]) ? $this->clean($jsonObject["nomorbarang"]) : "");
-        $jumlah = (isset($jsonObject["jumlah"]) ? $this->clean($jsonObject["jumlah"]) : "0");
-        $harga = (isset($jsonObject["harga"]) ? $this->clean($jsonObject["harga"]) : "0");
+        $grandtotal = (isset($jsonObject["grandtotal"]) ? $this->clean($jsonObject["grandtotal"]) : "");
+        $cart = (isset($jsonObject["cart"]) ? ($jsonObject["cart"]) : "");
+        $pieces = explode("|", $cart);
 
-        $this->db->trans_begin();
-        $query = "	INSERT INTO thcart (tanggal, nomorcustomer, kodecustomer, aktif)
-                    VALUES (NOW(), $nomorcustomer, '$kodecustomer', 1)";
-        $result = $this->db->query($query);
+        if(count($pieces) > 1){
+            $this->db->trans_begin();
+            //pengecekan jika sudah ada data sebelumnya
+            $query = "  SELECT
+                          a.nomor as nomor
+                        FROM thcart a
+                        WHERE a.nomorcustomer = $nomorcustomer ";
+            $result = $this->db->query($query);
+            //get nomorheader
+            $nomorheader = $result->row()->nomor;
+            if($result){
+                if($result->num_rows() > 0){
+                    $query = "  UPDATE thcart SET subtotal = $grandtotal WHERE nomorcustomer = $nomorcustomer";
+                    $result = $this->db->query($query);
+                }else{
+                    //jika user belum memiliki pada thcart, maka buat thcart dulu sebelum melakukan insert pada tdcart
+                    $query = "	INSERT INTO thcart (tanggal, nomorcustomer, kodecustomer, subtotal, aktif)
+                             VALUES (NOW(), $nomorcustomer, '$kodecustomer', $grandtotal, 1)";
+                    $result = $this->db->query($query);
+                    if($result){
+                        $query = "  SELECT
+                                      a.nomor as nomor
+                                    FROM thcart a
+                                    WHERE a.nomorcustomer = $nomorcustomer ";
+                        $result = $this->db->query($query);
+                        //get nomorheader
+                        $nomorheader = $result->row()->nomor;
+                    }else{
+                        $this->db->trans_rollback();
+                        array_push($data['data'], array( 'query' => $this->error($query) ));
+                        if ($data){
+                            // Set the response and exit
+                            $this->response($data['data']); // OK (200) being the HTTP response code
+                        }
+                        die;
+                    }
+                }
+                if($result){  //jika berhasil insert/update ke thcart
+                    //nomorbarang~namajual~kodebarang~satuan~harga~jumlah~subtotal
+                    for($i = 0; $i < count($pieces); $i++){
+                        $parts = explode("~", $pieces[$i]);
+                        $nomorbarang = $parts[0];
+                        $kodebarang = $parts[2];
+                        $harga = $parts[4];
+                        $jumlah = $parts[5];
+                        $subtotal = $parts[6];
+                        //cek jika user sudah memiliki barang yg sama pada tdcart
+                        $query = "  SELECT
+                                      b.nomorbarang
+                                    FROM thcart a
+                                    JOIN tdcart b
+                                      ON a.nomor = b.nomorheader
+                                    WHERE a.nomorcustomer = $nomorcustomer
+                                      AND b.nomorbarang = $nomorbarang ";
+                        $result = $this->db->query($query);
+                        if($result && $result->num_rows() > 0){
+                            $query = "  UPDATE tdcart SET jumlah = jumlah + $jumlah,
+                                          subtotal = jumlah * harga
+                                        WHERE nomorbarang = $nomorbarang
+                                          AND nomorheader = $nomorheader ";
+                            $result = $this->db->query($query);
+                            if($result){
+                                $this->db->trans_commit();
+                                array_push($data['data'], array( 'success' => "true"));
+                            }else{
+                                $this->db->trans_rollback();
+                                array_push($data['data'], array( 'query' => $this->error($query) ));
+                            }
+                        }else{
+                            $query = "	INSERT INTO tdcart (nomorheader, nomorbarang, kodebarang, jumlah, harga, subtotal, aktif)
+                                        VALUES ($nomorheader, $nomorbarang, '$kodebarang', $jumlah, $harga, $subtotal, 1)";
+                            $result = $this->db->query($query);
+                            if($result){
+                                $this->db->trans_commit();
+                                array_push($data['data'], array( 'success' => "true"));
+                            }else{
+                                $this->db->trans_rollback();
+                                array_push($data['data'], array( 'query' => $this->error($query) ));
+                            }
+                        }
+                    }
+                }
+            }
+        }else{
+            array_push($data['data'], array( 'query' => 'no data to save'));
+        }
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+            //nomorbarang~namajual~kodebarang~satuan~harga~jumlah~subtotal
+//            for($i = 0; $i < count($pieces); $i++){
+//                $parts = explode("~", $pieces[$i]);
+//                $nomorbarang = $parts[0];
+//                $kodebarang = $parts[2];
+//                $harga = $parts[4];
+//                $jumlah = $parts[5];
+//                $subtotal = $parts[6];
+//                //cek jika user sudah memiliki data pada thcart dan barang yg sama pada cart
+//                $query = "  SELECT
+//                              a.nomor,
+//                              b.nomorbarang
+//                            FROM thcart a
+//                            JOIN tdcart b
+//                              ON a.nomor = b.nomorheader
+//                            WHERE a.nomorcustomer = $nomorcustomer
+//                              AND b.nomorbarang = $nomorbarang ";
+//                $result = $this->db->query($query);
+//                if($result && $result->num_rows() > 0){  //jika user memiliki data dan barang yg sama pada cart, maka update subtotal dan jumlah barang pada thcart
+//                    //get nomorheader
+//                    $nomorheader = $result->row()->nomor;
+//                    //update subtotal pada thcart
+//                    $query = "  UPDATE thcart SET subtotal = $subtotal WHERE nomorcustomer = $nomorcustomer";
+//                    $result = $this->db->query($query);
+//                    if($result){
+//                        //update jumlah dan subtotal barang pada tdcart
+//                        $query = "  UPDATE tdcart SET jumlah = jumlah + $jumlah,
+//                                      subtotal = jumlah * harga
+//                                    WHERE nomorbarang = $nomorbarang
+//                                      AND nomorheader = $nomorheader ";
+//                        $result = $this->db->query($query);
+//                        if($result){
+//                            $this->db->trans_commit();
+//                            array_push($data['data'], array( 'success' => "true"));
+//                        }else{
+//                            $this->db->trans_rollback();
+//                            array_push($data['data'], array( 'query' => $this->error($query) ));
+//                        }
+//                    }else{
+//                        $this->db->trans_rollback();
+//                        array_push($data['data'], array( 'query' => $this->error($query) ));
+//                    }
+//                }else{  //jika user belum memiliki pada thcart, maka buat thcart dulu sebelum melakukan insert pada tdcart
+//                    $query = "	INSERT INTO thcart (tanggal, nomorcustomer, kodecustomer, subtotal, aktif)
+//                             VALUES (NOW(), $nomorcustomer, '$kodecustomer', $grandtotal, 1)";
+//                    $result = $this->db->query($query);
+//                    if($result){
+//                        $query = "	INSERT INTO tdcart (nomorheader, nomorbarang, kodebarang, jumlah, harga, subtotal, aktif)
+//                                    VALUES ($nomorheader, $nomorbarang, '$kodebarang', $jumlah, $harga, $subtotal, 1)";
+//                        $result = $this->db->query($query);
+//                        if($result){
+//                            $this->db->trans_commit();
+//                            array_push($data['data'], array( 'success' => "true"));
+//                        }
+//                    }else{
+//                        $this->db->trans_rollback();
+//                        array_push($data['data'], array( 'query' => $this->error($query) ));
+//                    }
+//                }
+//            }
+//        }else{
+//            array_push($data['data'], array( 'query' => 'no data to save'));
+//        }
 
+    }
+
+    function explode_get(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomorcustomer = (isset($jsonObject["nomorcustomer"]) ? $this->clean($jsonObject["nomorcustomer"]) : "");
+        $kodecustomer = (isset($jsonObject["kodecustomer"]) ? $this->clean($jsonObject["kodecustomer"]) : "");
+        $cart = (isset($jsonObject["cart"]) ? $this->clean($jsonObject["cart"]) : "");
+        $pieces = explode("|", $cart);
+
+        if(count($pieces) > 1){}
+        array_push($data['data'], array( 'query' => $this->error($query) ));
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
     }
 }

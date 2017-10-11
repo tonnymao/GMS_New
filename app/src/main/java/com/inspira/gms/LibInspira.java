@@ -108,6 +108,12 @@ public class LibInspira {
     }
 
     //added by Tonny @15-Jul-2017
+    /**
+     * Shows toast in short period
+     *
+     * @deprecated use {@link #showShortToast(Context, String)} ()} instead.
+     */
+    @Deprecated
     public static void ShowShortToast(Context _context, String _message){
         Context context = _context;
         int duration = Toast.LENGTH_SHORT;
@@ -116,7 +122,29 @@ public class LibInspira {
     }
 
     //added by Tonny @15-Jul-2017
+    /**
+     * Shows toast in long period
+     *
+     * @deprecated use {@link #showLongToast(Context, String)} ()} instead.
+     */
+    @Deprecated
     public static void ShowLongToast(Context _context, String _message){
+        Context context = _context;
+        int duration = Toast.LENGTH_LONG;
+        Toast toast = Toast.makeText(context, _message, duration);
+        toast.show();
+    }
+
+    //added by Tonny @11-Oct-2017
+    public static void showShortToast(Context _context, String _message){
+        Context context = _context;
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, _message, duration);
+        toast.show();
+    }
+
+    //added by Tonny @11-Oct-2017
+    public static void showLongToast(Context _context, String _message){
         Context context = _context;
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, _message, duration);
@@ -491,6 +519,9 @@ public class LibInspira {
     }
 
     public static String getNumericValue() {
+        if(numericValue.equals("")){
+            numericValue = "0";
+        }
         return numericValue;
     }
 
@@ -623,4 +654,15 @@ public class LibInspira {
         notificationManager.notify(notifID, notif.build());
     }
 
+    //added by Tonny @11-Oct-2017
+    //untuk pengecekan kembar
+    public static boolean isExist(String[] _arrStr, String _value){
+        boolean result = false;
+        for(int i=0;i<_arrStr.length;i++){
+            if(_arrStr[i].equals(_value)){
+                result = true;
+            }
+        }
+        return result;
+    }
 }

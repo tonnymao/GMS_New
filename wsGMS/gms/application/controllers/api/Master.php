@@ -937,17 +937,30 @@ class Master extends REST_Controller {
 
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-        $cabang = (isset($jsonObject["cabang"]) ? $this->clean($jsonObject["cabang"])     : "a");
-        $query = "	SELECT
-                        b.nomor AS nomor,
-                        b.kode AS kode,
-                        b.NamaJual AS nama,
-                        a.HargaJual AS harga
-                    FROM tdharga a
-                    JOIN tbarang b ON a.NomorBarang = b.nomor
-                    WHERE b.Aktif = 1
-                     AND a.nomorheader = $cabang
-                    ORDER BY b.NamaJual DESC";
+        $cabang = (isset($jsonObject["cabang"]) ? $this->clean($jsonObject["cabang"])     : "");
+        $query = "";
+        if ($cabang == ""){
+            $query = "	SELECT
+                            b.nomor AS nomor,
+                            b.kode AS kode,
+                            b.NamaJual AS nama,
+                            a.HargaJual AS harga
+                        FROM tdharga a
+                        JOIN tbarang b ON a.NomorBarang = b.nomor
+                        WHERE b.Aktif = 1
+                        ORDER BY b.NamaJual DESC";
+        }else{
+            $query = "	SELECT
+                            b.nomor AS nomor,
+                            b.kode AS kode,
+                            b.NamaJual AS nama,
+                            a.HargaJual AS harga
+                        FROM tdharga a
+                        JOIN tbarang b ON a.NomorBarang = b.nomor
+                        WHERE b.Aktif = 1
+                         AND a.nomorheader = $cabang
+                        ORDER BY b.NamaJual DESC";
+        }
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
@@ -1001,6 +1014,62 @@ class Master extends REST_Controller {
                                                 'nama' 					=> $r['nama'],
                                                 'harga' 				=> $r['harga'],
                                                 'hpp' 				    => $r['hpp']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    function getPriceList_post()
+    {
+        $data['data'] = array();
+
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $cabang = (isset($jsonObject["cabang"]) ? $this->clean($jsonObject["cabang"])     : "");
+        $query = "";
+        if ($cabang == ""){
+            $query = "	SELECT
+                            b.nomor AS nomor,
+                            b.kode AS kode,
+                            b.NamaJual AS nama,
+                            c.satuan,
+                            a.HargaJual AS harga
+                        FROM tdharga a
+                        JOIN tbarang b ON a.NomorBarang = b.nomor
+                        JOIN tsatuan c ON b.nomorsatuan = c.nomor
+                        WHERE b.Aktif = 1
+                        ORDER BY b.NamaJual DESC";
+        }else{
+            $query = "	SELECT
+                            b.nomor AS nomor,
+                            b.kode AS kode,
+                            b.NamaJual AS nama,
+                            a.HargaJual AS harga
+                        FROM tdharga a
+                        JOIN tbarang b ON a.NomorBarang = b.nomor
+                        WHERE b.Aktif = 1
+                         AND a.nomorheader = $cabang
+                        ORDER BY b.NamaJual DESC";
+        }
+        $result = $this->db->query($query);
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+                                                'nomor'					=> $r['nomor'],
+                                                'kode' 					=> $r['kode'],
+                                                'nama' 					=> $r['nama'],
+                                                'harga' 				=> $r['harga'],
+                                                'satuan' 				=> $r['satuan']
                                                 )
                 );
             }

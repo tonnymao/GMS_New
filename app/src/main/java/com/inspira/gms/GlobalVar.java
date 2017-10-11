@@ -205,7 +205,7 @@ public class GlobalVar {
         {
             public String user = "user"; // nomor~nama~location~hp
             public String barang = "barang"; // nomor~nama~namajual~kode~satuan~hargajual~tambang~import
-            public String cart = "cart"; // nomor~nama~namajual~kode~satuan~hargajual~tambang~import
+            public String cart = "cart"; //nomorbarang~namajual~kodebarang~satuan~harga~jumlah~subtotal
             public String pekerjaan = "pekerjaan";  // nomor~kode~nama~kodesatuan~satuan~hargacustomer~hargamandor  //added by Tonny @02-Sep-2017
             public String users = "users"; // nomor~nama //added by Shodiq @3-Sep-2017
             public String groups = "groups"; // nomor~nama //added by Shodiq @3-Sep-2017
@@ -231,6 +231,9 @@ public class GlobalVar {
             public String cabang = "cabang";  // nomorcabang~namacabang //added by Tonny @08-Aug-2017
             public String price = "price"; //nomor~kode~nama~harga
             public String pricehpp = "pricehpp"; //nomor~kode~nama~harga~hpp
+
+            //added by Tonny @11-Oct-2017 untuk menyimpan data pricelist untuk app external
+            public String priceexternal = "price"; //nomor~kode~nama~harga~satuan
 
             //UNTUK MENYIMPAN STOCKPOSISI DAN STOCKPOSISIRANDOM
             public String stockPosisi = "stockposisi";  //nomorgudang~namagudang~nomorbarang~namabarang~satuan~qty~m2 //added by Tonny @20-Aug-2017
