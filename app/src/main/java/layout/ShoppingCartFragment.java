@@ -462,6 +462,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
                             LibInspira.showShortToast(getContext(), "Data has been successfully saved!");
+                            LibInspira.setShared(global.datapreferences, global.data.cart, "");
                         }
                     }
                 }

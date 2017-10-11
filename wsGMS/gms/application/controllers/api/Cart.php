@@ -254,7 +254,7 @@ class Cart extends REST_Controller {
                 }
                 if($result){  //jika berhasil insert/update ke thcart
                     //nomorbarang~namajual~kodebarang~satuan~harga~jumlah~subtotal
-                    for($i = 0; $i < count($pieces); $i++){
+                    for($i = 0; $i < count($pieces) - 1; $i++){
                         $parts = explode("~", $pieces[$i]);
                         $nomorbarang = $parts[0];
                         $kodebarang = $parts[2];
@@ -282,20 +282,29 @@ class Cart extends REST_Controller {
                             }else{
                                 $this->db->trans_rollback();
                                 array_push($data['data'], array( 'query' => $this->error($query) ));
+                                if ($data){
+                                    // Set the response and exit
+                                    $this->response($data['data']); // OK (200) being the HTTP response code
+                                }
+                                die;
                             }
                         }else{
                             $query = "	INSERT INTO tdcart (nomorheader, nomorbarang, kodebarang, jumlah, harga, subtotal, aktif)
                                         VALUES ($nomorheader, $nomorbarang, '$kodebarang', $jumlah, $harga, $subtotal, 1)";
                             $result = $this->db->query($query);
-                            if($result){
-                                $this->db->trans_commit();
-                                array_push($data['data'], array( 'success' => "true"));
-                            }else{
+                            if(!$result){
                                 $this->db->trans_rollback();
                                 array_push($data['data'], array( 'query' => $this->error($query) ));
+                                if ($data){
+                                    // Set the response and exit
+                                    $this->response($data['data']); // OK (200) being the HTTP response code
+                                }
+                                die;
                             }
                         }
                     }
+                    $this->db->trans_commit();
+                    array_push($data['data'], array( 'success' => "true"));
                 }
             }
         }else{
