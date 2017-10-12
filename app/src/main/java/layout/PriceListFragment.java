@@ -372,13 +372,6 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                     }, null);
                 }
             });
-
-            holder.tvNama.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //String nomeruser = finalHolder.adapterItem.getNomor();
-                }
-            });
             return row;
         }
 
