@@ -46,9 +46,10 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
-    private Double grandtotal = 0.0;
+    private Double grandtotal;
+    private Integer totalJumlah;
 //    private GetData getData;
-
+    protected String strData;
     protected String itemType;
     protected String actionUrl = "Cart/getBarang/";
 
@@ -101,7 +102,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
         btnSave.setVisibility(View.VISIBLE);
         btnSave.setText("Save");
         btnSave.setOnClickListener(this);
-        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item, new ArrayList<ItemAdapter>());
+        itemadapter = new ItemListAdapter(getActivity(), R.layout.list_item_cart, new ArrayList<ItemAdapter>());  //modified by Tonny @12-Oct-2017  layout list_item diganti list_item_cart
         itemadapter.clear();
         lvSearch = (ListView) getView().findViewById(R.id.lvChoose);
         lvSearch.setAdapter(itemadapter);
@@ -150,7 +151,8 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             if(LibInspira.getShared(global.datapreferences, global.data.cart, "").equals("")){
                 LibInspira.showLongToast(getContext(), "No data to save");
             }else{
-                LibInspira.alertbox("Save Cart", "Do you want to save all items in this cart?", getActivity(), new Runnable() {
+                LibInspira.alertbox("Save Cart", "Do you want to save all items in this cart? \n\n" + "TOTAL QTY: " + totalJumlah + "\n" +
+                        "TOTAL PEMBAYARAN: Rp. " + LibInspira.delimeter(String.valueOf(grandtotal)), getActivity(), new Runnable() {
                     @Override
                     public void run() {
                         Log.d("cart ", LibInspira.getShared(global.datapreferences, global.data.cart, ""));
@@ -202,6 +204,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
         itemadapter.clear();
         list.clear();
         grandtotal = 0.0;
+        totalJumlah = 0;
 
         String data = LibInspira.getShared(global.datapreferences, global.data.cart, "");
         String[] pieces = data.trim().split("\\|");
@@ -237,6 +240,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                         if(subtotal.equals("null")) subtotal = "";
 
                         ItemAdapter dataItem = new ItemAdapter();
+                        dataItem.setIndex(i);
                         dataItem.setNomor(nomor);
                         dataItem.setNamajual(namajual);
                         dataItem.setKode(kode);
@@ -252,6 +256,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
 
                         //added by Tonny @12-Oct-2017
                         grandtotal += Double.parseDouble(subtotal);
+                        totalJumlah += Integer.parseInt(jumlah);
                     }
                 }
             }
@@ -337,7 +342,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
 //    }
 
     public class ItemAdapter {
-
+        private int index;
         private String nomor;
         private String namajual;
         private String kode;
@@ -347,6 +352,9 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
         private String subtotal;
 
         public ItemAdapter() {}
+
+        public int getIndex() {return index;}
+        public void setIndex(int _param) {this.index = _param;}
 
         public String getNomor() {return nomor;}
         public void setNomor(String _param) {this.nomor = _param;}
@@ -389,8 +397,8 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
 
         public class Holder {
             ItemAdapter adapterItem;
-            TextView tvNama;
-            TextView tvKeterangan;
+            TextView tvKode, tvNama, tvSatuan, tvPrice, tvQty, tvFee, tvDisc, tvSubtotal;
+            ImageButton ibtnDelete;
         }
 
         @Override
@@ -407,8 +415,15 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             holder = new Holder();
             holder.adapterItem = items.get(position);
 
-            holder.tvNama = (TextView)row.findViewById(R.id.tvName);
-            holder.tvKeterangan = (TextView)row.findViewById(R.id.tvKeterangan);
+            holder.tvNama = (TextView)row.findViewById(R.id.tvNama);
+            holder.tvKode = (TextView)row.findViewById(R.id.tvKode);
+            holder.tvSatuan = (TextView)row.findViewById(R.id.tvSatuan);
+            holder.tvPrice = (TextView)row.findViewById(R.id.tvPrice);
+            holder.tvQty = (TextView)row.findViewById(R.id.tvQty);
+            holder.tvFee = (TextView)row.findViewById(R.id.tvFee);
+            holder.tvDisc = (TextView)row.findViewById(R.id.tvDisc);
+            holder.tvSubtotal = (TextView)row.findViewById(R.id.tvSubtotal);
+            holder.ibtnDelete = (ImageButton) row.findViewById(R.id.ibtnDelete);
 
             row.setTag(holder);
             setupItem(holder);
@@ -417,7 +432,54 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    LibInspira.showNumericInputDialog("Edit cart", "How many item do you want to buy?", getActivity(), getContext(), new Runnable() {
+                        @Override
+                        public void run() {
+                            //edit shared jumlah
+                            String nomorbarang, kodebarang, namabarang, hargabarang, jumlah, subtotal, satuan;
+                            jumlah = LibInspira.getNumericValue();
+                            if (Double.parseDouble(jumlah) > 0) {
+                                nomorbarang = finalHolder.adapterItem.getNomor();
+                                namabarang = finalHolder.adapterItem.getNamajual();
+                                kodebarang = finalHolder.adapterItem.getKode();
+                                hargabarang = finalHolder.adapterItem.getHargajual();
+                                jumlah = LibInspira.getNumericValue();
+                                satuan = finalHolder.adapterItem.getSatuan();
+                                subtotal = Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(hargabarang));  //subtotal untuk tdcart
+                                finalHolder.adapterItem.setJumlah(jumlah);
 
+                                //MODE EDIT
+                                strData = "";
+                                String[] pieces = LibInspira.getShared(global.datapreferences, global.data.cart, "").trim().split("\\|");
+                                for(int i=0 ; i < pieces.length ; i++){
+                                    if(i != finalHolder.adapterItem.getIndex())
+                                    {
+                                        strData = strData + pieces[i] + "|";
+                                    }
+                                    else
+                                    {
+                                        String tempCart = nomorbarang + "~" + namabarang + "~" + kodebarang + "~" + satuan + "~" + hargabarang + "~" + jumlah + "~" + subtotal + "|";
+                                        strData = strData + tempCart;
+                                        Log.d("strData edit", strData);
+                                    }
+                                }
+                                LibInspira.setShared(global.datapreferences, global.data.cart, strData);
+                            } else {
+                                LibInspira.showLongToast(getContext(), "Jumlah must be greater than 0");
+                            }
+                        }
+                    }, new Runnable() {
+                        @Override
+                        public void run() {
+                            //do nothing
+                        }
+                    });
+                }
+            });
+            holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteSelectedItem(finalHolder.adapterItem.getIndex());
                 }
             });
 
@@ -426,12 +488,17 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
 
         private void setupItem(final Holder holder) {
             holder.tvNama.setText(holder.adapterItem.getNamajual().toUpperCase());
-            holder.tvKeterangan.setVisibility(View.VISIBLE);
-            holder.tvKeterangan.setText("Kode: " + holder.adapterItem.getKode().toUpperCase() + "\n" +
-                "Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHargajual()) + "\n" +
-                "Qty: " + LibInspira.delimeter(holder.adapterItem.getJumlah()) + " " + holder.adapterItem.getSatuan() +"\n" +
-                "Subtotal: Rp. " + LibInspira.delimeter(holder.adapterItem.getSubtotal())
-            );
+//            holder.tvKeterangan.setText("Kode: " + holder.adapterItem.getKode().toUpperCase() + "\n" +
+//                "Harga: Rp. " + LibInspira.delimeter(holder.adapterItem.getHargajual()) + "\n" +
+//                "Qty: " + LibInspira.delimeter(holder.adapterItem.getJumlah()) + " " + holder.adapterItem.getSatuan() +"\n" +
+//                "Subtotal: Rp. " + LibInspira.delimeter(holder.adapterItem.getSubtotal())
+//            );
+            holder.tvKode.setText(holder.adapterItem.getKode().toUpperCase());
+            holder.tvPrice.setText("Rp. " + LibInspira.delimeter(holder.adapterItem.getHargajual()));
+            holder.tvQty.setText(LibInspira.delimeter(holder.adapterItem.getJumlah()) + " " + holder.adapterItem.getSatuan().toUpperCase());
+            holder.tvFee.setVisibility(View.GONE);
+            holder.tvDisc.setVisibility(View.GONE);
+            holder.tvSubtotal.setText("Rp. " + LibInspira.delimeter(holder.adapterItem.getSubtotal()));
         }
     }
 
@@ -461,7 +528,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
-                            LibInspira.showShortToast(getContext(), "Data has been successfully saved!");
+                            LibInspira.showLongToast(getContext(), "Data has been successfully saved!");
                             LibInspira.setShared(global.datapreferences, global.data.cart, "");
                         }
                     }
@@ -483,5 +550,32 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             tvInformation.setVisibility(View.VISIBLE);
             LibInspira.showLoading(getContext(), "Saving the data", "Now Loading...");
         }
+    }
+
+    protected void getStrData(){
+        strData = LibInspira.getShared(global.datapreferences, global.data.cart, "");
+        refreshList();
+    }
+
+    protected void setStrData(String newdata){
+        LibInspira.setShared(global.datapreferences, global.data.cart, newdata);
+        strData = newdata;
+    }
+
+    protected void deleteSelectedItem(int _index){
+        String newdata = "";
+        getStrData();
+        if(!strData.equals(""))
+        {
+            String[] pieces = strData.trim().split("\\|");
+            for(int i=0 ; i < pieces.length ; i++){
+                if(i != _index)
+                {
+                    newdata = newdata + pieces[i] + "|";
+                }
+            }
+        }
+        setStrData(newdata);
+        refreshList();
     }
 }
