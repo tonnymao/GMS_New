@@ -364,7 +364,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                                 subtotal = Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(hargabarang));  //subtotal untuk tdcart
                                 String tempCart = nomorbarang + "~" + namabarang + "~" + kodebarang + "~" + satuan + "~" + hargabarang + "~" + jumlah + "~" + subtotal + "|";
                                 Log.d("tempcart ", tempCart);
-                                LibInspira.setShared(global.datapreferences, global.data.cart, tempCart);
+                                LibInspira.setShared(global.datapreferences, global.data.cart, LibInspira.getShared(global.datapreferences, global.data.cart, "") + tempCart);
                             }else{
                                 LibInspira.showLongToast(getContext(), "Jumlah must be greater than 0");
                             }
