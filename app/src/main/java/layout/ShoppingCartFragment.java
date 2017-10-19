@@ -437,13 +437,13 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                         public void run() {
                             //edit shared jumlah
                             String nomorbarang, kodebarang, namabarang, hargabarang, jumlah, subtotal, satuan;
-                            jumlah = LibInspira.getNumericValue();
+                            jumlah = LibInspira.getDialogValue();
                             if (Double.parseDouble(jumlah) > 0) {
                                 nomorbarang = finalHolder.adapterItem.getNomor();
                                 namabarang = finalHolder.adapterItem.getNamajual();
                                 kodebarang = finalHolder.adapterItem.getKode();
                                 hargabarang = finalHolder.adapterItem.getHargajual();
-                                jumlah = LibInspira.getNumericValue();
+                                jumlah = LibInspira.getDialogValue();
                                 satuan = finalHolder.adapterItem.getSatuan();
                                 subtotal = Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(hargabarang));  //subtotal untuk tdcart
                                 finalHolder.adapterItem.setJumlah(jumlah);

@@ -48,7 +48,7 @@ public class DeliveryOrderApprovalFragment extends Fragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_delivery_order_approval, container, false);
+        View v = inflater.inflate(R.layout.fragment_tab_delivery_order_approval, container, false);
         if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){
             getActivity().setTitle("Approval Delivery Order");
         }else{

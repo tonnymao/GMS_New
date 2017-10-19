@@ -358,7 +358,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                             namabarang = finalHolder.adapterItem.getNama();
                             kodebarang = finalHolder.adapterItem.getKode();
                             hargabarang = finalHolder.adapterItem.getHarga();
-                            jumlah = LibInspira.getNumericValue();
+                            jumlah = LibInspira.getDialogValue();
                             satuan = finalHolder.adapterItem.getSatuan();
                             if(Double.parseDouble(jumlah) > 0){
                                 subtotal = Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(hargabarang));  //subtotal untuk tdcart

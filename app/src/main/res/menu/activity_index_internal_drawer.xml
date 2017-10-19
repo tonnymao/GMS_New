@@ -39,6 +39,10 @@
             android:id="@+id/nav_customer_prospecting"
             android:icon="@drawable/user"
             android:title="Customer Prospecting" />
+        <item
+            android:id="@+id/nav_online_order"
+            android:icon="@drawable/salesorder"
+            android:title="Online Order" />
     </group>
 
     <item android:title="Manage">

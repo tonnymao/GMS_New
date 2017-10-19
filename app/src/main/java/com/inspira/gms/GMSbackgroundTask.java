@@ -1,14 +1,11 @@
 package com.inspira.gms;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,9 +18,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import static com.inspira.gms.IndexInternal.global;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -345,7 +340,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
                 .setTicker(" ToDoList Notification")
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(notifIntent)
-                .setSmallIcon(R.drawable.gms_logo).build();
+                .setSmallIcon(R.drawable.logo).build();
         startForeground(notifID, notification);
     }
 }

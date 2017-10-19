@@ -927,4 +927,169 @@ class Order extends REST_Controller {
             $this->response($data['data']); // OK (200) being the HTTP response code
         }
     }
+
+    //added by Tonny
+    //untuk mendapatkan semua list dari thcart (untuk aplikasi internal)
+    function getOnlineOrderList_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        //$nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //data yang diperlukan
+        //nomor~tanggal~nomorcustomer~kodecustomer~namacustomer~subtotal
+        $query = "SELECT a.nomor, a.tanggal, a.nomorcustomer, a.kodecustomer, b.nama as namacustomer, a.disc, a.discnominal, a.ppn, a.ppnnominal, a.subtotal
+                  FROM thcart a
+                  JOIN tcustomer b ON a.nomorcustomer = b.nomor
+                  WHERE
+                    a.aktif = 1
+                    AND a.approve = 0 ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomor'     	=> $r['nomor'],
+                                                'tanggal'	    => $r['tanggal'],
+                                                'nomorcustomer'	=> $r['nomorcustomer'],
+                                                'kodecustomer'	=> $r['kodecustomer'],
+                                                'namacustomer' 	=> $r['namacustomer'],
+                                                'disc'	        => $r['disc'],
+                                                'discnominal'	=> $r['discnominal'],
+                                                'ppn'	        => $r['ppn'],
+                                                'ppnnominal' 	=> $r['ppnnominal'],
+                                                'subtotal'      => $r['subtotal']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //added by Tonny
+    //untuk mendapatkan data dari thcart pada nomor tertentu (untuk aplikasi internal)
+    function getOnlineOrderHeader_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //data yang diperlukan
+        //nomor~tanggal~nomorcustomer~kodecustomer~namacustomer~subtotal
+        $query = "SELECT a.nomor, a.tanggal, a.nomorcustomer, a.kodecustomer, b.nama as namacustomer, a.disc, a.discnominal, a.ppn, a.ppnnominal, a.subtotal, a.totalrp
+                  FROM thcart a
+                  JOIN tcustomer b ON a.nomorcustomer = b.nomor
+                  WHERE
+                    a.aktif = 1
+                    AND a.nomor = $nomor
+                    AND a.approve = 0 ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomor'     	=> $r['nomor'],
+                                                'tanggal'	    => $r['tanggal'],
+                                                'nomorcustomer'	=> $r['nomorcustomer'],
+                                                'kodecustomer'	=> $r['kodecustomer'],
+                                                'namacustomer' 	=> $r['namacustomer'],
+                                                'disc'	        => $r['disc'],
+                                                'discnominal'	=> $r['discnominal'],
+                                                'ppn'	        => $r['ppn'],
+                                                'ppnnominal' 	=> $r['ppnnominal'],
+                                                'subtotal'      => $r['subtotal']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //added by Tonny
+    //untuk mendapatkan semua isi dari tdcart berdasarkan nomorheader yg dipilih
+    function getOnlineOrderDetail_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //input merupakan nomor thorderjual
+        //data yang diperlukan
+        //nomor~nomorbarang~kodebarang~namabarang~qty~satuan~harga~fee~disc~subtotal
+        //$query = "SELECT a.nomorbarang, a.kodebarang, b.nama namabarang, b.satuan, a.harga price, a.qty, a.fee, a.disc1 disc, a.subtotal, a.keterangandetail AS notes
+        $query = "SELECT
+                    a.nomor,
+                    a.nomorbarang,
+                    a.kodebarang,
+                    b.nama as namabarang,
+                    a.jumlah,
+                    b.satuan,
+                    a.harga as price,
+                    a.fee,
+                    a.disc1 as disc,
+                    a.disc1nominal as discnominal,
+                    a.subtotal
+                  FROM tdcart a
+                  JOIN vwbarang b ON a.nomorbarang = b.nomor
+                  WHERE
+                    a.nomorheader = $nomor ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomor'	        => $r['nomor'],
+                                                'nomorbarang'	=> $r['nomorbarang'],
+                                                'kodebarang'	=> $r['kodebarang'],
+                                                'namabarang'	=> $r['namabarang'],
+                                                'jumlah'    	=> $r['jumlah'],
+                                                'satuan'    	=> $r['satuan'],
+                                                'price'     	=> $r['price'],
+                                                'fee'	        => $r['fee'],
+                                                'disc'	        => $r['disc'],
+                                                'discnominal'	=> $r['discnominal'],
+                                                'subtotal'	    => $r['subtotal']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    function setApproveOnlineOrder_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
+        $disc = (isset($jsonObject["disc"]) ? $this->clean($jsonObject["disc"])     : "");
+        $discnominal = (isset($jsonObject["discnominal"]) ? $this->clean($jsonObject["discnominal"])     : "0");
+        $ppn = (isset($jsonObject["ppn"]) ? $this->clean($jsonObject["ppn"])     : "");
+        $ppnnominal = (isset($jsonObject["ppnnominal"]) ? $this->clean($jsonObject["ppnnominal"])     : "0");
+        $total = (isset($jsonObject["total"]) ? $this->clean($jsonObject["total"])     : "");
+        $query = "UPDATE thcart SET disc = $disc, discnominal = $discnominal, ppn = $ppn, ppnnominal = $ppnnominal, totalrp = $total, approve = 1
+                  WHERE
+                    nomor = $nomor ";
+        $result = $this->db->query($query);
+        if($result){
+            array_push($data['data'], array( 'success' => 'true' ));
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
 }

@@ -162,14 +162,28 @@ public class GlobalVar {
             public String deliveryorder_item_qty = "deliveryorder_item_qty";
             public String deliveryorder_item_fee = "deliveryorder_item_fee";
             public String deliveryorder_item_disc = "deliveryorder_item_disc";
-            public String deliveryorder_item_subtotal = "deliveryorder_item_subtotal";
             public String deliveryorder_item_notes = "deliveryorder_item_notes";
 
             //added by Tonny @04-Sep-2017 untuk mengecek apakah salesorder yg akan diinputkan termasuk ppn atau bukan
             public String salesorder_isPPN = "salesorder_isPPN";
 
-            //added by Tonny @16-Sep-2017 untuk menampung nomor sales order yang dipilih dari list (digunakan pada approval)
+            //added by Tonny @16-Sep-2017
             public String salesorder_selected_list_nomor = "salesorder_selected_list_nomor";
+
+            //modified by Tonny @19-Oct-2017 untuk menampung nomor yang dipilih dari list
+            public String selected_list_nomor = "selected_list_nomor";
+
+            //added by Tonny @19-Oct-2017
+            public String onlineorder_date = "onlineorder_date";
+            public String onlineorder_customer_nama = "onlineorder_customer_nama";
+            public String onlineorder_disc = "onlineorder_disc";
+            public String onlineorder_disc_nominal = "onlineorder_disc_nominal";
+            public String onlineorder_ppn = "onlineorder_ppn";
+            public String onlineorder_ppn_nominal = "onlineorder_ppn_nominal";
+            public String onlineorder_subtotal = "onlineorder_subtotal";
+            public String onlineorder_total = "onlineorder_total";
+            public String onlineorder_item = "onlineorder_item"; //added by Tonny @19-Oct-2017  nomor~nomorbarang~kodebarang~namabarang~jumlah~satuan~price~fee~disc~discnominal~subtotal
+
         }
 
         public class User
@@ -241,24 +255,14 @@ public class GlobalVar {
             //UNTUK MENYIMPAN DATA SALESMAN OMZET
             public String salesmanomzet = "salesmanomzet";  //nomorsales~namasales~omzet~tanggal  //added by Tonny @25-Aug-2017
 
-            //UNTUK MENYIMPAN DATA FORMATSETTING SALESORDER
-            public String salesorder_formatsetting = "salesorder_formatsetting";  //prefix,length,YYMM,ttransaksi,tdorderjual  //added by Tonny @04-Sep-2017
-
-            public String salesorder_prefix_kode = "salesorder_prefix_kode";  //added by Tonny @04-Sep-2017
-            public String salesorder_length_kode = "salesorder_length_kode";  //added by Tonny @04-Sep-2017
-            public String salesorder_formatdate_kode = "salesorder_formatdate_kode";  //added by Tonny @04-Sep-2017
-            public String salesorder_header_kode = "salesorder_header_kode";  //added by Tonny @04-Sep-2017
-            public String salesorder_detail_kode = "salesorder_detail_kode";  //added by Tonny @04-Sep-2017
-
-            public String salesorder_nomorurut_kode = "salesorder_nomorurut_kode";  //added by Tonny @04-Sep-2017
-
-            //UNTUK MENYIMPAN DATA SALES ORDER HEADER
-
             //UNTUK MENYIMPAN DATA SALES ORDER LIST ITEM
             public String salesorder_list_item = "salesorder_list_item";  //kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @01-Sep-2017
 
             //UNTUK MENYIMPAN DATA DELIVERY ORDER LIST ITEM
             public String deliveryorder_list_item = "deliveryorder_list_item";  //kode~tanggal~nomorcabang~cabang~nomorcustomer~kodecustomer~namacustomer  //added by Tonny @24-Sep-2017
+
+            //UNTUK MENYIMPAN DATA SALES ORDER LIST ITEM
+            public String onlineorder_list = "onlineorder_list";  //nomor~tanggal~nomorcustomer~kodecustomer~namacustomer~subtotal  //added by Tonny @18-Oct-2017
 
             public String selectedUsers = "users"; // nomor~nama //added by Shodiq @8-Sep-2017
             public String selectedGroup = "group"; // nomor~nama //added by Shodiq @9-Sep-2017

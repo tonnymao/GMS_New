@@ -34,6 +34,8 @@ import layout.ChoosePeriodeFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
 import layout.FilterSalesOmzetFragment;
+import layout.OnlineOrderFragment;
+import layout.OnlineOrderListFragment;
 import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
 import layout.SalesOmzetFragment;
@@ -61,7 +63,7 @@ public class IndexInternal extends AppCompatActivity
         startService(intent);
 
         global = new GlobalVar(this);
-
+        LibInspira.AddFragment(getSupportFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -244,6 +246,8 @@ public class IndexInternal extends AppCompatActivity
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "");
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
+        } else if (id == R.id.nav_online_order) {  //added by Tonny @16-Oct-2017
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new OnlineOrderListFragment());  //added by Tonny @29-Aug-2017
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

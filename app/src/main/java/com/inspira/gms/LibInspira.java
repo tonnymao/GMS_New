@@ -67,7 +67,7 @@ public class LibInspira {
     private static String inspiraDateTimeFormat = "yyyy-MM-dd hh:mm:ss";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
     private static String inspiraDateFormat = "yyyy-MM-dd";  //added by Tonny @26-Aug-2017 format standar datetime pada database inspira
 
-    private static String numericValue;
+    private static String dialogValue;
 
 
     public static void GoToActivity(String _activityName){
@@ -518,15 +518,15 @@ public class LibInspira {
         alertDialog.show();
     }
 
-    public static String getNumericValue() {
-        if(numericValue.equals("")){
-            numericValue = "0";
+    public static String getDialogValue() {
+        if(dialogValue.equals("")){
+            dialogValue = "0";
         }
-        return numericValue;
+        return dialogValue;
     }
 
-    public static void setNumericValue(String _numericValue) {
-        numericValue = _numericValue;
+    public static void setDialogValue(String _dialogValue) {
+        dialogValue = _dialogValue;
     }
     //added by Tonny @09-Oct-2017
     //untuk menampilkan dialog untuk input numeric
@@ -540,8 +540,30 @@ public class LibInspira {
         alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (_commandOK != null)
-                    setNumericValue(editText.getText().toString());
+                    setDialogValue(editText.getText().toString());
                     _commandOK.run();
+            } });
+        if (_commandCancel != null){
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    _commandCancel.run();
+                } });}
+        alertDialog.show();
+    }
+
+    //added by Tonny @18-Oct-2017
+    //untuk menampilkan dialog untuk input string
+    public static void showInputDialog(String _title, String _message, final Activity _activity, final Context _context, final Runnable _commandOK, final Runnable _commandCancel) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(_activity);
+        final EditText editText = new EditText(_context);
+        alertDialog.setTitle(_title);
+        alertDialog.setMessage(_message);
+        alertDialog.setView(editText);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (_commandOK != null)
+                    setDialogValue(editText.getText().toString());
+                _commandOK.run();
             } });
         if (_commandCancel != null){
             alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -646,23 +668,11 @@ public class LibInspira {
         if (action != null)
             pendingIntent = PendingIntent.getActivity(activityContext, 0, action, 0);
         NotificationCompat.Builder notif = new NotificationCompat.Builder(activityContext)
-                .setSmallIcon(R.drawable.gms_logo)
+                .setSmallIcon(R.drawable.logo)  //modified by Tonny @18-Oct-2017
                 .setContentTitle(title)
                 .setContentText(content)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(content));
         NotificationManager notificationManager = (NotificationManager) activityContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(notifID, notif.build());
-    }
-
-    //added by Tonny @11-Oct-2017
-    //untuk pengecekan kembar
-    public static boolean isExist(String[] _arrStr, String _value){
-        boolean result = false;
-        for(int i=0;i<_arrStr.length;i++){
-            if(_arrStr[i].equals(_value)){
-                result = true;
-            }
-        }
-        return result;
     }
 }
