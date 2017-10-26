@@ -80,49 +80,55 @@ public class OnlineOrderHeaderFragment extends Fragment{
         LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn, "0");
         LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn_nominal, "0");
 
-        etDisc.addTextChangedListener(new TextWatcher() {
-                  @Override
-                  public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0")){
+            etDisc.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                  }
+                }
 
-                  @Override
-                  public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                  }
+                }
 
-                  @Override
-                  public void afterTextChanged(Editable editable) {
-                      LibInspira.formatNumberEditText(etDisc, this, true, false);
-                      tvDiscNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
-                      tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
-                      LibInspira.setShared(global.temppreferences, global.temp.onlineorder_total, String.valueOf(getGrandTotal()));
-                      LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc, etDisc.getText().toString().replace(",", ""));
-                      LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc_nominal, tvDiscNominal.getText().toString().replace(",", ""));
-                  }
-              });
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    LibInspira.formatNumberEditText(etDisc, this, true, false);
+                    tvDiscNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
+                    tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_total, String.valueOf(getGrandTotal()));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc, etDisc.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc_nominal, tvDiscNominal.getText().toString().replace(",", ""));
+                }
+            });
 
-        etPPN.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            etPPN.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+                }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                LibInspira.formatNumberEditText(etPPN, this, true, false);
-                tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
-                tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
-                LibInspira.setShared(global.temppreferences, global.temp.onlineorder_total, String.valueOf(getGrandTotal()));
-                LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn, etPPN.getText().toString().replace(",", ""));
-                LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn_nominal, tvPPNNominal.getText().toString().replace(",", ""));
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    LibInspira.formatNumberEditText(etPPN, this, true, false);
+                    tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
+                    tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_total, String.valueOf(getGrandTotal()));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn, etPPN.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn_nominal, tvPPNNominal.getText().toString().replace(",", ""));
+                }
+            });
+        }else{
+            //added by Tonny @25-Oct-2017 jika user adalah customer (external app), maka edittext hanya read only
+            etDisc.setFocusable(false);
+            etPPN.setFocusable(false);
+        }
     }
 
     //untuk mendapatkan nominal diskon

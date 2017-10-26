@@ -95,10 +95,17 @@ public class OnlineOrderFragment extends Fragment implements View.OnClickListene
         btnApprove = (Button) getView().findViewById(R.id.btnApprove);
         btnDisapprove = (Button) getView().findViewById(R.id.btnDisapprove);
 
-        btnApprove.setVisibility(View.VISIBLE);
-        btnApprove.setOnClickListener(this);
-        btnDisapprove.setVisibility(View.GONE);
-        btnDisapprove.setOnClickListener(null);
+        if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0")){
+            btnApprove.setVisibility(View.VISIBLE);
+            btnApprove.setOnClickListener(this);
+            btnDisapprove.setVisibility(View.GONE);
+            btnDisapprove.setOnClickListener(null);
+        }else{
+            btnApprove.setVisibility(View.GONE);
+            btnApprove.setOnClickListener(null);
+            btnDisapprove.setVisibility(View.GONE);
+            btnDisapprove.setOnClickListener(null);
+        }
 
 //        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval")){  //jika approve, hide dan remove listener pada btnDisapprove
 //            btnApprove.setVisibility(View.VISIBLE);

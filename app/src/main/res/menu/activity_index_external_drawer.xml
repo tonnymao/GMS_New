@@ -16,6 +16,14 @@
             android:icon="@drawable/groupmessage"
             android:title="Cart" />
         <item
+            android:id="@+id/nav_order_pending"
+            android:icon="@drawable/groupmessage"
+            android:title="Pending" />
+        <item
+            android:id="@+id/nav_order_approved"
+            android:icon="@drawable/groupmessage"
+            android:title="Approved" />
+        <item
             android:id="@+id/nav_trackinginformation"
             android:icon="@drawable/salestracking"
             android:title="Delivery Tracking" />

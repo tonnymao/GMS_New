@@ -3,14 +3,9 @@ package com.inspira.gms;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -18,28 +13,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import layout.ChangePasswordFragment;
-import layout.ChooseCustomerProspectingFragment;
-import layout.ChooseGroupFragment;
-import layout.ChoosePeriodeFragment;
-import layout.ContactFragment;
+import layout.CustomerOrderListFragment;
 import layout.DashboardExternalFragment;
-import layout.DashboardInternalFragment;
-import layout.FilterSalesOmzetFragment;
-import layout.PenjualanFragment;
+import layout.OnlineOrderFragment;
 import layout.PriceListFragment;
-import layout.SalesNavigationFragment;
-import layout.SalesOrderListFragment;
 import layout.SettingFragment;
 import layout.ShoppingCartFragment;
 
@@ -135,7 +120,7 @@ public class IndexExternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChangePasswordFragment());
         } else if (id == R.id.action_logout) {
             GlobalVar.clearDataUser();
-
+            LibInspira.clearShared(global.temppreferences);  //added by Tonny @24-Oct-2017 hapus cache temp pada saat logout
             Intent intent = new Intent(IndexExternal.this, Login.class);
             startActivity(intent);
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
@@ -159,6 +144,12 @@ public class IndexExternal extends AppCompatActivity
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());  //added by Tonny @01-Aug-2017
         } else if (id == R.id.nav_cart) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ShoppingCartFragment());  //added by Tonny @04-Oct-2017
+        } else if (id == R.id.nav_order_pending) {
+            LibInspira.setShared(global.temppreferences, global.temp.order_status, "pending");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new CustomerOrderListFragment());  //added by Tonny @24-Oct-2017
+        } else if (id == R.id.nav_order_approved) {
+            LibInspira.setShared(global.temppreferences, global.temp.order_status, "approved");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new CustomerOrderListFragment());  //added by Tonny @24-Oct-2017
         } else if (id == R.id.nav_trackinginformation) {
 
         } else if (id == R.id.nav_accountreceivablereport) {

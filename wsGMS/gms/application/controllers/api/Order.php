@@ -971,6 +971,50 @@ class Order extends REST_Controller {
     }
 
     //added by Tonny
+    //untuk melihat data pesanan yang pending atau sudah diapprove (untuk app external)
+    function getCustomerOrderList_post(){
+        $data['data'] = array();
+        $value = file_get_contents('php://input');
+        $jsonObject = (json_decode($value , true));
+        $nomorcustomer = (isset($jsonObject["nomorcustomer"]) ? $this->clean($jsonObject["nomorcustomer"])     : "");
+        $approve = (isset($jsonObject["approve"]) ? $this->clean($jsonObject["approve"])     : "");
+        //data yang diperlukan
+        //nomor~tanggal~nomorcustomer~kodecustomer~namacustomer~subtotal
+        $query = "SELECT a.nomor, a.tanggal, a.nomorcustomer, a.kodecustomer, b.nama as namacustomer, a.disc, a.discnominal, a.ppn, a.ppnnominal, a.subtotal
+                  FROM thcart a
+                  JOIN tcustomer b ON a.nomorcustomer = b.nomor
+                  WHERE
+                    a.aktif = 1
+                    AND a.nomorcustomer = $nomorcustomer
+                    AND a.approve = $approve ";
+        $result = $this->db->query($query);
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+                array_push($data['data'], array(
+                                                'nomor'     	=> $r['nomor'],
+                                                'tanggal'	    => $r['tanggal'],
+                                                'nomorcustomer'	=> $r['nomorcustomer'],
+                                                'kodecustomer'	=> $r['kodecustomer'],
+                                                'namacustomer' 	=> $r['namacustomer'],
+                                                'disc'	        => $r['disc'],
+                                                'discnominal'	=> $r['discnominal'],
+                                                'ppn'	        => $r['ppn'],
+                                                'ppnnominal' 	=> $r['ppnnominal'],
+                                                'subtotal'      => $r['subtotal']
+                                                )
+                );
+            }
+        }else{
+            array_push($data['data'], array( 'query' => $this->error($query) ));
+        }
+
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+    }
+
+    //added by Tonny
     //untuk mendapatkan data dari thcart pada nomor tertentu (untuk aplikasi internal)
     function getOnlineOrderHeader_post(){
         $data['data'] = array();

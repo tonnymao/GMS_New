@@ -94,8 +94,8 @@ public class OnlineOrderDetailFragment extends Fragment implements View.OnClickL
         btnNext.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
 
-        //refreshList();
-        getStrData();
+        refreshList();
+        //getStrData();
         Log.d("onActivityCreated: ", "list item created");
     }
 
@@ -124,7 +124,7 @@ public class OnlineOrderDetailFragment extends Fragment implements View.OnClickL
     {
         itemadapter.clear();
         list.clear();
-        //getStrData();  //added by Tonny @07-Sep-2017
+        getStrData();  //added by Tonny @07-Sep-2017
         if (strData.equals("")){
             return;
         }
@@ -414,41 +414,45 @@ public class OnlineOrderDetailFragment extends Fragment implements View.OnClickL
             setupItem(holder);
 
             final Holder finalHolder = holder;
-            row.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    LibInspira.showNumericInputDialog("Update Price", "Please input a new price for this item", getActivity(), getContext(), new Runnable() {
-                        @Override
-                        public void run() {
-                            //insert ke dalam shared
-                            tempPrice = LibInspira.getDialogValue();
-                            if(Double.parseDouble(tempPrice) > 0){
-                                String jumlah = finalHolder.adapterItem.getQty();
-                                finalHolder.adapterItem.setPrice(tempPrice);
-                                finalHolder.adapterItem.setSubtotal(Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(tempPrice)));  //subtotal pada tdcart
-                            }else{
-                                LibInspira.showLongToast(getContext(), "Price must be greater than 0");
+            if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0")) {  //added by Tonny @25-Oct-2017
+                row.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LibInspira.showNumericInputDialog("Update Price", "Please input a new price for this item", getActivity(), getContext(), new Runnable() {
+                            @Override
+                            public void run() {
+                                //insert ke dalam shared
+                                tempPrice = LibInspira.getDialogValue();
+                                if(Double.parseDouble(tempPrice) > 0){
+                                    String jumlah = finalHolder.adapterItem.getQty();
+                                    finalHolder.adapterItem.setPrice(tempPrice);
+                                    finalHolder.adapterItem.setSubtotal(Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(tempPrice)));  //subtotal pada tdcart
+                                }else{
+                                    LibInspira.showLongToast(getContext(), "Price must be greater than 0");
+                                }
                             }
-                        }
-                    }, null);
-                }
-            });
-            holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    LibInspira.alertBoxYesNo("Delete Data", "Are you sure want to delete this data?", getActivity(), new Runnable() {
-                        @Override
-                        public void run() {
-                            deleteSelectedItem(finalHolder.adapterItem.getIndex());
-                        }
-                    }, new Runnable() {
-                        @Override
-                        public void run() {
+                        }, null);
+                    }
+                });
+                holder.ibtnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LibInspira.alertBoxYesNo("Delete Data", "Are you sure want to delete this data?", getActivity(), new Runnable() {
+                            @Override
+                            public void run() {
+                                deleteSelectedItem(finalHolder.adapterItem.getIndex());
+                            }
+                        }, new Runnable() {
+                            @Override
+                            public void run() {
 
-                        }
-                    });
-                }
-            });
+                            }
+                        });
+                    }
+                });
+            }else{
+                holder.ibtnDelete.setVisibility(View.GONE);
+            }
 
             //added by Tonny @16-Sep-2017 jika approval atau disapproval, maka hide ibtnDelete dan hilangkan listener click
 //            if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_task, "").equals("approval") ||

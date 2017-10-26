@@ -183,7 +183,10 @@ public class GlobalVar {
             public String onlineorder_subtotal = "onlineorder_subtotal";
             public String onlineorder_total = "onlineorder_total";
             public String onlineorder_item = "onlineorder_item"; //added by Tonny @19-Oct-2017  nomor~nomorbarang~kodebarang~namabarang~jumlah~satuan~price~fee~disc~discnominal~subtotal
+            public String onlineorder_isPPN = "salesorder_isPPN";
 
+            //added by Tonny @24-Oct-2017
+            public String order_status = "order_status";
         }
 
         public class User

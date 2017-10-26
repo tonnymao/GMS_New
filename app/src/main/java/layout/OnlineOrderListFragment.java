@@ -91,7 +91,9 @@ public class OnlineOrderListFragment extends Fragment implements View.OnClickLis
 
         refreshList();
 
-        actionUrl = "Order/getOnlineOrderList/";  //added by Tonny @17-Sep-2017
+        if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0")){
+            actionUrl = "Order/getOnlineOrderList/";  //added by Tonny @17-Sep-2017
+        }
         checkData = new CheckData();
         checkData.execute( actionUrl );
     }
@@ -117,6 +119,12 @@ public class OnlineOrderListFragment extends Fragment implements View.OnClickLis
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("cabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
+                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                if(LibInspira.getShared(global.temppreferences, global.temp.order_status, "").equals("pending")){
+                    jsonObject.put("approve", 0);
+                }else if(LibInspira.getShared(global.temppreferences, global.temp.order_status, "").equals("approved")){
+                    jsonObject.put("approve", 1);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
