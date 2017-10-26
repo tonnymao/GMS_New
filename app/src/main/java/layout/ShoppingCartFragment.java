@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -38,8 +39,9 @@ import static com.inspira.gms.IndexExternal.jsonObject;
 
 public class ShoppingCartFragment extends Fragment implements View.OnClickListener{
     private EditText etSearch;
-    private ImageButton ibtnSearch;
     private Cart cart;
+    private ImageButton ibtnSearch;
+    private CheckBox chkBox;
     private RelativeLayout rlFooter;
     private Button btnSave;
     private TextView tvInformation, tvNoData;
@@ -52,6 +54,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
     protected String strData;
     protected String itemType;
     protected String actionUrl = "Cart/getBarang/";
+
 
     public ShoppingCartFragment() {
         // Required empty public constructor
@@ -98,6 +101,9 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
         etSearch = (EditText) getView().findViewById(R.id.etSearch);
         rlFooter = (RelativeLayout) getView().findViewById(R.id.rlFooter);
         rlFooter.setVisibility(View.VISIBLE);
+        chkBox = (CheckBox) getView().findViewById(R.id.chkBox);
+        chkBox.setText("PPN");
+        chkBox.setVisibility(View.VISIBLE);
         btnSave = (Button) getView().findViewById(R.id.btnCenter);
         btnSave.setVisibility(View.VISIBLE);
         btnSave.setText("Save");
@@ -151,7 +157,12 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             if(LibInspira.getShared(global.datapreferences, global.data.cart, "").equals("")){
                 LibInspira.showLongToast(getContext(), "No data to save");
             }else{
-                LibInspira.alertbox("Save Cart", "Do you want to save all items in this cart? \n\n" + "TOTAL QTY: " + totalJumlah + "\n" +
+                //added by Tonny @26-Oct-2017
+                String txtPPN = "NON PPN";
+                if (chkBox.isChecked()){
+                    txtPPN = "PPN";
+                }
+                LibInspira.alertbox("Save Cart", "Do you want to save all items in this cart? \n\n" + txtPPN + "\n\nTOTAL QTY: " + totalJumlah + "\n" +
                         "TOTAL PEMBAYARAN: Rp. " + LibInspira.delimeter(String.valueOf(grandtotal)), getActivity(), new Runnable() {
                     @Override
                     public void run() {
@@ -271,75 +282,6 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
             tvNoData.setVisibility(View.VISIBLE);
         }
     }
-
-//    private class GetData extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected String doInBackground(String... urls) {
-//            jsonObject = new JSONObject();
-//            try {
-//                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            return LibInspira.executePost(getContext(), urls[0], jsonObject);
-//        }
-//        // onPostExecute displays the results of the AsyncTask.
-//        @Override
-//        protected void onPostExecute(String result) {
-//            Log.d("resultQuery", result);
-//            try
-//            {
-//                String tempData= "";
-//                JSONArray jsonarray = new JSONArray(result);
-//                if(jsonarray.length() > 0){
-//                    for (int i = jsonarray.length() - 1; i >= 0; i--) {
-//                        JSONObject obj = jsonarray.getJSONObject(i);
-//                        if(!obj.has("query")){
-//                            String nomor = (obj.getString("nomor"));
-//                            String namajual = (obj.getString("namajual"));
-//                            String kode = (obj.getString("kode"));
-//                            String satuan = (obj.getString("satuan"));
-//                            String hargajual = (obj.getString("hargajual"));
-//                            String jumlah = (obj.getString("jumlah"));
-//                            String subtotal = (obj.getString("subtotal"));
-//
-//                            if(nomor.equals("")) nomor = "null";
-//                            if(namajual.equals("")) namajual = "null";
-//                            if(kode.equals("")) kode = "null";
-//                            if(satuan.equals("")) satuan = "null";
-//                            if(hargajual.equals("")) hargajual = "null";
-//                            if(jumlah.equals("")) jumlah = "null";
-//                            if(subtotal.equals("")) subtotal = "null";
-//
-//                            tempData = tempData + nomor + "~" + namajual + "~" + kode + "~" + satuan + "~" + hargajual + "~" + jumlah + "~" + subtotal + "|";
-//                        }
-//                    }
-//                    if(!tempData.equals(LibInspira.getShared(global.datapreferences, global.data.cart, "")))
-//                    {
-//                        LibInspira.setShared(
-//                                global.datapreferences,
-//                                global.data.cart,
-//                                tempData
-//                        );
-//                        //refreshList();
-//                    }
-//                }
-//                refreshList();
-//                tvInformation.animate().translationYBy(-80);
-//            }
-//            catch(Exception e)
-//            {
-//                e.printStackTrace();
-//                tvInformation.animate().translationYBy(-80);
-//            }
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            tvInformation.setVisibility(View.VISIBLE);
-//        }
-//    }
 
     public class ItemAdapter {
         private int index;
@@ -511,6 +453,12 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                 jsonObject.put("kodecustomer", LibInspira.getShared(global.userpreferences, global.user.kode, ""));
                 jsonObject.put("grandtotal", String.valueOf(grandtotal));
                 jsonObject.put("cart", LibInspira.getShared(global.datapreferences, global.data.cart, ""));
+                //added by Tonny @26-Oct-2017
+                String isppn = "0";
+                if(chkBox.isChecked()){
+                    isppn = "1";
+                }
+                jsonObject.put("isppn", isppn);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

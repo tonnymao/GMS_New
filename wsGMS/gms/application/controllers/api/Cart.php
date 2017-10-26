@@ -213,6 +213,7 @@ class Cart extends REST_Controller {
         $kodecustomer = (isset($jsonObject["kodecustomer"]) ? $this->clean($jsonObject["kodecustomer"]) : "");
         $grandtotal = (isset($jsonObject["grandtotal"]) ? $this->clean($jsonObject["grandtotal"]) : "");
         $cart = (isset($jsonObject["cart"]) ? ($jsonObject["cart"]) : "");
+        $isppn = (isset($jsonObject["isppn"]) ? $this->clean($jsonObject["isppn"]) : "0");
         $pieces = explode("|", $cart);
 
         if(count($pieces) > 1){
@@ -231,8 +232,8 @@ class Cart extends REST_Controller {
                     $result = $this->db->query($query);
                 }else{
                     //jika user belum memiliki pada thcart, maka buat thcart dulu sebelum melakukan insert pada tdcart
-                    $query = "	INSERT INTO thcart (tanggal, nomorcustomer, kodecustomer, subtotal, aktif)
-                             VALUES (NOW(), $nomorcustomer, '$kodecustomer', $grandtotal, 1)";
+                    $query = "	INSERT INTO thcart (tanggal, nomorcustomer, kodecustomer, subtotal, aktif, isppn)
+                             VALUES (NOW(), $nomorcustomer, '$kodecustomer', $grandtotal, 1, $isppn)";
                     $result = $this->db->query($query);
                     if($result){
                         $query = "  SELECT
