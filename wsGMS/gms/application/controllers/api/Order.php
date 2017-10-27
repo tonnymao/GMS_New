@@ -1115,19 +1115,155 @@ class Order extends REST_Controller {
         $data['data'] = array();
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
-        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");
+        $nomor = (isset($jsonObject["nomor"]) ? $this->clean($jsonObject["nomor"])     : "");  //nomor thcart
+        $nomorsales = (isset($jsonObject["nomorsales"]) ? $this->clean($jsonObject["nomorsales"])     : "");
+        $namasales = (isset($jsonObject["namasales"]) ? $this->clean($jsonObject["namasales"])     : "");
         $disc = (isset($jsonObject["disc"]) ? $this->clean($jsonObject["disc"])     : "");
         $discnominal = (isset($jsonObject["discnominal"]) ? $this->clean($jsonObject["discnominal"])     : "0");
         $ppn = (isset($jsonObject["ppn"]) ? $this->clean($jsonObject["ppn"])     : "");
         $ppnnominal = (isset($jsonObject["ppnnominal"]) ? $this->clean($jsonObject["ppnnominal"])     : "0");
         $total = (isset($jsonObject["total"]) ? $this->clean($jsonObject["total"])     : "");
-        $query = "UPDATE thcart SET disc = $disc, discnominal = $discnominal, ppn = $ppn, ppnnominal = $ppnnominal, totalrp = $total, approve = 1
+        $jenispenjualan = 'Material';
+        $nomorcabang = 2;  //untuk sementara masih static
+        $proyek = 0;  //untuk sementara masih static
+        $this->db->trans_begin();
+        $query = "UPDATE
+                    thcart
+                  SET
+                    disc = $disc, discnominal = $discnominal, ppn = $ppn, ppnnominal = $ppnnominal, totalrp = $total, approve = 1
                   WHERE
                     nomor = $nomor ";
         $result = $this->db->query($query);
         if($result){
-            array_push($data['data'], array( 'success' => 'true' ));
+            $query = "INSERT INTO thorderjual (
+                          Tanggal,
+                          NomorCustomer,
+                          KodeCustomer,
+                          NomorBroker,
+                          KodeBroker,
+                          NomorSales,
+                          KodeSales,
+                          SubTotal,
+                          SubtotalJasa,
+                          SubtotalBiaya,
+                          Disc,
+                          DiscNominal,
+                          DPP,
+                          PPN,
+                          PPNNominal,
+                          Total,
+                          TotalRp,
+                          Pembuat,
+                          NomorCabang,
+                          Cabang,
+                          Booking,
+                          Valuta,
+                          Kurs,
+                          JenisPenjualan,
+                          Proyek,
+                          IsBarangImport,
+                          IsPPN,
+                          status,
+                          dibuat_oleh,
+                          dibuat_pada)
+                      SELECT
+                          NOW(),
+                          nomorcustomer,
+                          kodecustomer,
+                          '' as nomorbroker,
+                          '' as kodebroker,
+                          $nomorsales as nomorsales,
+                          '$kodesales' as kodesales,
+                          subtotal,
+                          0 as subtotaljasa,
+                          0 as subtotalbiaya,
+                          disc,
+                          discnominal,
+                          0 as dpp,
+                          ppn,
+                          ppnnominal,
+                          0 as total,
+                          totalrp,
+                          '$pembuat' as pembuat,
+                          $nomorcabang as nomorcabang,
+                          '$cabang' as cabang,
+                          0 as booking,
+                          'IDR' as valuta,
+                          '' as kurs,
+                          '$jenispenjualan' as jenispenjualan,
+                          $proyek as proyek,
+                          0 as isbarangimport,
+                          isppn,
+                          1 as status,
+                          '$namasales' as user,
+                          NOW()
+                      FROM thcart
+                      WHERE nomor = $nomor ";
+            $result = $this->db->query($query);
+            if($result){
+                //$rows =  $this->db->insert_id();
+                $nomorheader =  $this->db->insert_id();
+                $query = "INSERT INTO tdorderjual (
+                            NomorHeader,
+                            NomorBarang,
+                            KodeBarang,
+                            Qty,
+                            Jumlah,
+                            Harga,
+                            Fee,
+                            HargaMandor,
+                            Disc1,
+                            Disc1Nominal,
+                            Disc2,
+                            Disc2Nominal,
+                            Netto,
+                            Subtotal,
+                            NomorPekerjaan,
+                            KodePekerjaan,
+                            NomorBarangJual,
+                            KodeBarangJual,
+                            KeteranganDetail,
+                            dibuat_oleh,
+                            dibuat_pada)
+                          SELECT
+                            $nomorheader as nomorheader,
+                            nomorbarang,
+                            kodebarang,
+                            0 as qty,
+                            jumlah,
+                            harga,
+                            fee,
+                            0 as hargamandor,
+                            disc1,
+                            disc1nominal,
+                            0 as disc2,
+                            0 as disc2nominal,
+                            0 as netto,
+                            subtotal,
+                            '' as nomorpekerjaan,
+                            '' as kodepekerjaan,
+                            '' as nomorbarangjual,
+                            '' as kodebarangjual,
+                            '' as keterangandetail,
+                            '$namasales' as user,
+                            NOW()
+                          FROM
+                            tdcart
+                          WHERE nomorheader = $nomor ";
+                $result = $this->db->query($query);
+                if($result){
+                    $this->db->trans_commit();
+                    array_push($data['data'], array( 'success' => 'true' ));
+                }else{
+                    $this->db->trans_rollback();
+                    array_push($data['data'], array( 'query' => $this->error($query) ));
+                }
+            }else{
+                $this->db->trans_rollback();
+                array_push($data['data'], array( 'query' => $this->error($query) ));
+            }
         }else{
+            $this->db->trans_rollback();
             array_push($data['data'], array( 'query' => $this->error($query) ));
         }
 

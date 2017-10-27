@@ -58,6 +58,10 @@ public class OnlineOrderHeaderFragment extends Fragment{
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
+        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc, "0");
+        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc_nominal, "0");
+        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn, "0");
+        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn_nominal, "0");
         tvDate = (TextView) getView().findViewById(R.id.tvDate);
         tvDate.setText(LibInspira.getShared(global.temppreferences, global.temp.onlineorder_date, ""));
         tvCustomer = (TextView) getView().findViewById(R.id.tvCustomer);
@@ -75,10 +79,6 @@ public class OnlineOrderHeaderFragment extends Fragment{
         btnSave.setVisibility(View.GONE);
 
         LibInspira.setShared(global.temppreferences, global.temp.onlineorder_total, String.valueOf(getGrandTotal()));
-        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc, "0");
-        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc_nominal, "0");
-        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn, "0");
-        LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn_nominal, "0");
 
         if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("0")){
             etDisc.addTextChangedListener(new TextWatcher() {
@@ -95,10 +95,10 @@ public class OnlineOrderHeaderFragment extends Fragment{
                 @Override
                 public void afterTextChanged(Editable editable) {
                     LibInspira.formatNumberEditText(etDisc, this, true, false);
-                    tvDiscNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
+                    tvDiscNominal.setText(LibInspira.delimeter(getNominalDiskon().toString()));
                     tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
                     LibInspira.setShared(global.temppreferences, global.temp.onlineorder_total, String.valueOf(getGrandTotal()));
-                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc, etDisc.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc, editable.toString().replace(",", ""));
                     LibInspira.setShared(global.temppreferences, global.temp.onlineorder_disc_nominal, tvDiscNominal.getText().toString().replace(",", ""));
                 }
             });
@@ -120,7 +120,7 @@ public class OnlineOrderHeaderFragment extends Fragment{
                     tvPPNNominal.setText(LibInspira.delimeter(getNominalPPN().toString()));
                     tvGrandTotal.setText("Rp. " + LibInspira.delimeter(getGrandTotal().toString()));
                     LibInspira.setShared(global.temppreferences, global.temp.onlineorder_total, String.valueOf(getGrandTotal()));
-                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn, etPPN.getText().toString().replace(",", ""));
+                    LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn, editable.toString().replace(",", ""));
                     LibInspira.setShared(global.temppreferences, global.temp.onlineorder_ppn_nominal, tvPPNNominal.getText().toString().replace(",", ""));
                 }
             });

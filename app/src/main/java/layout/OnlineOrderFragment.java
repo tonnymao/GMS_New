@@ -157,6 +157,9 @@ public class OnlineOrderFragment extends Fragment implements View.OnClickListene
             jsonObject = new JSONObject();
             try {
                 jsonObject.put("nomor", LibInspira.getShared(global.temppreferences, global.temp.selected_list_nomor, ""));
+                jsonObject.put("nomorsales", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                jsonObject.put("kodesales", LibInspira.getShared(global.userpreferences, global.user.kode, ""));
+                jsonObject.put("namasales", LibInspira.getShared(global.userpreferences, global.user.nama, ""));
                 jsonObject.put("disc", LibInspira.getShared(global.temppreferences, global.temp.onlineorder_disc, ""));
                 jsonObject.put("discnominal", LibInspira.getShared(global.temppreferences, global.temp.onlineorder_disc_nominal, ""));
                 jsonObject.put("ppn", LibInspira.getShared(global.temppreferences, global.temp.onlineorder_ppn, ""));
