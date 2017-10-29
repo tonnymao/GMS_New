@@ -182,10 +182,14 @@ public class OnlineOrderFragment extends Fragment implements View.OnClickListene
                     for (int i = jsonarray.length() - 1; i >= 0; i--) {
                         JSONObject obj = jsonarray.getJSONObject(i);
                         if(!obj.has("query")){
+                            Log.wtf("query header", obj.getString("queryheader"));
+                            Log.wtf("query detail", obj.getString("querydetail"));
                             LibInspira.hideLoading();
                             LibInspira.showLongToast(getContext(), "Data has been successfully approved");
                             LibInspira.BackFragment(getFragmentManager());
                         }else{
+                            Log.wtf("query header", obj.getString("queryheader"));
+                            Log.wtf("query detail", obj.getString("querydetail"));
                             LibInspira.hideLoading();
                             LibInspira.alertbox("Approving data", obj.getString("query"), getActivity(), new Runnable(){
                                 public void run() {

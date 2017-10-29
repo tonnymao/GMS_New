@@ -1200,11 +1200,9 @@ class Order extends REST_Controller {
                       FROM thcart
                       WHERE nomor = $nomor ";
             $result = $this->db->query($query);
+            $queryheader = $query;
             if($result){
-                //$rows =  $this->db->insert_id();
-                $nomorheader =  $this->db->insert_id();
                 $query = "INSERT INTO tdorderjual (
-                            NomorHeader,
                             NomorBarang,
                             KodeBarang,
                             Qty,
@@ -1226,7 +1224,6 @@ class Order extends REST_Controller {
                             dibuat_oleh,
                             dibuat_pada)
                           SELECT
-                            $nomorheader as nomorheader,
                             nomorbarang,
                             kodebarang,
                             0 as qty,
@@ -1251,12 +1248,19 @@ class Order extends REST_Controller {
                             tdcart
                           WHERE nomorheader = $nomor ";
                 $result = $this->db->query($query);
+                $querydetail = $query;
                 if($result){
                     $this->db->trans_commit();
-                    array_push($data['data'], array( 'success' => 'true' ));
+                    array_push($data['data'], array( 'success' => 'true',
+                                                     'queryheader' => $queryheader,
+                                                     'querydetail' => $querydetail
+                     ));
                 }else{
                     $this->db->trans_rollback();
-                    array_push($data['data'], array( 'query' => $this->error($query) ));
+                    array_push($data['data'], array( 'query' => $this->error($query),
+                                                     'queryheader' => $queryheader,
+                                                     'querydetail' => $querydetail
+                     ));
                 }
             }else{
                 $this->db->trans_rollback();
