@@ -478,8 +478,12 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
                         if(!obj.has("query")){
                             LibInspira.showLongToast(getContext(), "Data has been successfully saved!");
                             LibInspira.setShared(global.datapreferences, global.data.cart, "");
+                        }else{
+                            Log.wtf("query", result);
+                            LibInspira.showLongToast(getContext(), "Failed to save data");
                         }
                     }
+                    refreshList();
                 }
                 tvInformation.animate().translationYBy(-80);
             }

@@ -222,7 +222,8 @@ class Cart extends REST_Controller {
             $query = "  SELECT
                           a.nomor as nomor
                         FROM thcart a
-                        WHERE a.nomorcustomer = $nomorcustomer ";
+                        WHERE a.nomorcustomer = $nomorcustomer
+                        AND a.approve = 0 ";
             $result = $this->db->query($query);
             //get nomorheader
             $nomorheader = $result->row()->nomor;
@@ -235,14 +236,8 @@ class Cart extends REST_Controller {
                     $query = "	INSERT INTO thcart (tanggal, nomorcustomer, kodecustomer, subtotal, aktif, isppn)
                              VALUES (NOW(), $nomorcustomer, '$kodecustomer', $grandtotal, 1, $isppn)";
                     $result = $this->db->query($query);
-                    if($result){
-                        $query = "  SELECT
-                                      a.nomor as nomor
-                                    FROM thcart a
-                                    WHERE a.nomorcustomer = $nomorcustomer ";
-                        $result = $this->db->query($query);
-                        //get nomorheader
-                        $nomorheader = $result->row()->nomor;
+                    if($result){  //jika berhasil insert thcart, maka dapatkan last insert id-nya
+                        $nomorheader = $this->db->insert_id();
                     }else{
                         $this->db->trans_rollback();
                         array_push($data['data'], array( 'query' => $this->error($query) ));
@@ -253,10 +248,9 @@ class Cart extends REST_Controller {
                         die;
                     }
                 }
-                if($result){  //jika berhasil insert/update ke thcart
-                    //nomorbarang~namajual~kodebarang~satuan~harga~jumlah~subtotal
+                if($result){  //jika berhasil insert/update ke thcart, lanjutkan ke tdcart
                     for($i = 0; $i < count($pieces) - 1; $i++){
-                        $parts = explode("~", $pieces[$i]);
+                        $parts = explode("~", $pieces[$i]);  //nomorbarang~namajual~kodebarang~satuan~harga~jumlah~subtotal
                         $nomorbarang = $parts[0];
                         $kodebarang = $parts[2];
                         $harga = $parts[4];
@@ -269,9 +263,10 @@ class Cart extends REST_Controller {
                                     JOIN tdcart b
                                       ON a.nomor = b.nomorheader
                                     WHERE a.nomorcustomer = $nomorcustomer
-                                      AND b.nomorbarang = $nomorbarang ";
+                                      AND b.nomorbarang = $nomorbarang
+                                      AND a.approve = 0 ";
                         $result = $this->db->query($query);
-                        if($result && $result->num_rows() > 0){
+                        if($result && $result->num_rows() > 0){  //jika barang sudah ada, maka update jumlah saja
                             $query = "  UPDATE tdcart SET jumlah = jumlah + $jumlah,
                                           subtotal = jumlah * harga
                                         WHERE nomorbarang = $nomorbarang
@@ -289,7 +284,7 @@ class Cart extends REST_Controller {
                                 }
                                 die;
                             }
-                        }else{
+                        }else{  //jika barang masih belum ada pada tdcart, maka insert baru
                             $query = "	INSERT INTO tdcart (nomorheader, nomorbarang, kodebarang, jumlah, harga, subtotal, aktif)
                                         VALUES ($nomorheader, $nomorbarang, '$kodebarang', $jumlah, $harga, $subtotal, 1)";
                             $result = $this->db->query($query);
@@ -301,11 +296,14 @@ class Cart extends REST_Controller {
                                     $this->response($data['data']); // OK (200) being the HTTP response code
                                 }
                                 die;
+                            }else{
+                                $this->db->trans_commit();
+                                array_push($data['data'], array( 'success' => "true"));
                             }
                         }
                     }
-                    $this->db->trans_commit();
-                    array_push($data['data'], array( 'success' => "true"));
+//                    $this->db->trans_commit();
+//                    array_push($data['data'], array( 'success' => "true"));
                 }
             }
         }else{
