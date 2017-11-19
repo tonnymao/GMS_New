@@ -48,6 +48,8 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
 
+    private GetData getData;
+
     public ChooseCustomerFragment() {
         // Required empty public constructor
     }
@@ -67,6 +69,13 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         return v;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (getData != null){
+            getData.cancel(true);
+        }
+    }
 
     /*****************************************************************************/
     //OnAttach dijalankan pada saat fragment ini terpasang pada Activity penampungnya
@@ -113,7 +122,8 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         refreshList();
 
         String actionUrl = "Master/getCustomer/";
-        new getData().execute( actionUrl );
+        GetData getData = new GetData();
+        getData.execute( actionUrl );
     }
 
     @Override
@@ -198,7 +208,7 @@ public class ChooseCustomerFragment extends Fragment implements View.OnClickList
         }
     }
 
-    private class getData extends AsyncTask<String, Void, String> {
+    private class GetData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();

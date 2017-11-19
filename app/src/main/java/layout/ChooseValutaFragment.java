@@ -47,6 +47,7 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    private GetData getData;
 
     public ChooseValutaFragment() {
         // Required empty public constructor
@@ -67,6 +68,13 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
         return v;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (getData != null){
+            getData.cancel(true);
+        }
+    }
 
     /*****************************************************************************/
     //OnAttach dijalankan pada saat fragment ini terpasang pada Activity penampungnya
@@ -113,7 +121,8 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
         refreshList();
 
         String actionUrl = "Master/getValuta/";
-        new getData().execute( actionUrl );
+        GetData getData = new GetData();
+        getData.execute( actionUrl );
     }
 
     @Override
@@ -195,7 +204,7 @@ public class ChooseValutaFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private class getData extends AsyncTask<String, Void, String> {
+    private class GetData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();

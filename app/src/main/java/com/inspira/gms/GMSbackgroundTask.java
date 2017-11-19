@@ -177,7 +177,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             LibInspira.setShared(globalVar.datapreferences, globalVar.data.latitude, location.getLatitude() + "");
             LibInspira.setShared(globalVar.datapreferences, globalVar.data.longitude, location.getLongitude() + "");
             LibInspira.makeNotification(getApplication(), 2, "Insert Location", s, null);
-            LibInspira.ShowLongToast(getApplicationContext(), "location inserted " + s);
+//            LibInspira.ShowLongToast(getApplicationContext(), "location inserted " + s);
             super.onPostExecute(s);
         }
     }
@@ -202,7 +202,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 //            boolean goodLocation = isBetterLocation(location, oldLocation);
 //            Log.i("GMSbackgroundTask", "Good Location: " + goodLocation);
             Log.i("GMSbackgroundTask", "Distance value: " + currentDistranceState);
-            LibInspira.ShowLongToast(getApplicationContext(), location.getProvider() + " | " + location.getAccuracy());
+//            LibInspira.ShowLongToast(getApplicationContext(), location.getProvider() + " | " + location.getAccuracy());
             LibInspira.makeNotification(getApplication(), 1, "Location",
                     "provider: " + location.getProvider() + "\naccuracy: " + location.getAccuracy() + "\nin radius: " + currentDistranceState,
                     null);

@@ -91,11 +91,6 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         btnNext.setOnClickListener(this);
         chkBarangImport.setOnClickListener(this);  //added by Tonny @07-Sep-2017
 
-        tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, "").toUpperCase());
-        tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, "").toUpperCase());
-        tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, "").toUpperCase());
-        tvProyek.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_proyek_nama, "").toUpperCase());
-
         //added by Tonny @08-Sep-2017 jika preferences import, maka centang chkBarangImport
         if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_import, "0").equals("1")){
             chkBarangImport.setChecked(true);
@@ -136,7 +131,12 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_jenis, "0");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_import, "0");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan, "");
+//            LibInspira.clearShared(global.temppreferences);
         }
+        tvCustomer.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nama, "").toUpperCase());
+        tvValuta.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nama, "").toUpperCase());
+        tvBroker.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nama, "").toUpperCase());
+        tvProyek.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_proyek_nama, "").toUpperCase());
     }
 
     @Override
@@ -183,10 +183,13 @@ public class FormSalesOrderHeaderFragment extends Fragment implements View.OnCli
         {
             if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_customer_nomor, "").equals("") ||
                     LibInspira.getShared(global.temppreferences, global.temp.salesorder_broker_nomor, "").equals("") ||
-                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nomor, "").equals("")
+                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_valuta_nomor, "").equals("") ||
+                    LibInspira.getShared(global.temppreferences, global.temp.salesorder_date, "").equals("") ||
+                    (LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") &&
+                        LibInspira.getShared(global.temppreferences, global.temp.salesorder_proyek_kode, "").equals(""))
                     )
             {
-                LibInspira.ShowShortToast(getContext(), "All Field Required");
+                LibInspira.showLongToast(getContext(), "All Field Required");
             }
             else
             {

@@ -48,6 +48,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    private GetData getData;
 
     public ChooseSalesmanFragment() {
         // Required empty public constructor
@@ -68,6 +69,13 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         return v;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (getData != null){
+            getData.cancel(true);
+        }
+    }
 
     /*****************************************************************************/
     //OnAttach dijalankan pada saat fragment ini terpasang pada Activity penampungnya
@@ -114,7 +122,8 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         refreshList();
 
         String actionUrl = "Master/getSales/";
-        new getData().execute( actionUrl );
+        GetData getData = new GetData();
+        getData.execute( actionUrl );
     }
 
     @Override
@@ -191,7 +200,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
         }
     }
 
-    private class getData extends AsyncTask<String, Void, String> {
+    private class GetData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
