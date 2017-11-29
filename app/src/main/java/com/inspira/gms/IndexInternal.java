@@ -76,7 +76,7 @@ public class IndexInternal extends AppCompatActivity
         context = getApplicationContext();
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setNavigationItemSelectedListener(this);
+
         Menu navmenu = navigationView.getMenu();
         if(LibInspira.getShared(global.userpreferences, global.user.role_settingtarget, "0").equals("0"))
         {

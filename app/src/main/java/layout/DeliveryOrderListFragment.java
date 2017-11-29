@@ -17,11 +17,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -32,11 +32,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.inspira.gms.IndexInternal.global;
-import static com.inspira.gms.IndexInternal.jsonObject;
-
-//import android.app.Fragment;
-
 public class DeliveryOrderListFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
@@ -45,6 +40,9 @@ public class DeliveryOrderListFragment extends Fragment implements View.OnClickL
     private CheckData checkData;
     private RelativeLayout relativeLayout;
     private FloatingActionButton fab;
+
+    private GlobalVar global;
+    private JSONObject jsonObject;
 
     public DeliveryOrderListFragment() {
         // Required empty public constructor

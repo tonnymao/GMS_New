@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.inspira.gms.GlobalVar;
 import com.inspira.gms.LibInspira;
 import com.inspira.gms.R;
 
@@ -27,14 +28,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.inspira.gms.IndexExternal.global;
-import static com.inspira.gms.IndexExternal.jsonObject;
-
 public class DeliveryOrderApprovalFragment extends Fragment implements View.OnClickListener{
     private Button btnApprove, btnDisapprove;
     private SetApproval setApproval;
     private boolean isApproving;
 
+    private GlobalVar global;
+    private JSONObject jsonObject;
     public DeliveryOrderApprovalFragment() {
         // Required empty public constructor
     }
@@ -96,6 +96,7 @@ public class DeliveryOrderApprovalFragment extends Fragment implements View.OnCl
     @Override
     public void onActivityCreated(final Bundle bundle){
         super.onActivityCreated(bundle);
+        global = new GlobalVar(getActivity());
 
         btnApprove = (Button) getView().findViewById(R.id.btnApprove);
         btnDisapprove = (Button) getView().findViewById(R.id.btnDisapprove);

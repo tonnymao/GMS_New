@@ -231,10 +231,6 @@ class Order extends REST_Controller {
                     NOW())";
         $this->db->query($query);
 
-        $interval  = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 1 LIMIT 1")->row()->intnilai;
-        $rows =  $this->db->insert_id();
-        array_push($data['data'], array( 'query' => $rows ));
-        $nomor = $rows['nomor'];
 
         ////////////////////////////////////////////////////////////////////////////////DETAIL/////////////////////////////////////////////////////////////////////////////
         $noitem = FALSE;
@@ -248,7 +244,6 @@ class Order extends REST_Controller {
                 {
                     $parts = explode("~", $pieces[$i]);
                     //nomorbarang~kodebarang~namabarang~nomorbarangreal~kodebarangreal~namabarangreal~satuan~harga~qty~fee~disc~subtotal~notes
-                    $nomorheader = $nomor;
                     $nomorbarang = $parts[0];
                     $kodebarang = $parts[1];
                     $nomorbarangreal = $parts[3];
@@ -268,7 +263,6 @@ class Order extends REST_Controller {
 
                     //insert barang
                     $query = "INSERT INTO tdorderjual (
-                                NomorHeader,
                                 NomorBarang,
                                 KodeBarang,
                                 Qty,
@@ -290,7 +284,6 @@ class Order extends REST_Controller {
                                 dibuat_oleh,
                                 dibuat_pada)
                               VALUES (
-                                $nomorheader,
                                 $nomorbarangreal,
                                 '$kodebarangreal',
                                 $qty,
@@ -323,7 +316,6 @@ class Order extends REST_Controller {
                 {
                     $parts = explode("~", $pieces[$i]);  //nomorbarang~kodebarang~namabarang~satuan~harga~qty~fee~disc~subtotal~notes
                     array_push($data['data'], array( 'query' => $parts ));
-                    $nomorheader = $nomor;
                     $nomorpekerjaan = $parts[0];
                     $kodepekerjaan = $parts[1];
                     $qty = $parts[5];
@@ -339,7 +331,6 @@ class Order extends REST_Controller {
 
                     //insert pekerjaan
                     $query = "INSERT INTO tdorderjual (
-                                NomorHeader,
                                 NomorPekerjaan,
                                 KodePekerjaan,
                                 Qty,
@@ -358,7 +349,6 @@ class Order extends REST_Controller {
                                 dibuat_oleh,
                                 dibuat_pada)
                               VALUES (
-                                $nomorheader,
                                 $nomorpekerjaan,
                                 '$kodepekerjaan',
                                 $qty,

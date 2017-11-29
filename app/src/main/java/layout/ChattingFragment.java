@@ -13,11 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.inspira.gms.GlobalVar;
 import com.inspira.gms.R;
 
-//import android.app.Fragment;
+import org.json.JSONObject;
 
 public class ChattingFragment extends Fragment implements View.OnClickListener{
+    private GlobalVar global;
+    private JSONObject jsonObject;
+
     public ChattingFragment() {
         // Required empty public constructor
     }
@@ -51,6 +55,7 @@ public class ChattingFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
+        global = new GlobalVar(getActivity());
     }
 
     @Override

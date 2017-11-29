@@ -50,8 +50,8 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-//        if(!globalVar.settingpreferences.getString("jam_awal", "").equals(""))
-//        {
+        if(!globalVar.settingpreferences.getString("jam_awal", "").equals(""))
+        {
             globalVar = new GlobalVar(this);
             HandlerThread thread = new HandlerThread("ServiceStartArguments",
                     Process.THREAD_PRIORITY_BACKGROUND);
@@ -92,7 +92,7 @@ public class GMSbackgroundTask extends Service implements LocationListener {
 //            }
 
             foregroundNotif("GMS Inspira", "Background Service Works Fine!"); // you can change the title and desc of the notification
-//        }
+        }
     }
 
     @Override
@@ -127,6 +127,9 @@ public class GMSbackgroundTask extends Service implements LocationListener {
             }
 //            LibInspira.ShowLongToast(getApplicationContext(), LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
             if (LibInspira.getShared(globalVar.userpreferences, globalVar.user.nomor, "").equals(""))
+                stopSelf(msg.arg1);
+
+            if (LibInspira.getShared(globalVar.userpreferences, globalVar.user.tipe, "0").equals("1"))
                 stopSelf(msg.arg1);
             message = msg;
             //stopSelf(msg.arg1); <- don't use, ur gonna kill this
