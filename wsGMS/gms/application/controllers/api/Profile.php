@@ -117,20 +117,20 @@ class Profile extends REST_Controller {
 		$jsonObject = (json_decode($value , true));
 
         $user = (isset($jsonObject["user_id"]) ? $this->clean($jsonObject["user_id"])     : "");
-        $oldpass = md5((isset($jsonObject["oldpass"]) ? $this->clean($jsonObject["oldpass"]) : ""));
-		$newpass = md5((isset($jsonObject["newpass"]) ? $this->clean($jsonObject["newpass"]) : ""));
+        $oldpass = (isset($jsonObject["oldpass"]) ? $this->clean($jsonObject["oldpass"]) : "");
+		$newpass = (isset($jsonObject["newpass"]) ? $this->clean($jsonObject["newpass"]) : "");
 		
 		$query = "	SELECT (1) 
-					FROM whuser_mobile a 
-					WHERE a.nomor = $user 
+					FROM tuser a
+					WHERE a.index = $user
 						AND a.password = '$oldpass'";
 		$result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0)
 		{
-			$query2 = "	UPDATE whuser_mobile a 
+			$query2 = "	UPDATE tuser a
 						SET a.password = ? 
-						WHERE a.nomor = ? ";
+						WHERE a.index = ? ";
 			$result2 = $this->db->query($query2, array($newpass, $user));
 			
 			if( $result2 )

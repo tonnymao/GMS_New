@@ -49,11 +49,11 @@ class Chat extends REST_Controller {
     }
 	
 	function getToken($user_nomor){
-        $query = "  SELECT 
-                    token
-                    FROM whuser_mobile
-                    WHERE status_aktif > 0 AND (token <> '' AND token IS NOT NULL) AND nomor = $user_nomor ";
-        return $this->db->query($query)->row()->token;
+        $query = "  SELECT
+                                    a.token
+                                    FROM tuser a
+                                    WHERE a.status > 0 AND (a.token <> '' AND a.token IS NOT NULL) AND a.index = $user_nomor ";
+                        return $this->db->query($query)->row()->token;
     }
 
     public function send_gcm($registrationId,$message,$title,$fragment,$nomor,$nama)

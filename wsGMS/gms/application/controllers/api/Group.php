@@ -92,8 +92,8 @@ class Group extends REST_Controller {
         
         $nomor = (isset($jsonObject["nomor"]) 			? $jsonObject["nomor"]      	: "");
 
-        $query = "SELECT users.nomor as nomor, users.userid as nama FROM gms_web.whuser_mobile users
-		left join gms_web.whtdgroup_mobile detail on detail.nomorwhuser = users.nomor
+        $query = "SELECT users.`index` as nomor, users.kode as nama FROM tuser users
+		left join whtdgroup_mobile detail on detail.nomorwhuser = users.index
 		where detail.nomorwhgroup = $nomor and detail.status_aktif = true";
         
         $result = $this->db->query($query);

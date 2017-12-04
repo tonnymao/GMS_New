@@ -49,11 +49,11 @@ class Cart extends REST_Controller {
     }
 	
 	function getGCMId($user_nomor){
-        $query = "  SELECT 
-                    a.gcmid
-                    FROM whuser_mobile a 
-                    WHERE a.status_aktif > 0 AND (a.gcmid <> '' AND a.gcmid IS NOT NULL) AND a.nomor = $user_nomor ";
-        return $this->db->query($query)->row()->gcmid;
+        $query = "  SELECT
+                                    a.token
+                                    FROM tuser a
+                                    WHERE a.status > 0 AND (a.token <> '' AND a.token IS NOT NULL) AND a.index = $user_nomor ";
+                        return $this->db->query($query)->row()->token;
     }
 
     public function send_gcm($registrationId,$message,$title,$fragment,$nomor,$nama)

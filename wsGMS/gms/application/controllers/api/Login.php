@@ -50,10 +50,10 @@ class Login extends REST_Controller {
 	
 	function getGCMId($user_nomor){
         $query = "  SELECT 
-                    a.gcmid
-                    FROM whuser_mobile a 
-                    WHERE a.status_aktif > 0 AND (a.gcmid <> '' AND a.gcmid IS NOT NULL) AND a.nomor = $user_nomor ";
-        return $this->db->query($query)->row()->gcmid;
+                    a.token
+                    FROM tuser a
+                    WHERE a.status > 0 AND (a.token <> '' AND a.token IS NOT NULL) AND a.index = $user_nomor ";
+        return $this->db->query($query)->row()->token;
     }
 
     public function send_gcm($registrationId,$message,$title,$fragment,$nomor,$nama)
@@ -165,7 +165,7 @@ class Login extends REST_Controller {
 		$jsonObject = (json_decode($value , true));
 
         $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "a");
-        $pass = md5((isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a"));
+        $pass = (isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a");
         $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
         $tipe = (isset($jsonObject["tipe"]) ? $jsonObject["tipe"]     : "");
 
@@ -177,11 +177,11 @@ class Login extends REST_Controller {
 
 		$query;
 		if($tipe == '0'){
-            $query = "	UPDATE whuser_mobile a
+            $query = "	UPDATE tuser a
                 SET hash = UUID(),
                 token = '$token'
-                WHERE a.status_aktif > 0
-                AND a.userid = ?
+                WHERE a.status > 0
+                AND a.kode = ?
                 AND BINARY a.password = ?";
             $this->db->query($query, array($user, $pass));
 		}else{
@@ -195,12 +195,12 @@ class Login extends REST_Controller {
 		}
 
         $query = "	SELECT
-						a.nomor AS nomor_android,
-						a.nomortuser AS nomor,
+						a.index AS nomor_android,
+						a.nomor AS nomor,
 						a.password AS `password`,
 						a.nomorthsales AS nomor_sales,
 						d.kode AS kode_sales,
-						a.userid AS nama,
+						a.kode AS nama,
 						a.tipeuser AS tipe,
 						a.nomorrole AS role,
 						a.hash AS `hash`,
@@ -219,13 +219,12 @@ class Login extends REST_Controller {
 						b.hpp AS hpp,
 						b.crossbranch AS crossbranch,
 						b.creategroup AS creategroup
-					FROM whuser_mobile a
+					FROM tuser a
 					JOIN whrole_mobile b ON a.nomorrole = b.nomor
-					LEFT JOIN tuser c ON a.nomortuser = c.nomor
 					LEFT JOIN thsales d ON a.nomorthsales = d.nomor
 					JOIN tcabang e ON a.nomorcabang = e.nomor
-					WHERE a.status_aktif = 1
-					AND a.userid = '$user'
+					WHERE a.status = 1
+					AND a.kode = '$user'
 					AND BINARY a.password = '$pass'
 					UNION SELECT
                         a.nomor AS nomor_android,
@@ -255,9 +254,9 @@ class Login extends REST_Controller {
                     FROM
                         tcustomer a
                     WHERE a.aktif = 1
-                        AND a.userid = '$user'
+                        AND a.kode = '$user'
                         AND BINARY a.password = '$pass'
-                        AND a.userid != ''
+                        AND a.kode != ''
                         AND a.password != ''
 					";
         $result = $this->db->query($query, array($user, $pass));
@@ -347,12 +346,12 @@ class Login extends REST_Controller {
 		$jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
 
         $query = "	  SELECT
-						a.nomor AS nomor_android,
-                        a.nomortuser AS nomor,
+						a.index AS nomor_android,
+                        a.nomor AS nomor,
                         a.password AS `password`,
                         a.nomorthsales AS nomor_sales,
                         d.kode AS kode_sales,
-                        a.userid AS nama,
+                        a.kode AS nama,
                         a.tipeuser AS tipe,
                         a.nomorrole AS role,
                         a.hash AS `hash`,
@@ -371,12 +370,11 @@ class Login extends REST_Controller {
                         b.hpp AS hpp,
                         b.crossbranch AS crossbranch,
                         b.creategroup AS creategroup
-                    FROM whuser_mobile a
+                    FROM tuser a
                     JOIN whrole_mobile b ON a.nomorrole = b.nomor
-                    LEFT JOIN tuser c ON a.nomortuser = c.nomor
                     LEFT JOIN thsales d ON a.nomorthsales = d.nomor
                     JOIN tcabang e ON a.nomorcabang = e.nomor
-                    WHERE a.status_aktif = 1
+                    WHERE a.status = 1
 						AND hash = '$hash'
 					UNION SELECT
 					    a.nomor AS nomor_android,
@@ -450,8 +448,9 @@ class Login extends REST_Controller {
 			}
         }
 		else
-		{		
-			array_push($data['data'], array( 'success' => "false" ));
+		{
+		    array_push($data['data'], array( 'query' => $this->error($query) ));
+			//array_push($data['data'], array( 'success' => "false" ));
 		}  
 
         if ($data){

@@ -90,15 +90,15 @@ class Schedule extends REST_Controller {
         $user = (isset($jsonObject["user"]) 			? $jsonObject["user"]      	: "");
 
         $query = "SELECT s.nomor, 
-				user.userid as creator,
-				u.userid as target, 
+				user.kode as creator,
+				u.kode as target,
 				c.nama as customer,
 				p.nama as prospecting,
 				g.nama as groupsch,
 				s.tipejadwal,
 				s.tanggal, s.jam FROM whschedule_mobile s
-				left JOIN whuser_mobile user on user.nomor = s.nomorwhuser_creator
-				left JOIN whuser_mobile u on u.nomor = s.nomorwhuser_tujuan
+				left JOIN tuser user on user.nomor = s.nomorwhuser_creator
+				left JOIN tuser u on u.nomor = s.nomorwhuser_tujuan
 				left JOIN whgroup_mobile g on g.nomor = s.nomorwhgroup
 				left JOIN tcustomer c on c.nomor = s.nomortcustomer
 				left JOIN tcustomerprospecting p on p.nomor = s.nomortcustomerprospecting

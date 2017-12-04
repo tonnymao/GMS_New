@@ -49,11 +49,11 @@ class Master extends REST_Controller {
     }
 	
 	function getGCMId($user_nomor){
-        $query = "  SELECT 
-                    a.gcmid
-                    FROM whuser_mobile a 
-                    WHERE a.status_aktif > 0 AND (a.gcmid <> '' AND a.gcmid IS NOT NULL) AND a.nomor = $user_nomor ";
-        return $this->db->query($query)->row()->gcmid;
+        $query = "  SELECT
+                                    a.token
+                                    FROM tuser a
+                                    WHERE a.status > 0 AND (a.token <> '' AND a.token IS NOT NULL) AND a.index = $user_nomor ";
+                        return $this->db->query($query)->row()->token;
     }
 
     public function send_gcm($registrationId,$message,$title,$fragment,$nomor,$nama)
@@ -163,16 +163,14 @@ class Master extends REST_Controller {
 		$jsonObject = (json_decode($value , true));
 		
 		$query = "	SELECT 
-						a.nomor AS `nomor`,
-						a.nomortuser AS `nomorTUser`,
+						a.index AS `nomor`,
+						a.nomor AS `nomorTUser`,
 						a.nomorthsales AS `nomorTHSales`,
-						b.kode AS `nama`,
+						a.kode AS `nama`,
 						IFNULL(a.telp, '') AS telp
-					FROM whuser_mobile a
-					JOIN tuser b
-						ON b.nomor = a.nomortuser
-					WHERE b.status = 1
-					ORDER BY b.kode DESC;";
+					FROM tuser a
+					WHERE a.status = 1
+					ORDER BY a.kode DESC;";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
@@ -863,13 +861,11 @@ class Master extends REST_Controller {
                     #a.nomor AS `nomor`,
                     #a.nomortuser AS `nomortuser`,
                     a.nomorthsales AS `nomorsales`,
-                    b.kode AS `nama`
-                 FROM whuser_mobile a
-                 JOIN tuser b
-                    ON b.nomor = a.nomortuser
-                 WHERE b.status = 1
+                    a.kode AS `nama`
+                 FROM tuser a
+                 WHERE a.status = 1
                     AND a.nomorthsales > 0
-                 ORDER BY b.kode DESC;";
+                 ORDER BY a.kode DESC;";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){
@@ -1091,7 +1087,10 @@ class Master extends REST_Controller {
         $value = file_get_contents('php://input');
         $jsonObject = (json_decode($value , true));
 
-        $query = "SELECT nomor, userid as nama FROM whuser_mobile where tipeuser = 0 order by nama desc";
+        $query = "SELECT `index` as nomor, kode as nama
+                    FROM tuser
+                    where tipeuser = 0
+                    order by nama desc";
         $result = $this->db->query($query);
 
         if( $result && $result->num_rows() > 0){

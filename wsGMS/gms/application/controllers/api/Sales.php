@@ -212,10 +212,10 @@ class Sales extends REST_Controller {
 					  intNomorMSales = $kodesales
 					  AND intPeriode = MONTH(NOW())
 					  AND intTahun = YEAR(NOW())")->row()->target;
-        
-        array_push($data['data'], array( 
+
+        array_push($data['data'], array(
 										'success'   => "true",
-    									'omzet' 	=> $omzet, 
+    									'omzet' 	=> $omzet,
     									'target'	=> $target
         								)
         );
@@ -384,8 +384,8 @@ class Sales extends REST_Controller {
 		$isUsers	= (isset($jsonObject["isUsers"])		? $jsonObject["isUsers"]		: "0");
 		
 		if ($isUsers == true) {
-			$query = $query . "user.nomortuser as nomoruser, user.userid as userid
-				FROM whrole_mobile role, whuser_mobile user
+			$query = $query . "user.nomor as nomoruser, user.kode as userid
+				FROM whrole_mobile role, tuser user
 				WHERE role.nama = 'SALES' and role.nomor = user.nomorrole;
 			";
 		} else {
