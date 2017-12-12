@@ -251,7 +251,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                             if (nomor.equals("")) nomor = "null";
                             if (nama.equals("")) nama = "null";
 
-//                            if(!nomor.equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                            if(!nomor.equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                                 tempData = tempData + nomor + "~" + nama + "|";
                         } else {
                             Log.d("FAILED: ", obj.getString("query"));
