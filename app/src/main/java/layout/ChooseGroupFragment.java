@@ -225,7 +225,7 @@ public class ChooseGroupFragment extends Fragment implements View.OnClickListene
                 if (editMode)
                     jsonObject.put("nomor", nomor);
                 else
-                    jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                    jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

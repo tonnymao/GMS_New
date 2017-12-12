@@ -269,7 +269,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
         protected void onPreExecute() {
             super.onPreExecute();
             tvInformation.setVisibility(View.VISIBLE);
-            user = LibInspira.getShared(global.userpreferences, global.user.nomor_android, "");
+            user = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
         }
     }
 
@@ -366,7 +366,7 @@ public class ScheduleTaskFragment extends Fragment implements View.OnClickListen
             row.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    if (finalholder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""))) {
+                    if (finalholder.adapterItem.getCreator().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, ""))) {
                         DialogInterface.OnClickListener dialog = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

@@ -449,7 +449,7 @@ public class ShoppingCartFragment extends Fragment implements View.OnClickListen
         protected String doInBackground(String... urls) {
             jsonObject = new JSONObject();
             try {
-                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 jsonObject.put("kodecustomer", LibInspira.getShared(global.userpreferences, global.user.kode, ""));
                 jsonObject.put("grandtotal", String.valueOf(grandtotal));
                 jsonObject.put("cart", LibInspira.getShared(global.datapreferences, global.data.cart, ""));

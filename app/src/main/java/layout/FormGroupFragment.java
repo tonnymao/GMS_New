@@ -171,7 +171,7 @@ public class FormGroupFragment extends Fragment implements View.OnClickListener 
         protected String doInBackground(String... urls) {
             try {
                 jsonObject = new JSONObject();
-                jsonObject.put("creator", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                jsonObject.put("creator", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 if (selectedGroup.length == 2)
                     jsonObject.put("nomor", selectedGroup[0]);
                 jsonObject.put("nama", etName.getText());

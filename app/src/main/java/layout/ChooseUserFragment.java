@@ -251,7 +251,8 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                             if (nomor.equals("")) nomor = "null";
                             if (nama.equals("")) nama = "null";
 
-                            tempData = tempData + nomor + "~" + nama + "|";
+//                            if(!nomor.equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
+                                tempData = tempData + nomor + "~" + nama + "|";
                         } else {
                             Log.d("FAILED: ", obj.getString("query"));
                         }
@@ -363,6 +364,12 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                         else
                             LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new SummaryScheduleFragment());
                     }
+                    else if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("tracking"))
+                    {
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_nomor_user, finalHolder.adapterItem.getNomor());
+                        LibInspira.setShared(global.temppreferences, global.temp.selected_nama_user, finalHolder.adapterItem.getNama());
+                        LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new LiveTrackingFragment());
+                    }
                     else if (LibInspira.getShared(global.sharedpreferences, global.shared.position, "").contains("Conversation")) {
                         if(finalHolder.adapterItem.getChoosen()) {
                             finalHolder.adapterItem.setChoosen(false);
@@ -370,7 +377,7 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
                             finalHolder.tvNama.setTextColor(getResources().getColor(R.color.colorPrimary));
                             String remove = finalHolder.adapterItem.getNomor() + "~" + finalHolder.adapterItem.getNama() + "|";
                             tempSelectedUsers = tempSelectedUsers.replace(remove, "");
-                        } else {
+                        }else {
                             finalHolder.adapterItem.setChoosen(true);
                             finalRow.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
                             finalHolder.tvNama.setTextColor(Color.WHITE);
@@ -385,16 +392,16 @@ public class ChooseUserFragment extends Fragment implements View.OnClickListener
 
         private void setupItem(final Holder holder, final View row) {
             holder.tvNama.setText(holder.adapterItem.getNama().toUpperCase());
-            if(holder.adapterItem.getChoosen())
-            {
-                row.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
-                holder.tvNama.setTextColor(Color.WHITE);
-            }
-            else
-            {
-                row.setBackgroundColor(getResources().getColor(R.color.colorBackground));
-                holder.tvNama.setTextColor(getResources().getColor(R.color.colorPrimary));
-            }
+//            if(holder.adapterItem.getChoosen())
+//            {
+//                row.setBackgroundColor(getResources().getColor(R.color.colorAccentDanger));
+//                holder.tvNama.setTextColor(Color.WHITE);
+//            }
+//            else
+//            {
+//                row.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+//                holder.tvNama.setTextColor(getResources().getColor(R.color.colorPrimary));
+//            }
         }
     }
 }

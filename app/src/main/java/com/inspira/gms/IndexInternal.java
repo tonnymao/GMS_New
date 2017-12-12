@@ -25,9 +25,11 @@ import layout.ChangePasswordFragment;
 import layout.ChooseCustomerProspectingFragment;
 import layout.ChooseGroupFragment;
 import layout.ChoosePeriodeFragment;
+import layout.ChooseUserFragment;
 import layout.ContactFragment;
 import layout.DashboardInternalFragment;
 import layout.FilterSalesOmzetFragment;
+import layout.LiveTrackingFragment;
 import layout.OnlineOrderListFragment;
 import layout.PenjualanFragment;
 import layout.SalesNavigationFragment;
@@ -82,6 +84,8 @@ public class IndexInternal extends AppCompatActivity
         {
             navmenu.findItem(R.id.nav_target).setVisible(false);
         }
+
+        startService(new Intent(this, LocationService.class));
 
         LibInspira.clearShared(global.salespreferences); //added by Tonny @03-Aug-2017 untuk testing
         RefreshUserData();
@@ -228,7 +232,9 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_salesorder) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment()); //added by ADI @24-Aug-2017
         } else if (id == R.id.nav_salestracking){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
+            LibInspira.setShared(global.sharedpreferences, global.shared.position, "tracking");
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseUserFragment());
+//            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
         } else if (id == R.id.nav_omzet){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
         } else if (id == R.id.nav_customer_prospecting){

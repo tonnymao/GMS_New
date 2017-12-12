@@ -137,7 +137,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -147,7 +147,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             {
                 if(LibInspira.contains(list.get(ctr).getNama(),etSearch.getText().toString() ))
                 {
-                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!list.get(ctr).getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                     {
                         itemadapter.add(list.get(ctr));
                         itemadapter.notifyDataSetChanged();
@@ -196,7 +196,7 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
                     dataItem.setSatuan(satuan);
                     list.add(dataItem);
 
-                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!dataItem.getNomor().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                     {
                         itemadapter.add(dataItem);
                         itemadapter.notifyDataSetChanged();

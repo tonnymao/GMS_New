@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.inspira.gms">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -14,7 +15,8 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="com.inspira.gms.permission.MAPS_RECEIVE" />
 
-    <uses-library android:name="com.google.android.maps" />
+    <uses-library android:name="com.google.android.maps"
+        tools:ignore="WrongManifestParent" />
 
     <!--
     The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -43,15 +45,25 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".GMSbackgroundTask"
-            android:enabled="true"
-            android:exported="true"
-                android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+        <service
+            android:name=".LocationService">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.REBOOT"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
+
+        <!--<service android:name=".GMSbackgroundTask"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true"-->
+                <!--android:permission="android.permission.RECEIVE_BOOT_COMPLETED">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
 
         <meta-data
             android:name="com.google.android.gms.version"

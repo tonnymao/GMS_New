@@ -140,7 +140,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomorBarang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                if(!list.get(ctr).getNomorBarang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -150,7 +150,7 @@ public class StockPosisiFragment extends Fragment implements View.OnClickListene
             {
                 if(LibInspira.contains(list.get(ctr).getNamaBarang(),etSearch.getText().toString() ))
                 {
-                    if(!list.get(ctr).getNomorBarang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!list.get(ctr).getNomorBarang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                     {
                         itemadapter.add(list.get(ctr));
                         itemadapter.notifyDataSetChanged();

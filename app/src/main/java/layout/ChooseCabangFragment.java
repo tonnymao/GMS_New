@@ -136,7 +136,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
         {
             if(etSearch.getText().equals(""))
             {
-                if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                 {
                     itemadapter.add(list.get(ctr));
                     itemadapter.notifyDataSetChanged();
@@ -146,7 +146,7 @@ public class ChooseCabangFragment extends Fragment implements View.OnClickListen
             {
                 if(LibInspira.contains(list.get(ctr).getNamaCabang(),etSearch.getText().toString() ))
                 {
-                    if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!list.get(ctr).getNomorCabang().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                     {
                         itemadapter.add(list.get(ctr));
                         itemadapter.notifyDataSetChanged();

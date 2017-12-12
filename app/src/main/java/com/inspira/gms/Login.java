@@ -92,7 +92,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         try
         {
             LibInspira.setShared(global.userpreferences, global.user.nomor, obj.getString("user_nomor"));
-            LibInspira.setShared(global.userpreferences, global.user.nomor_android, obj.getString("user_nomor_android"));
             LibInspira.setShared(global.userpreferences, global.user.nomor_sales, obj.getString("user_nomor_sales"));
             LibInspira.setShared(global.userpreferences, global.user.kode, obj.getString("user_kode_sales"));  //added by Tonny @05-Sep-2017
             LibInspira.setShared(global.userpreferences, global.user.password, obj.getString("user_password"));  //added by Tonny @30-Jul-2017
@@ -300,6 +299,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     }
 
     private void startService() {
+        //startService(new Intent(this, LocationService.class));
         //added by Shodiq @01-Aug-2017
         // Permission for enabling location feature only for SDK Marshmallow | Android 6
         if (Build.VERSION.SDK_INT >= 23)
@@ -308,18 +308,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
         // made by Shodiq @8-aug-2017
         // check GPS status and ask to activate if GPS is disabled
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
-            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
-        } else {
-            Runnable commandOk = new Runnable() {
-                @Override
-                public void run() {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                }
-            };
-            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
-        }
+//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//        if (locationManager.isProviderEnabled(locationManager.GPS_PROVIDER)) {
+//            startService(new Intent(getApplicationContext(), GMSbackgroundTask.class));
+//        } else {
+//            Runnable commandOk = new Runnable() {
+//                @Override
+//                public void run() {
+//                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                    startActivity(myIntent);
+//                }
+//            };
+//            LibInspira.alertbox("Enable Location", "Your Locations Settings is disabled.\nPlease Enable Location to use this app", this, commandOk, null);
+//        }
     }
 }

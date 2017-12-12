@@ -172,6 +172,8 @@ public class GlobalVar {
 
             //modified by Tonny @19-Oct-2017 untuk menampung nomor yang dipilih dari list
             public String selected_list_nomor = "selected_list_nomor";
+            public String selected_nomor_user = "selected_nomor_user";
+            public String selected_nama_user = "selected_nama_user";
 
             //added by Tonny @19-Oct-2017
             public String onlineorder_date = "onlineorder_date";
@@ -194,7 +196,6 @@ public class GlobalVar {
             public String nomor = "nomor";
             public String kode = "kode"; //modified by Tonny @09-Oct-2017
             public String password = "password";  //added by Tonny @30-Jul-2017
-            public String nomor_android = "nomor_android";
             public String nomor_sales = "nomor_sales";
             public String nama = "nama";
             public String tipe = "tipe";

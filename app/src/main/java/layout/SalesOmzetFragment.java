@@ -188,7 +188,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                     dataItem.setNamaCust(namacustomer);
                     list.add(dataItem);
 
-                    if(!dataItem.getNomorSales().equals(LibInspira.getShared(global.userpreferences, global.user.nomor_android, "")))
+                    if(!dataItem.getNomorSales().equals(LibInspira.getShared(global.userpreferences, global.user.nomor, "")))
                     {
                         itemadapter.add(dataItem);
                         itemadapter.notifyDataSetChanged();

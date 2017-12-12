@@ -110,7 +110,7 @@ public class SummaryScheduleFragment extends Fragment {
             super.onPreExecute();
             description.replace('"', '\"');
             description.replace("'", "\'");
-            creator = LibInspira.getShared(global.userpreferences, global.user.nomor_android, "");
+            creator = LibInspira.getShared(global.userpreferences, global.user.nomor, "");
         }
 
         @Override

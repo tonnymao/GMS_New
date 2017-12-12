@@ -195,7 +195,6 @@ class Login extends REST_Controller {
 		}
 
         $query = "	SELECT
-						a.index AS nomor_android,
 						a.nomor AS nomor,
 						a.password AS `password`,
 						a.nomorthsales AS nomor_sales,
@@ -227,7 +226,6 @@ class Login extends REST_Controller {
 					AND a.kode = '$user'
 					AND BINARY a.password = '$pass'
 					UNION SELECT
-                        a.nomor AS nomor_android,
                         '' AS nomor,
                         a.password AS `password`,
                         '' AS nomor_sales,
@@ -265,7 +263,6 @@ class Login extends REST_Controller {
             foreach ($result->result_array() as $r){
 
                 array_push($data['data'], array(
-                								'user_nomor_android'			=> $r['nomor_android'],
 												'user_nomor'					=> $r['nomor'],
 												'user_password'					=> $r['password'],
                                                 'user_nomor_sales'         		=> $r['nomor_sales'],
@@ -346,7 +343,6 @@ class Login extends REST_Controller {
 		$jam_akhir = $this->db->query("SELECT intnilai FROM whsetting_mobile WHERE intNomor = 7 LIMIT 1")->row()->intnilai;
 
         $query = "	  SELECT
-						a.index AS nomor_android,
                         a.nomor AS nomor,
                         a.password AS `password`,
                         a.nomorthsales AS nomor_sales,
@@ -377,7 +373,6 @@ class Login extends REST_Controller {
                     WHERE a.status = 1
 						AND hash = '$hash'
 					UNION SELECT
-					    a.nomor AS nomor_android,
                         '' AS nomor,
                         a.password AS `password`,
                         '' AS nomor_sales,
@@ -414,7 +409,6 @@ class Login extends REST_Controller {
 			{
 				array_push($data['data'], array(
 													'success'						=> "true",
-													'user_nomor_android'			=> $r['nomor_android'],
 													'user_nomor' 					=> $r['nomor'],
 													'user_nomor_sales'         		=> $r['nomor_sales'],
 													'user_kode_sales'         		=> $r['kode_sales'],  //added by Tonny

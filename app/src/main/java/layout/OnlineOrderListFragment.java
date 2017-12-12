@@ -119,7 +119,7 @@ public class OnlineOrderListFragment extends Fragment implements View.OnClickLis
             try {
                 jsonObject = new JSONObject();
                 jsonObject.put("cabang", LibInspira.getShared(global.userpreferences, global.user.cabang, ""));
-                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor_android, ""));
+                jsonObject.put("nomorcustomer", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
                 if(LibInspira.getShared(global.temppreferences, global.temp.order_status, "").equals("pending")){
                     jsonObject.put("approve", 0);
                 }else if(LibInspira.getShared(global.temppreferences, global.temp.order_status, "").equals("approved")){
