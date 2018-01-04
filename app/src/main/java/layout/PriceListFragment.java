@@ -350,27 +350,30 @@ public class PriceListFragment extends Fragment implements View.OnClickListener{
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    LibInspira.showNumericInputDialog("Add to cart", "How many item do you want to buy?", getActivity(), getContext(), new Runnable() {
-                        @Override
-                        public void run() {
-                            //insert ke dalam shared
-                            nomorbarang = finalHolder.adapterItem.getNomor();
-                            namabarang = finalHolder.adapterItem.getNama();
-                            kodebarang = finalHolder.adapterItem.getKode();
-                            hargabarang = finalHolder.adapterItem.getHarga();
-                            jumlah = LibInspira.getDialogValue();
-                            satuan = finalHolder.adapterItem.getSatuan();
-                            if(Double.parseDouble(jumlah) > 0){
-                                subtotal = Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(hargabarang));  //subtotal untuk tdcart
-                                String tempCart = nomorbarang + "~" + namabarang + "~" + kodebarang + "~" + satuan + "~" + hargabarang + "~" + jumlah + "~" + subtotal + "|";
-                                Log.d("tempcart ", tempCart);
-                                LibInspira.setShared(global.datapreferences, global.data.cart, LibInspira.getShared(global.datapreferences, global.data.cart, "") + tempCart);
-                                LibInspira.showShortToast(getContext(), "Item added to cart");
-                            }else{
-                                LibInspira.showLongToast(getContext(), "Jumlah must be greater than 0");
+//                    LibInspira.ShowLongToast(getContext(), LibInspira.getShared(global.userpreferences, global.user.tipe, ""));
+                    if(LibInspira.getShared(global.userpreferences, global.user.tipe, "").equals("1")) {
+                        LibInspira.showNumericInputDialog("Add to cart", "How many item do you want to buy?", getActivity(), getContext(), new Runnable() {
+                            @Override
+                            public void run() {
+                                //insert ke dalam shared
+                                nomorbarang = finalHolder.adapterItem.getNomor();
+                                namabarang = finalHolder.adapterItem.getNama();
+                                kodebarang = finalHolder.adapterItem.getKode();
+                                hargabarang = finalHolder.adapterItem.getHarga();
+                                jumlah = LibInspira.getDialogValue();
+                                satuan = finalHolder.adapterItem.getSatuan();
+                                if (Double.parseDouble(jumlah) > 0) {
+                                    subtotal = Double.toString(Double.parseDouble(jumlah) * Double.parseDouble(hargabarang));  //subtotal untuk tdcart
+                                    String tempCart = nomorbarang + "~" + namabarang + "~" + kodebarang + "~" + satuan + "~" + hargabarang + "~" + jumlah + "~" + subtotal + "|";
+                                    Log.d("tempcart ", tempCart);
+                                    LibInspira.setShared(global.datapreferences, global.data.cart, LibInspira.getShared(global.datapreferences, global.data.cart, "") + tempCart);
+                                    LibInspira.showShortToast(getContext(), "Item added to cart");
+                                } else {
+                                    LibInspira.showLongToast(getContext(), "Jumlah must be greater than 0");
+                                }
                             }
-                        }
-                    }, null);
+                        }, null);
+                    }
                 }
             });
             return row;

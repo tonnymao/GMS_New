@@ -195,10 +195,10 @@ $active_record = TRUE;
 
 
 //================ database DEFAULT INSPIRA ================// 
-	$db['default']['hostname'] = 'vpn.inspiraworld.com:3308';
+	$db['default']['hostname'] = 'www.gmst.co.id:3309';
     $db['default']['username'] = 'inspiradb';
     $db['default']['password'] = 'inzpire';
-    $db['default']['database'] = 'gms_new';
+    $db['default']['database'] = 'gms';
     $db['default']['dbdriver'] = 'mysqli';
     $db['default']['dbprefix'] = '';
     $db['default']['pconnect'] = FALSE;

@@ -120,6 +120,23 @@ public class FormSalesOrderDetailJasaFragment extends FormSalesOrderDetailItemFr
         etQty.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_qty, "0"));
         etNotes.setText(LibInspira.getShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, ""));
 
+        etNotes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                LibInspira.setShared(global.temppreferences, global.temp.salesorder_pekerjaan_notes, etNotes.getText().toString());
+            }
+        });
+
         refreshData();
     }
 

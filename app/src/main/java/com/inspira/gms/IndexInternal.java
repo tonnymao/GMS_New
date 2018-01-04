@@ -32,8 +32,10 @@ import layout.FilterSalesOmzetFragment;
 import layout.LiveTrackingFragment;
 import layout.OnlineOrderListFragment;
 import layout.PenjualanFragment;
+import layout.PriceListFragment;
 import layout.SalesNavigationFragment;
 import layout.SalesOrderListFragment;
+import layout.ScheduleTaskFragment;
 import layout.SettingFragment;
 
 
@@ -165,6 +167,7 @@ public class IndexInternal extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+//        LibInspira.ShowLongToast(this, "BACK");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -229,6 +232,10 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_group) {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "Conversation");
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());
+        } else if (id == R.id.nav_pricelist) {
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
+        } else if (id == R.id.nav_scheduletask) {
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ScheduleTaskFragment());
         } else if (id == R.id.nav_salesorder) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PenjualanFragment()); //added by ADI @24-Aug-2017
         } else if (id == R.id.nav_salestracking){
@@ -237,16 +244,19 @@ public class IndexInternal extends AppCompatActivity
 //            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesNavigationFragment());  //added by Tonny @23-Aug-2017
         } else if (id == R.id.nav_omzet){
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new FilterSalesOmzetFragment());  //added by Tonny @25-Aug-2017
-        } else if (id == R.id.nav_customer_prospecting){
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
-        } else if (id == R.id.nav_salesorder){
+        }
+//        else if (id == R.id.nav_customer_prospecting){
+//            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseCustomerProspectingFragment());  //added by Tonny @29-Aug-2017
+//        }
+        else if (id == R.id.nav_salesorder){
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_proyek, "");  //added by Tonny @25-Sep-2017
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_type_task, "");
             LibInspira.setShared(global.temppreferences, global.temp.salesorder_type, "");
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new SalesOrderListFragment());  //added by Tonny @01-Sep-2017
-        } else if (id == R.id.nav_online_order) {  //added by Tonny @16-Oct-2017
-            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new OnlineOrderListFragment());  //added by Tonny @29-Aug-2017
         }
+//        else if (id == R.id.nav_online_order) {  //added by Tonny @16-Oct-2017
+//            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new OnlineOrderListFragment());  //added by Tonny @29-Aug-2017
+//        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return false;

@@ -96,8 +96,8 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
 
         if(id==R.id.btnContact)
         {
-//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());
-            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment1());
+            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ContactFragment());
+//            LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment1());
         }
         else if(id==R.id.btnScheduleTask)
         {
@@ -105,12 +105,12 @@ public class DashboardInternalFragment extends Fragment implements View.OnClickL
         }
         else if(id==R.id.btnPriceList)
         {
-            Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
-            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
-                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
-            }else{
+//            Log.d("Crossbranch", LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, ""));
+//            if(LibInspira.getShared(global.userpreferences, global.user.role_crossbranch, "").equals("1")){
+//                LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseCabangFragment());
+//            }else{
                 LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
-            }
+//            }
 
         }
         else if(id==R.id.btnStockMonitoring)  //added by Tonny @16-Aug-2017

@@ -32,6 +32,8 @@ class Order extends REST_Controller {
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: GET, POST");
         header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization");
+
+        $this->formatsetting = $this->gmslib->get_formatsetting('ORDER PEMBELIAN - STOK (KOMODITI)');
     }
 
 	function ellipsis($string) {
@@ -39,7 +41,7 @@ class Order extends REST_Controller {
         $out = strlen($string) > $cut ? substr($string,0,$cut)."..." : $string;
         return $out;
     }
-	
+
     function clean($string) {
         return preg_replace("/[^[:alnum:][:space:]]/u", '', $string); // Replaces multiple hyphens with single one.
     }
@@ -164,10 +166,14 @@ class Order extends REST_Controller {
         $isppn = (isset($jsonObject["isppn"]) ? $this->clean($jsonObject["isppn"])     : "");
         $proyek = (isset($jsonObject["proyek"]) ? $this->clean($jsonObject["proyek"])     : "");
         $user = (isset($jsonObject["user"]) ? $this->clean($jsonObject["user"])     : "");
+        $nomor = $this->generate_nomor('TTRANSAKSI');
+        $kode = $this->gmslib->generate_kode($this->formatsetting['formatsetting'], $nomorcabang);
 
 		$this->db->trans_begin();
 
         $query = "INSERT INTO thorderjual (
+                    Nomor,
+                    Kode,
                     Tanggal,
                     NomorCustomer,
                     KodeCustomer,
@@ -199,6 +205,8 @@ class Order extends REST_Controller {
                     dibuat_oleh,
                     dibuat_pada)
                   VALUES (
+                    $nomor,
+                    $kode,
                     NOW(),
                     $nomorcustomer,
                     '$kodecustomer',
@@ -260,9 +268,11 @@ class Order extends REST_Controller {
                     $nomorbarangjual = $nomorbarang;
                     $kodebarangjual = $kodebarang;
                     $keterangandetail = $parts[12];
+                    $nomor = $this->generate_nomor('TDORDERJUAL');
 
                     //insert barang
                     $query = "INSERT INTO tdorderjual (
+                                Nomor,
                                 NomorBarang,
                                 KodeBarang,
                                 Qty,
@@ -281,9 +291,9 @@ class Order extends REST_Controller {
                                 NomorBarangJual,
                                 KodeBarangJual,
                                 KeteranganDetail,
-                                dibuat_oleh,
                                 dibuat_pada)
                               VALUES (
+                                $nomor,
                                 $nomorbarangreal,
                                 '$kodebarangreal',
                                 $qty,
@@ -302,7 +312,6 @@ class Order extends REST_Controller {
                                 $nomorbarangjual,
                                 '$kodebarangjual',
                                 '$keterangandetail',
-                                $user,
                                 NOW())";
                     $this->db->query($query);
                 }
@@ -328,9 +337,11 @@ class Order extends REST_Controller {
                     $subtotald = $parts[8];
                     $keterangandetail = $parts[9];
                     $netto = $harga - $disc1nominal + $fee;
+                    $nomor = $this->generate_nomor('TDORDERJUAL');
 
                     //insert pekerjaan
                     $query = "INSERT INTO tdorderjual (
+                                Nomor,
                                 NomorPekerjaan,
                                 KodePekerjaan,
                                 Qty,
@@ -346,9 +357,9 @@ class Order extends REST_Controller {
                                 Subtotal,
                                 KeteranganDetail,
                                 Jasa,
-                                dibuat_oleh,
                                 dibuat_pada)
                               VALUES (
+                                $nomor,
                                 $nomorpekerjaan,
                                 '$kodepekerjaan',
                                 $qty,
@@ -364,7 +375,6 @@ class Order extends REST_Controller {
                                 $subtotald,
                                 '$keterangandetail',
                                 1,
-                                $user,
                                 NOW())";
                     $this->db->query($query);
                 }
@@ -1116,6 +1126,9 @@ class Order extends REST_Controller {
         $jenispenjualan = 'Material';
         $nomorcabang = 2;  //untuk sementara masih static
         $proyek = 0;  //untuk sementara masih static
+        $nomor = $this->generate_nomor('TTRANSAKSI');
+        $kode = $this->gmslib->generate_kode($this->formatsetting['formatsetting'], $nomorcabang);
+
         $this->db->trans_begin();
         $query = "UPDATE
                     thcart
@@ -1126,6 +1139,8 @@ class Order extends REST_Controller {
         $result = $this->db->query($query);
         if($result){
             $query = "INSERT INTO thorderjual (
+                          Nomor,
+                          Kode,
                           Tanggal,
                           NomorCustomer,
                           KodeCustomer,
@@ -1157,6 +1172,8 @@ class Order extends REST_Controller {
                           dibuat_oleh,
                           dibuat_pada)
                       SELECT
+                          $nomor,
+                          $kode,
                           NOW(),
                           nomorcustomer,
                           kodecustomer,
@@ -1192,7 +1209,9 @@ class Order extends REST_Controller {
             $result = $this->db->query($query);
             $queryheader = $query;
             if($result){
+                $nomor = $this->generate_nomor('TDORDERJUAL');
                 $query = "INSERT INTO tdorderjual (
+                            Nomor,
                             NomorBarang,
                             KodeBarang,
                             Qty,
@@ -1214,6 +1233,7 @@ class Order extends REST_Controller {
                             dibuat_oleh,
                             dibuat_pada)
                           SELECT
+                            $nomor,
                             nomorbarang,
                             kodebarang,
                             0 as qty,

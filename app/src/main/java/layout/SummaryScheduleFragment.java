@@ -139,7 +139,7 @@ public class SummaryScheduleFragment extends Fragment {
             Log.d("resultQuery", result);
             LibInspira.ShowLongToast(getContext(), "Schedule Created");
             LibInspira.clearShared(global.schedulepreferences);
-            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new DashboardInternalFragment());
+            LibInspira.ReplaceFragment(getFragmentManager(), R.id.fragment_container, new ScheduleTaskFragment());
 
         }
     }

@@ -162,9 +162,8 @@ class Master extends REST_Controller {
         $value = file_get_contents('php://input');
 		$jsonObject = (json_decode($value , true));
 		
-		$query = "	SELECT 
-						a.index AS `nomor`,
-						a.nomor AS `nomorTUser`,
+		$query = "	SELECT
+						a.nomor AS `nomor`,
 						a.nomorthsales AS `nomorTHSales`,
 						a.kode AS `nama`,
 						IFNULL(a.telp, '') AS telp
@@ -178,7 +177,6 @@ class Master extends REST_Controller {
 
                 array_push($data['data'], array(
                 								'nomor'					=> $r['nomor'],
-												'nomorTUser' 			=> $r['nomorTUser'],
                                                 'nomorTHSales'         	=> $r['nomorTHSales'], 
                 								'nama' 					=> $r['nama'],
                 								'telp' 					=> $r['telp']

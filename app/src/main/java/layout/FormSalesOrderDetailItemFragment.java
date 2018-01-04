@@ -62,44 +62,40 @@ public class FormSalesOrderDetailItemFragment extends Fragment implements View.O
     public void onActivityCreated(Bundle bundle){
         super.onActivityCreated(bundle);
 
-        tvItemReal = (TextView) getView().findViewById(R.id.tvItemReal);
-        tvCodeReal = (TextView) getView().findViewById(R.id.tvCodeReal);
-        tvItem = (TextView) getView().findViewById(R.id.tvItem);
-        tvCode = (TextView) getView().findViewById(R.id.tvCode);
-        tvSatuan = (TextView) getView().findViewById(R.id.tvSatuan);
-        tvDisc = (TextView) getView().findViewById(R.id.tvDisc);
-        tvNetto = (TextView) getView().findViewById(R.id.tvNetto);
-        tvSubtotal = (TextView) getView().findViewById(R.id.tvSubtotal);
+            tvItemReal = (TextView) getView().findViewById(R.id.tvItemReal);
+            tvCodeReal = (TextView) getView().findViewById(R.id.tvCodeReal);
+            tvItem = (TextView) getView().findViewById(R.id.tvItem);
+            tvCode = (TextView) getView().findViewById(R.id.tvCode);
+            tvSatuan = (TextView) getView().findViewById(R.id.tvSatuan);
+            tvDisc = (TextView) getView().findViewById(R.id.tvDisc);
+            tvNetto = (TextView) getView().findViewById(R.id.tvNetto);
+            tvSubtotal = (TextView) getView().findViewById(R.id.tvSubtotal);
 
-        btnAdd = (Button) getView().findViewById(R.id.btnAdd);
-        btnAdd.setOnClickListener(this);
-        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_index, "").equals(""))
-        {
-            btnAdd.setText("ADD");
-        }
-        else
-        {
-            btnAdd.setText("EDIT");
-        }
+            btnAdd = (Button) getView().findViewById(R.id.btnAdd);
+            btnAdd.setOnClickListener(this);
+            if (LibInspira.getShared(global.temppreferences, global.temp.salesorder_item_index, "").equals("")) {
+                btnAdd.setText("ADD");
+            } else {
+                btnAdd.setText("EDIT");
+            }
 
-        etQty = (EditText) getView().findViewById(R.id.etQty);
-        etDisc = (EditText) getView().findViewById(R.id.etDisc);
-        etNotes = (EditText) getView().findViewById(R.id.etNotes);
-        etFee = (EditText) getView().findViewById(R.id.etFee);
-        etPrice = (EditText) getView().findViewById(R.id.etPrice);
+            etQty = (EditText) getView().findViewById(R.id.etQty);
+            etDisc = (EditText) getView().findViewById(R.id.etDisc);
+            etNotes = (EditText) getView().findViewById(R.id.etNotes);
+            etFee = (EditText) getView().findViewById(R.id.etFee);
+            etPrice = (EditText) getView().findViewById(R.id.etPrice);
 
-        if(tvItemReal!=null) tvItemReal.setOnClickListener(this);
-        tvItem.setOnClickListener(this);
+            if (tvItemReal != null) tvItemReal.setOnClickListener(this);
+            tvItem.setOnClickListener(this);
 
-        if(LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek"))
-        {
-            getView().findViewById(R.id.trNotes).setVisibility(View.GONE);
-            getView().findViewById(R.id.trDisc).setVisibility(View.GONE);
-            getView().findViewById(R.id.trFee).setVisibility(View.GONE);
-            getView().findViewById(R.id.trPrice).setVisibility(View.GONE);
-            getView().findViewById(R.id.trNetto).setVisibility(View.GONE);
-            getView().findViewById(R.id.trSubtotal).setVisibility(View.GONE);
-        }
+            if (LibInspira.getShared(global.temppreferences, global.temp.salesorder_type_proyek, "").equals("proyek") && getView().findViewById(R.id.trNotes) != null) {
+                getView().findViewById(R.id.trNotes).setVisibility(View.GONE);
+                getView().findViewById(R.id.trDisc).setVisibility(View.GONE);
+                getView().findViewById(R.id.trFee).setVisibility(View.GONE);
+                getView().findViewById(R.id.trPrice).setVisibility(View.GONE);
+                getView().findViewById(R.id.trNetto).setVisibility(View.GONE);
+                getView().findViewById(R.id.trSubtotal).setVisibility(View.GONE);
+            }
 
         init();
     }

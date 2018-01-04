@@ -81,6 +81,7 @@ public class FormSalesOrderDetailJasaListFragment extends FormSalesOrderDetailIt
             return;
         }
         String data = strData;
+        Log.d("Data", data);
         String[] pieces = data.trim().split("\\|");
         if((pieces.length==1 && pieces[0].equals("")))
         {

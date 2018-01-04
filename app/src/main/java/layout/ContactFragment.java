@@ -7,7 +7,12 @@
 package layout;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -48,6 +53,10 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
     private ListView lvSearch;
     private ItemListAdapter itemadapter;
     private ArrayList<ItemAdapter> list;
+    private AlertDialog.Builder builder;
+    private DialogInterface.OnClickListener dialogClickListener;
+
+    private String telpNum;
 
     public ContactFragment() {
         // Required empty public constructor
@@ -115,6 +124,31 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
 
         String actionUrl = "Master/getContact/";
         new getData().execute( actionUrl );
+
+        dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent phoneIntent;
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Call button clicked
+                        phoneIntent = new Intent(Intent.ACTION_CALL);
+                        phoneIntent.setData(Uri.parse("tel:" + telpNum));
+                        startActivity(phoneIntent);
+//                        LibInspira.ShowLongToast(getContext(), "call " + telpNum);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //SMS button clicked
+                        phoneIntent = new Intent(Intent.ACTION_VIEW);
+                        phoneIntent.setData(Uri.fromParts("sms", telpNum, null));
+                        startActivity(phoneIntent);
+                        LibInspira.ShowLongToast(getContext(), "SMS");
+                        break;
+                }
+            }
+        };
+        builder = new AlertDialog.Builder(getContext());
     }
 
     @Override
@@ -312,7 +346,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             View row = convertView;
             Holder holder = null;
 
@@ -332,11 +366,25 @@ public class ContactFragment extends Fragment implements View.OnClickListener{
             row.setTag(holder);
             setupItem(holder);
 
+            holder.ivCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (items.get(position).getHp() == "")
+                        LibInspira.ShowLongToast(getContext(), items.get(position).getNama() + " tidak menyimpan nomor telpon");
+                    else {
+                        telpNum = items.get(position).getHp();
+                        builder.setMessage("Nama: " + items.get(position).getNama() + "\nNomor: " + items.get(position).getHp())
+                                .setPositiveButton("Call", dialogClickListener).setNegativeButton("SMS", dialogClickListener).show();
+                    }
+
+                }
+            });
+
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     view.startAnimation(GlobalVar.listeffect);
-                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
+//                    LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseKotaFragment());
                 }
             });
 
