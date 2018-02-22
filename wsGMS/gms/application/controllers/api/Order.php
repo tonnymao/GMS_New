@@ -165,7 +165,6 @@ class Order extends REST_Controller {
         $isbarangimport = (isset($jsonObject["isbarangimport"]) ? $this->clean($jsonObject["isbarangimport"])     : "");
         $isppn = (isset($jsonObject["isppn"]) ? $this->clean($jsonObject["isppn"])     : "");
         $proyek = (isset($jsonObject["proyek"]) ? $this->clean($jsonObject["proyek"])     : "");
-        $user = (isset($jsonObject["user"]) ? $this->clean($jsonObject["user"])     : "");
         $nomor = $this->generate_nomor('TTRANSAKSI');
         $kode = $this->gmslib->generate_kode($this->formatsetting['formatsetting'], $nomorcabang);
 

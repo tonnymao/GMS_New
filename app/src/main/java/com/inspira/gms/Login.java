@@ -76,12 +76,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             edtPassword.setVisibility(View.VISIBLE);
             btnSubmit.setVisibility(View.VISIBLE);
         }
-        else
-        {
-            Log.d("hash", LibInspira.getShared(global.userpreferences,global.user.hash,""));
-            String actionUrl = "Login/checkUser/";
-            new checkUser().execute( actionUrl );
-        }
 
         // made by Shodiq
         //modified by ADI @01-Sep-2017

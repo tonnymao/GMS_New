@@ -337,7 +337,6 @@ public class SummarySalesOrderFragment extends Fragment implements View.OnClickL
                 {
                     jsonObject.put("proyek", 0);
                 }
-                jsonObject.put("user", LibInspira.getShared(global.userpreferences, global.user.nomor, ""));
 
 
                 //-------------------------------------------------------------------------------------------------------//

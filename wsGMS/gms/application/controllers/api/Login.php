@@ -267,8 +267,8 @@ class Login extends REST_Controller {
 												'user_password'					=> $r['password'],
                                                 'user_nomor_sales'         		=> $r['nomor_sales'],
                                                 'user_kode_sales'         		=> $r['kode_sales'],
-                								'user_nama' 					=> $r['nama'], 
-												'user_tipe' 					=> $r['tipe'], 
+                								'user_nama' 					=> $r['nama'],
+												'user_tipe' 					=> $r['tipe'],
 												'user_role' 					=> $r['role'], 
 												'user_hash' 					=> $r['hash'],
 												'user_telp' 					=> $r['telp'],
@@ -413,8 +413,8 @@ class Login extends REST_Controller {
 													'user_nomor_sales'         		=> $r['nomor_sales'],
 													'user_kode_sales'         		=> $r['kode_sales'],  //added by Tonny
 													'user_password'					=> $r['password'],
-													'user_nama' 					=> $r['nama'], 
-													'user_tipe' 					=> $r['tipe'], 
+													'user_nama' 					=> $r['nama'],
+													'user_tipe' 					=> $r['tipe'],
 													'user_role' 					=> $r['role'], 
 													'user_hash' 					=> $r['hash'],
 													'user_telp' 					=> $r['telp'],
@@ -453,6 +453,78 @@ class Login extends REST_Controller {
         }
 
     }
+	
+	//Customer Login
+	
+	function loginCustomer_post()
+	{
+		$data['data'] = array();
+
+        $value = file_get_contents('php://input');
+		$jsonObject = (json_decode($value , true));
+
+        $user = (isset($jsonObject["username"]) ? $this->clean($jsonObject["username"])     : "a");
+        $pass = (isset($jsonObject["password"]) ? $this->clean($jsonObject["password"]) : "a");
+        $token = (isset($jsonObject["token"]) ? $jsonObject["token"]     : "a");
+		
+		$query = "	UPDATE tcustomer a
+            SET hash = UUID(),
+            token = '$token'
+            WHERE a.aktif > 0
+            AND a.userid = ?
+			AND BINARY a.password = ?";
+        $this->db->query($query, array($user, $pass));
+		
+		
+		$query = "	SELECT
+                        nomor AS nomor,
+						email,
+						nama,
+						alamat,
+						telepon,
+						hash,
+						token,
+						fax,
+						namapengiriman,
+						alamatpengiriman,
+						teleponpengiriman,
+						hp
+                    FROM
+                        tcustomer a
+                    WHERE a.aktif = 1
+                        AND a.userid = '$user'
+                        AND BINARY a.password = '$pass'
+					";
+        $result = $this->db->query($query, array($user, $pass));
+
+        if( $result && $result->num_rows() > 0){
+            foreach ($result->result_array() as $r){
+
+                array_push($data['data'], array(
+												'user_nomor'					=> $r['nomor'],
+                                                'user_email'         			=> $r['email'],
+                								'user_nama' 					=> $r['nama'],
+												'user_alamat' 					=> $r['alamat'],
+												'user_telepon' 					=> $r['telepon'], 
+												'user_hash' 					=> $r['hash'],
+												'user_token'					=> $r['token'],
+												'user_fax' 						=> $r['fax'],
+												'user_namapengiriman' 			=> $r['namapengiriman'],
+												'user_alamatpengiriman' 		=> $r['alamatpengiriman'],
+												'role_teleponpengiriman'		=> $r['teleponpengiriman'],
+												'role_hp'						=> $r['hp']
+                								)
+               	);
+            }
+        }else{		
+			array_push($data['data'], array( 'query' => $this->error($query) ));
+		}  
+	
+        if ($data){
+            // Set the response and exit
+            $this->response($data['data']); // OK (200) being the HTTP response code
+        }
+	}
 
     function getVersion_post()
     {
@@ -464,10 +536,12 @@ class Login extends REST_Controller {
 
             $version  = $this->db->query("SELECT a.version FROM whversion_mobile a ORDER BY nomor DESC LIMIT 1")->row()->version;
             $url      = $this->db->query("SELECT a.url FROM whversion_mobile a ORDER BY nomor DESC LIMIT 1")->row()->url;
+            $externalversion = $this->db->query("SELECT a.externalversion FROM whversion_mobile a ORDER BY nomor DESC LIMIT 1")->row()->externalversion;
 
             array_push($data['data'], array(
                                             'version' 	=> $version,
-                                            'url'	=> $url
+                                            'url'	=> $url,
+                                            'externalversion' => $externalversion
                                             )
             );
 
