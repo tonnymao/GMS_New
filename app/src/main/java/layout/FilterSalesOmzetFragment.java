@@ -1,6 +1,6 @@
 /******************************************************************************
-    Author           : ADI
-    Description      : dashboard untuk internal
+    Author           : Tonny
+    Description      : filter untuk salesomzet
     History          :
 
 ******************************************************************************/
@@ -92,7 +92,11 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
         btnSearch = (Button) getView().findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(this);
         nomorsales = LibInspira.getShared(global.sharedpreferences, global.shared.nomorsales, "");
-        tvSalesman.setText(LibInspira.getShared(global.sharedpreferences, global.shared.namasales, ""));
+        if(LibInspira.getShared(global.sharedpreferences, global.shared.namasales, "").equals("")){
+            tvSalesman.setText("[ALL SALES]");
+        }else{
+            tvSalesman.setText(LibInspira.getShared(global.sharedpreferences, global.shared.namasales, ""));
+        }
         ibtnClearSales = (ImageButton) getView().findViewById(R.id.ibtnClearSales);
         ibtnClearSales.setOnClickListener(this);
         // Define DatePicker
@@ -129,7 +133,7 @@ public class FilterSalesOmzetFragment extends Fragment implements View.OnClickLi
             LibInspira.setShared(global.sharedpreferences, global.shared.namasales, "");
             LibInspira.setShared(global.omzetpreferences, global.omzet.nomorsales, "");
             nomorsales = "";
-            tvSalesman.setText("");
+            tvSalesman.setText("[ALL SALES]");
         }else if(id == R.id.tvSalesman){
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "filter omzet");
             LibInspira.ReplaceFragment(getActivity().getSupportFragmentManager(), R.id.fragment_container, new ChooseSalesmanFragment());

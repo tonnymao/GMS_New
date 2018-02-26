@@ -182,6 +182,11 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                 {
                     String[] parts = pieces[i].trim().split("\\~");
 
+                    //added by Tonny @26-Feb-2018
+                    if(parts.length < 2){
+                        break;
+                    }
+
                     String nomorsales = parts[0];
                     String nama = parts[1];
 
@@ -213,6 +218,10 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
             try
             {
                 String tempData= "";
+                //added by Tonny @26-Feb-2018 untuk menempatkan pilihan ALL (dengan nomorsales '') pada posisi teratas
+                if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("filter omzet")){
+                    tempData = "~[ALL SALES]|";
+                }
                 JSONArray jsonarray = new JSONArray(result);
                 if(jsonarray.length() > 0){
                     Log.d("jsonarray length: ", Integer.toString(jsonarray.length()));
@@ -320,7 +329,7 @@ public class ChooseSalesmanFragment extends Fragment implements View.OnClickList
                     if(LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("sales target")
                             || LibInspira.getShared(global.sharedpreferences, global.shared.position, "").equals("filter omzet"))
                     {
-                        LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama());
+                        LibInspira.setShared(global.sharedpreferences, global.shared.namasales, finalHolder.adapterItem.getNama().toUpperCase());  //modified by Tonny @26-Feb-2018 uppercase
                         LibInspira.setShared(global.sharedpreferences, global.shared.nomorsales, finalHolder.adapterItem.getNomor());
                         LibInspira.BackFragment(getFragmentManager()); //untuk kembali ke stack sebelumnya
                     }

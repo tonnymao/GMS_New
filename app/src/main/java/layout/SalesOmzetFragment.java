@@ -114,15 +114,16 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        refreshList();
+//        refreshList();
+        refreshPage();
 
-        String actionUrl = "Sales/getSalesOmzet/";
-        checkSalesOmzet = new CheckSalesOmzet();
-        checkSalesOmzet.execute( actionUrl );
-
-        actionUrl = "Sales/getTotalOmzet/";
-        checkTotalOmzet = new CheckTotalOmzet();
-        checkTotalOmzet.execute( actionUrl );
+//        String actionUrl = "Sales/getSalesOmzet/";
+//        checkSalesOmzet = new CheckSalesOmzet();
+//        checkSalesOmzet.execute( actionUrl );
+//
+//        actionUrl = "Sales/getTotalOmzet/";
+//        checkTotalOmzet = new CheckTotalOmzet();
+//        checkTotalOmzet.execute( actionUrl );
 
     }
 
@@ -138,8 +139,8 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
 
     private void refreshPage(){
         refreshList();
-        checkTotalOmzet.cancel(true);
-        checkSalesOmzet.cancel(true);
+        if(checkTotalOmzet != null) checkTotalOmzet.cancel(true);
+        if(checkSalesOmzet != null) checkSalesOmzet.cancel(true);
 
         String actionUrl = "Sales/getSalesOmzet/";
         checkSalesOmzet = new CheckSalesOmzet();
@@ -249,12 +250,12 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                         refreshList();
                     }
                 }
-                tvInformation.animate().translationYBy(-80);
+//                tvInformation.animate().translationYBy(-80);
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                tvInformation.animate().translationYBy(-80);
+//                tvInformation.animate().translationYBy(-80);
             }
         }
 
@@ -297,12 +298,12 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
                     }
                     tvTotalOmzet.setText("Rp. " + LibInspira.delimeter(totalomzet));
                 }
-                //tvInformation.animate().translationYBy(-80);
+                tvInformation.animate().translationYBy(-80);
             }
             catch(Exception e)
             {
                 e.printStackTrace();
-                //tvInformation.animate().translationYBy(-80);
+                tvInformation.animate().translationYBy(-80);
             }
         }
 
@@ -418,7 +419,7 @@ public class SalesOmzetFragment extends Fragment implements View.OnClickListener
     @Override
     public void onDestroy() {
         super.onDestroy();
-        checkSalesOmzet.cancel(true);
-        checkTotalOmzet.cancel(true);
+        if(checkTotalOmzet != null) checkTotalOmzet.cancel(true);
+        if(checkSalesOmzet != null) checkSalesOmzet.cancel(true);
     }
 }
