@@ -37,6 +37,7 @@ import layout.SalesNavigationFragment;
 import layout.SalesOrderListFragment;
 import layout.ScheduleTaskFragment;
 import layout.SettingFragment;
+import layout.StockMonitoringFragment;
 
 
 public class IndexInternal extends AppCompatActivity
@@ -232,6 +233,8 @@ public class IndexInternal extends AppCompatActivity
         } else if (id == R.id.nav_group) {
             LibInspira.setShared(global.sharedpreferences, global.shared.position, "Conversation");
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new ChooseGroupFragment());
+        } else if (id == R.id.nav_stockreport) {
+            LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new StockMonitoringFragment());
         } else if (id == R.id.nav_pricelist) {
             LibInspira.ReplaceFragment(getSupportFragmentManager(), R.id.fragment_container, new PriceListFragment());
         } else if (id == R.id.nav_scheduletask) {
